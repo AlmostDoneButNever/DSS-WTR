@@ -24,7 +24,9 @@
 							{% if current_user.is_authenticated %}
 							<li><a href="{{ url_for('home') }}">Dashboard</a></li>
 						  	{% else %}
-						  	
+							  <li><a href="{{ url_for('login')}}" class="button">Dashboard</a></li>
+							
+							  <li><a href="{{ url_for('register')}}" class="button primary">Sign out</a></li>
 						  	{% endif %}、
 							
 							<!--
