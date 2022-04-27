@@ -17,7 +17,7 @@
 
 			<!-- Header -->
 				<header id="header">
-					<h1 id="logo"><a href="{{ url_for('home')}}">Easy Recycling</a></h1>
+					<h1 id="logo"><a href="{{ url_for('index')}}">Easy Recycling</a></h1>
 
 					<nav id="nav">
 						<ul>
@@ -25,10 +25,14 @@
 							<li><a href="{{ url_for('home') }}">Dashboard</a></li>
 						  	{% else %}
 						  	
-						  	{% endif %}
+						  	{% endif %}、
+							
+							<!--
 							<li><a href="{{ url_for('about')}}">About</a></li>
 							
 							<li><a href="{{ url_for('posts_home')}}">Posts</a></li>
+							-->
+							
 							<li><a href="{{ url_for('login')}}" class="button">Login</a></li>
 							
 							<li><a href="{{ url_for('register')}}" class="button primary">Sign up</a></li>
