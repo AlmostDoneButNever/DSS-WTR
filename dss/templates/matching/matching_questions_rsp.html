@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+  <div class="content-section" style="margin: 0 auto">
+    <form method='POST' enctype="multipart/form-data"> 
+
+      <div class="container">
+        <legend class="border-bottom mb-4">Matching --> {{material.type}} --> {{material.material}}</legend>
+
+
+        <div class="form-group">
+          <label class="form-label" for="description">Product Name</label>
+          <textarea class="form-control" name="description" placeholder="Please name this entry for your recognition" required></textarea>
+        </div>
+
+
+        {{form.csrf_token}} 
+
+        {% for question in questions %}
+        {{question.questionHTML|safe}}
+        <br>
+        {% endfor %}
+
+
+        <br>
+          <div class="form-group">
+            <label for="cost" class="form-label">Please input the capital cost of your technology ($):</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" id="cost" name="cost" placeholder="$">
+                </div>
+          </div>
+        <br>
+          <div class="form-group">
+            <label for="capacity" class="form-label">Please input the monthly capacity of your technology:</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" id="capacity" name="capacity" placeholder="tonnes">
+                </div>
+          </div>
+        <br>
+          <div class="form-group">
+            <label for="URL" class="form-label">Please input your company URL:</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" id="URL" name="URL" placeholder="URL">
+                </div>
+          </div>
+        <br>
+        <div class="form-group">
+          
+          <label class="form-label" for="Q_tech">Is your technology available for sale?</label>
+          <br>
+          <div class="form-check form-check-inline" >
+            <input type="checkbox" class="form-check-input" id="Q_tech" name="Q_tech" value="1" onclick="onlyOne(this,'Q_tech')" data-toggle='collapse' data-target='#Q_tech' aria-expanded="false">
+            <label class="form-check-label" for="Q_tech">Yes</label>
+          </div>
+
+          <div class="form-check form-check-inline">
+              <input type="checkbox" class="form-check-input" id="Q_tech" name="Q_tech" value="2">
+              <label class="form-check-label" for="Q_tech">No</label>
+          </div>
+        </div>
+
+        
+        <div class="collapse" id="Q_tech">
+          <div class="form-group">
+          
+            <label class="form-label" for="Q_scale">Can your tech be scaled?</label>
+            <br>
+            <div class="form-check form-check-inline" >
+              <input type="checkbox" class="form-check-input" id="Q_scale" name="Q_scale" value="1" onclick="onlyOne(this,'Q_scale')" data-toggle='collapse' data-target='#Q_scale' aria-expanded="false">
+              <label class="form-check-label" for="Q_scale">Yes</label>
+            </div>
+  
+            <div class="form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" id="Q_scale" name="Q_scale" value="2">
+                <label class="form-check-label" for="Q_scale">No</label>
+            </div>
+          </div>
+        </div>
+
+    
+
+        <br>
+        <a class="btn btn-outline-secondary" href="{{ url_for('matching') }}" role="button" onclick="return confirm('Inputs will not be saved, are you sure you want to go back?');">Back</a>
+        <button type="submit" style="float: right;" class="btn btn-success" onclick="return confirm('Please verify your response before submitting');">Submit</button>
+      </div>
+    </form>
+
+
+
+
+<script>
+  function onlyOne(checkbox,name) {
+  var checkboxes = document.getElementsByName(name)
+  checkboxes.forEach((item) => {
+    if (item !== checkbox){
+      item.checked = false;
+      }
+    })
+  }
+
+  // $( document ).ready(function() {
+  //   $('.collapse').on('show.bs.collapse', function () {
+  //     // hide all accordion except the clicked one
+  //     $('.collapse').not(this).collapse('hide');
+  //   });
+
+    // $('#test').on('show.bs.collapse', function () {
+    //   alert("activated");
+    //   $('#no').collapse('hide');
+    // });
+
+    // $('#Q4').on('show.bs.collapse', function () {
+    //   alert("activated");
+    //   $('#yes').collapse('hide');
+    // });
+
+  // });
+
+  $('a[data-toggle="tooltip"]').tooltip({
+      animated: 'fade',
+      placement: 'bottom',
+      html: true
+  });
+
+</script>
+    
+{% endblock content %}
+
+

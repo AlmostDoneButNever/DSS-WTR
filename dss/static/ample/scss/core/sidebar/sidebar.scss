@@ -51,9 +51,9 @@ sidebar navigation
                     text-align: center;
                     font-size: 14px;
                 }
-                &:hover {
+                /*&:hover {
                     background: rgba(0, 0, 0, 0.07);
-                }
+                }*/
                 &.active {
                     font-weight: 500;
                     border-left: 3px solid #41b3f9;
@@ -69,7 +69,7 @@ sidebar navigation
            .first-level {
                 padding: $sidebar-first-level-padding;
                .sidebar-item.active .sidebar-link{
-                   opacity: 1;
+                   opacity: 0;
                }
                 .sidebar-item .sidebar-link {
                     padding: $sidebar-first-level-link-padding;
@@ -95,9 +95,9 @@ sidebar navigation
             text-transform: uppercase; i{line-height: 30px; margin:0 5px;}
         }
     }
-    >#sidebarnav >.sidebar-item >.sidebar-link:hover{
-        /*background: rgba(0, 0, 0, 0.04);*/
-    }
+    /*>#sidebarnav >.sidebar-item >.sidebar-link:hover{
+        background: rgba(0, 0, 0, 0.04);
+    }*/
 }
 /*******************
  common m-p removed
@@ -117,6 +117,7 @@ sidebar navigation
 /*******************
 Down arrow
 ******************/
+/*
 .sidebar-nav .has-arrow {
     position: relative;
     &::after {
@@ -143,11 +144,12 @@ Down arrow
         transition: all .3s ease-out;
     }
 }
-
+*/
 
 /*.sidebar-nav .active > .has-arrow::after,*/
 
 /*.sidebar-nav li.selected > .has-arrow::after,*/
+/*
 .sidebar-nav li.active > .has-arrow::after,
 .sidebar-nav li > .has-arrow.active::after,
 .sidebar-nav .has-arrow[aria-expanded="true"]::after {
@@ -156,7 +158,7 @@ Down arrow
     -o-transform: rotate(-135deg) translate(0, -50%);
     transform: rotate(-135deg) translate(0, -50%);
 }
-
+*/
 
 /*******************
 User Profile

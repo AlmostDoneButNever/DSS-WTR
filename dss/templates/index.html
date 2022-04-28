@@ -22,11 +22,14 @@
 					<nav id="nav">
 						<ul>
 							{% if current_user.is_authenticated %}
-							<li><a href="{{ url_for('home') }}">Dashboard</a></li>
+							<li><a href="{{ url_for('dashboard') }}" class="button primary">Dashboard</a></li>
+
+							<li><a href="{{ url_for('logout')}}" class="button">Sign out</a></li>
+
 						  	{% else %}
-							  <li><a href="{{ url_for('login')}}" class="button">Dashboard</a></li>
+							  <li><a href="{{ url_for('login')}}" class="button">Sign in</a></li>
 							
-							  <li><a href="{{ url_for('register')}}" class="button primary">Sign out</a></li>
+							  <li><a href="{{ url_for('register')}}" class="button primary">Sign up</a></li>
 						  	{% endif %}、
 							
 							<!--
@@ -35,9 +38,7 @@
 							<li><a href="{{ url_for('posts_home')}}">Posts</a></li>
 							-->
 							
-							<li><a href="{{ url_for('login')}}" class="button">Login</a></li>
-							
-							<li><a href="{{ url_for('register')}}" class="button primary">Sign up</a></li>
+
 						</ul>
 					</nav>
 				</header>
@@ -173,6 +174,7 @@
 					</div>
 				</section>
 <!-- tiles -->
+<!--
 				<div id="main">
 					<header class="major">
 						<h2>Latest Posts</h2>
@@ -316,6 +318,8 @@
 				</section>
 				</div>
 				</div>
+
+-->
 
 			<!-- Five -->
 				<section id="six" class="wrapper style2 special fade">
