@@ -17,7 +17,7 @@ from dss.models import (User, RSP, Materials, Questions, Giveoutwaste, Processwa
 from flask_login import current_user, login_required
 
 
-from dss.wasteIdGenerator import Waste
+from dss.wasteIdGenerator import getWasteId
 from dss.matching_algorithm_v2 import matching_algorithm
 
 
@@ -90,8 +90,10 @@ def matching_questions_sellers(materialId):
         
         #convert output to a code    
         try:
-            wasteObj = Waste(materialId, request)
-            questionCode = wasteObj.getId()
+
+            questionCode = getWasteId(materialId, request)
+
+
             if questionCode[0:5] == "Error":
                 flash(questionCode,'danger')
                 return redirect(url_for("matching_questions", materialId=materialId))       

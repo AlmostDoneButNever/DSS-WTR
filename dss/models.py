@@ -5,8 +5,12 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from onemapsg import OneMap
 
 
-email = "e0175262@u.nus.edu"
-passw = "Password1"
+#email = "e0175262@u.nus.edu"
+#passw = "Password1"
+#token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg3NTYsInVzZXJfaWQiOjg3NTYsImVtYWlsIjoiYW5nZWxtYWhAbnVzLmVkdS5zZyIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MTY1NjU0NCwiZXhwIjoxNjUyMDg4NTQ0LCJuYmYiOjE2NTE2NTY1NDQsImp0aSI6IjU5OWY4Y2IwZDRiYzE0MjViMzRkY2Y0YTY1ZGE3MGQ0In0.JL0TRLgSKju0MeH1936NvrfCdfrnc7ULqsHFMvEyWOs
+
+email = 'angelmah@nus.edu.sg'
+passw = 'wtr-dss-12345'
 
 @login_manager.user_loader
 def load_user(user_id):

@@ -5,32 +5,47 @@ from sqlalchemy.inspection import inspect
 import math
 
 #super class
-class Waste(object):
-    """docstring for Waste"""
-    def __init__(self, materialId, formData):
-        super(Waste, self).__init__()
-        self.materialId = int(materialId)
-        self.formData = formData
+#class Waste(object):
+    #"""docstring for Waste"""
+    
+    #def __init__(self):
+        #super(Waste, self).__init__()
 
-    def getId(self):
-        if self.materialId == 1:
-            questionCode = Food(self.materialId, self.formData).generateId()
-        elif self.materialId == 3:
-            questionCode = Ewaste(self.materialId, self.formData).generateId()
-        elif self.materialId == 4:
-            questionCode = AnimalManure(self.materialId, self.formData).generateId()
-        elif self.materialId == 12:
-            questionCode = WoodWaste(self.materialId, self.formData).generateId()
-        elif self.materialId == 13:
-            questionCode = Biochar(self.materialId, self.formData).generateId()
-        elif self.materialId == 14:
-            questionCode = RSPFood(self.materialId, self.formData).generateId()
-        else:
-            questionCode = Others(self.materialId, self.formData).generateId()
-        return questionCode
+def getWasteId(materialId, formData):
+    materialId = int(materialId)
+    questionCode = None
+
+    if materialId == 1:
+        questionCode = Food().generateId(materialId, formData)
+    
+    elif materialId == 3:
+        questionCode = Ewaste().generateId(materialId, formData)
+
+    elif materialId == 4:
+        questionCode = AnimalManure().generateId(materialId, formData)
+    elif materialId == 12:
+        questionCode = WoodWaste().generateId(materialId, formData)
+    elif materialId == 13:
+        questionCode = Biochar().generateId(materialId, formData)
+    elif materialId == 14:
+        questionCode = RSPFood().generateId(materialId, formData)
+    else:
+        questionCode = Others().generateId(materialId, formData)
+
+    return questionCode
+
+
+def breakId(materialId, wasteID):
+    materialId = int(materialId)
+
+    if materialId == 1:
+        waste = Food().decomposeId(wasteID)
+
+    return waste
+
 
 #sub classes
-class RSPFood(Waste):
+class RSPFood(object):
     """Q44,45,46,47,51,52,53"""
     """docstring for RSP/Organic Waste/Food Waste"""
     def __init__(self, materialId, formData):
@@ -253,10 +268,9 @@ class RSPFood(Waste):
         self.outputDeviation = str(self.formData.form['Q52_deviation']).zfill(2)
         return error
 
-class Food(Waste):
+class Food(object):
     """docstring for Food"""
-    def __init__(self, materialId, formData):
-        super().__init__(materialId,formData)
+    def __init__(self):
         self.homogeneity = '_'
         self.CHNType = '_'
         self.CRatio = '__'
@@ -274,7 +288,10 @@ class Food(Waste):
         self.phValue = '__'
         self.particleSize = '_'
 
-    def generateId(self):
+    def generateId(self, materialId, formData):
+        self.materialId = int(materialId)
+        self.formData = formData
+
         self.populate()
         questionCode = ["F" + self.homogeneity 
         + self.CHNType + self.CRatio + self.HRatio + self.NRatio 
@@ -289,8 +306,7 @@ class Food(Waste):
 
     def populate(self):
         #get from the food breakdown
-        # self.homogeneity = self.formData.form['Q1']
-        
+        # self.homogeneity = self.formData.form['Q1']      
         self.CHNType = self.formData.form['Q2YesNo']
         if self.CHNType == '1':
             #for actual CHN ratio
@@ -398,21 +414,41 @@ class Food(Waste):
         self.particleSize = self.formData.form['Q7']
         return
 
+    def decomposeId(self, wasteID):
+        self.id = wasteID
+        self.homogeneity=self.id[1]
+        self.wCHNType=self.id[2]
+        self.wCRatio=self.id[3:5]
+        self.wHRatio=self.id[5:7]
+        self.wNRatio=self.id[7:9]
+        self.wproteinType=self.id[9]
+        self.wproteinRatio=self.id[10:12]
+        self.wcellulosic=self.id[12]
+        self.wshellAndBones=self.id[13:15]
+        self.wmoistureType=self.id[15]
+        self.wmoistureContent=self.id[16:18]
+        self.wsaltType=self.id[18]
+        self.wsaltContent=self.id[19:21]
+        self.wpHType=self.id[21]
+        self.wphValue=self.id[22:24]
+        self.wparticleSize=self.id[24]
+        return self
 
-
-class Ewaste(Waste):
+class Ewaste(object):
     """docstring for Ewaste"""
-    def __init__(self, materialId, formData):
-        super().__init__(materialId,formData)
+    def __init__(self):
         self.RoHS = '_'
         self.homogeneity = '_'
         self.type = '_'
         self.kind = '__'
         self.parts = '__' 
 
-    def generateId(self):
+    def generateId(self, materialId, formData):
+        self.materialId = int(materialId)
+        self.formData = formData
+
         self.populate()
-        questionCode = ["3" + self.RoHS
+        questionCode = ["E" + self.RoHS
         + self.homogeneity
         + self.type
         + self.kind
@@ -431,10 +467,10 @@ class Ewaste(Waste):
 
 
 
-class AnimalManure(Waste):
+class AnimalManure(object):
     """docstring for AnimalManure"""
-    def __init__(self, materialId, formData):
-        super().__init__(materialId,formData)
+    def __init__(self):
+        #super().__init__(materialId,formData)
         self.category = '_'
         self.homogeneity = '_'
         self.moistureType = '_'
@@ -452,7 +488,9 @@ class AnimalManure(Waste):
         self.contaminantCr = '__'
         
 
-    def generateId(self):
+    def generateId(self, materialId, formData):
+        self.materialId = int(materialId)
+        self.formData = formData
         self.populate()
         questionCode = ["A" + self.category 
         + self.homogeneity
@@ -498,10 +536,10 @@ class AnimalManure(Waste):
         return
 
 
-class WoodWaste(Waste):
+class WoodWaste(object):
     """docstring for WoodWaste"""
-    def __init__(self, materialId, formData):
-        super().__init__(materialId,formData)
+    def __init__(self):
+        #super().__init__(materialId,formData)
         self.category = '_'
         self.homogeneity = '_'
         self.moistureType = '_'
@@ -520,7 +558,10 @@ class WoodWaste(Waste):
         self.contaminantCr = '__'
         
 
-    def generateId(self):
+    def generateId(self, materialId, formData):
+        self.materialId = int(materialId)
+        self.formData = formData
+
         self.populate()
         questionCode = ["W" + self.category 
         + self.homogeneity
@@ -568,10 +609,10 @@ class WoodWaste(Waste):
 
 
 
-class Biochar(Waste):
+class Biochar(object):
     """docstring for Biochar"""
-    def __init__(self, materialId, formData):
-        super().__init__(materialId,formData)
+    def __init__(self):
+        #super().__init__(materialId,formData)
         self.category = '_'
         self.size = '_'
         self.moistureType = '_'
@@ -587,7 +628,9 @@ class Biochar(Waste):
         self.contaminantCr = '__'
         
 
-    def generateId(self):
+    def generateId(self, materialId, formData):
+        self.materialId = int(materialId)
+        self.formData = formData
         self.populate()
         questionCode = ["W" + self.category 
         + self.size
@@ -626,12 +669,15 @@ class Biochar(Waste):
         return
 
 
-class Others(Waste):
+class Others(object):
     """docstring for Others"""
-    def __init__(self, materialId, formData):
-        super().__init__(materialId,formData)
+    #def __init__(self, materialId, formData):
+        #super().__init__(materialId,formData)
 
-    def generateId(self):
+    def generateId(self, materialId, formData):
+        self.materialId = int(materialId)
+        self.formData = formData
+
         questionCode = str(self.materialId)
         for question in self.formData.form:
             if question != 'description':
