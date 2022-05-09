@@ -139,7 +139,7 @@ class dispatchMatchingQuestionsForm(FlaskForm):
     wasteName = SelectField('Select below to trade from what you have created:', choices=[])
     quantity = StringField('Supply Quantity: (t/month)', validators=[Required()])
     postalCode = StringField('Company Postal Code:', validators=[Required()])
-    reservePrice = StringField('What is your reserve selling price? SGD', validators=[Required()])
+    reservePrice = StringField('What is your reserve selling price? (SGD/tonne)', validators=[Required()])
     deliveryFee = StringField('Transportation Charge:', validators=[Required()])
     submit = SubmitField('Submit')
 

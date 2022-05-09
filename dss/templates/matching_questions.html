@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "normal_layout.html" %}
 {% block content %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -112,7 +112,7 @@
           
             <div class="row">
               <label class="col-form-label col-sm-1" id="Q3_1">1)</label>
-              <select class="form-control col-sm-4" id="Q3_1" name="Q3_1">
+              <select class="form-control col-sm-3" id="Q3_1" name="Q3_1">
                 <option value="None">None</option>
                 {% for i in range(0,samplefoodlen) %}
                 <option value="{{i}}">{{samplefood[i]}}</option>

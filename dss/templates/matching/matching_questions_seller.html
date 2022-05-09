@@ -1,8 +1,27 @@
-{% extends "layout.html" %}
+{% extends "normal_layout.html" %}
 {% block content %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+.form-control {
+  display: block;
+  width: 60%;
+}
+.form-control-s {
+display: block;
+width: 100%;
+}
 
+
+select.form-control{
+  -webkit-appearance: menulist!important;
+  -moz-appearance: menulist!important;
+  -ms-appearance: menulist!important;
+  -o-appearance: menulist!important;
+  appearance: menulist!important;
+}
+
+</style>
 
   <div class="content-section" style="margin: 0 auto">
     <form method='POST' enctype="multipart/form-data"> 
@@ -89,47 +108,49 @@
           
             <div class="row">
               <label class="col-form-label col-sm-1" id="Q3_1">1)</label>
-              <select class="form-control col-sm-4" id="Q3_1" name="Q3_1">
+              <select class="form-control col-sm-3" id="Q3_1" name="Q3_1">
                 <option value="None">None</option>
                 {% for i in range(0,samplefoodlen) %}
                 <option value="{{i}}">{{samplefood[i]}}</option>
                 {% endfor %}
               </select>
               <div class="col-sm-1">
-                <input type="text" class="form-control" id="Q3_1_w" name="Q3_1_w" placeholder="w%">
+                <input type="text" class="form-control form-control-s" id="Q3_1_w" name="Q3_1_w" placeholder="0">
               </div>
-              <label for="Q3_1" class="col-sm-2 col-form-label">% weight</label>
+              <label for="Q3_1" class="col-sm-2 col-form-label">wt %</label>
             </div>  
             <br>
 
             <div class="row">
               <label class="col-form-label col-sm-1" id="Q3_2">2)</label>
-              <select class="form-control col-sm-4" id="Q3_2" name="Q3_2">
+              <select class="form-control col-sm-3" id="Q3_2" name="Q3_2">
                 <option value="None">None</option>
                 {% for i in range(samplefoodlen) %}
                 <option value="{{i}}">{{samplefood[i]}}</option>
                 {% endfor %}
               </select>
               <div class="col-sm-1">
-                <input type="text" class="form-control" id="Q3_2_w" name="Q3_2_w" placeholder="w%">
+                <input type="text" class="form-control form-control-s" id="Q3_2_w" name="Q3_2_w" placeholder="0">
               </div>
-              <label for="Q3_2" class="col-sm-2 col-form-label">% weight</label>
+              <label for="Q3_2" class="col-sm-2 col-form-label">wt %</label>
             </div> 
             <br>
 
             <div class="row">
               <label class="col-form-label col-sm-1" id="Q3_3">3)</label>
-              <select class="form-control col-sm-4" id="Q3_3" name="Q3_3">
+              <select class="form-control col-sm-3" id="Q3_3" name="Q3_3">
                 <option value="None">None</option>
                 {% for i in range(samplefoodlen) %}
                 <option value="{{i}}">{{samplefood[i]}}</option>
                 {% endfor %}
               </select>
               <div class="col-sm-1">
-                <input type="text" class="form-control" id="Q3_3_w" name="Q3_3_w" placeholder="w%">
+                <input type="text" class="form-control-s form-control" id="Q3_3_w" name="Q3_3_w" placeholder="0">
               </div>
-              <label for="Q3_3" class="col-sm-2 col-form-label">% weight</label>
+              <label for="Q3_3" class="col-sm-2 col-form-label">wt %</label>
             </div>
+            <br>
+
             
             <div class="form-group">
               <label class="form-label" for="Q4"><u>Moisture</u></label>
