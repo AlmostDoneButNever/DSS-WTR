@@ -6,13 +6,15 @@ import pandas as pd
 from dss.models import (User, Materials, Giveoutwaste,TechnologyDB)
 from dss.wasteIdGenerator import breakId
 
+###########################################       Matching Algorithm for Waste Sellers      ############################
+
 
 def matching_algorithm_seller(giveoutwasteId):
 
     wasteID = Giveoutwaste.query.filter_by(id=giveoutwasteId).first().questionCode
     wastematerialID = Giveoutwaste.query.filter_by(id=giveoutwasteId).first().materialId
 
-    waste_tech_dict = {'1':14, '2':[20,21,22,23,24,25,26], '3':27, '12':15, '4':16}
+    waste_tech_dict = {'1':[14], '2':[20,21,22,23,24,25,26], '3':[27], '12':[15], '4':[16]}
 
     tech_materialid = waste_tech_dict[str(wastematerialID)]
 
@@ -20,16 +22,25 @@ def matching_algorithm_seller(giveoutwasteId):
  
         waste = breakId(wastematerialID, wasteID)
 
-        query = TechnologyDB.query.filter(TechnologyDB.materialId == tech_materialid, TechnologyDB.CRatiomin <= waste.wCRatio, TechnologyDB.CRatiomax >= waste.wCRatio, 
-                                            TechnologyDB.NRatiomin <= waste.wNRatio, TechnologyDB.NRatiomax >= waste.wNRatio, 
-                                            TechnologyDB.pHmin <= waste.wphValue, TechnologyDB.pHmax >= waste.wphValue)
+        query = TechnologyDB.query.filter(TechnologyDB.materialId.in_(tech_materialid), TechnologyDB.CRatiomin <= waste.CRatio, TechnologyDB.CRatiomax >= waste.CRatio, 
+                                            TechnologyDB.NRatiomin <= waste.NRatio, TechnologyDB.NRatiomax >= waste.NRatio, 
+                                            TechnologyDB.Moisturemin <= waste.moistureContent, TechnologyDB.Moisturemax >= waste.moistureContent,
+                                            TechnologyDB.pHmin <= waste.phValue, TechnologyDB.pHmax >= waste.phValue,
+                                            #TechnologyDB.cellulosicmin <= waste.cellulosic, TechnologyDB.cellulosicmax >= waste.cellulosic,
+                                            #TechnologyDB.particleSizemin <= waste.particleSize, TechnologyDB.particleSizemax >= waste.particleSize,
+                                        )
 
 
     elif wastematerialID == 4:
 
         waste = breakId(wastematerialID, wasteID)
 
-        query = TechnologyDB.query.filter(TechnologyDB.materialId == tech_materialid, TechnologyDB.Moisturemin <= waste.moistureContent, TechnologyDB.Moisturemax >= waste.moistureContent)
+        query = TechnologyDB.query.filter(TechnologyDB.materialId.in_(tech_materialid), 
+                                            TechnologyDB.Moisturemin <= waste.moistureContent, TechnologyDB.Moisturemax >= waste.moistureContent,
+                                            #TechnologyDB.Homogeneitymin <= waste.homogeneity, TechnologyDB.Homogeneitymax >= waste.homogeneity,
+
+                                            
+                                            )
 
 
 
@@ -37,12 +48,16 @@ def matching_algorithm_seller(giveoutwasteId):
 
         waste = breakId(wastematerialID, wasteID)
 
-        query = TechnologyDB.query.filter(TechnologyDB.materialId == tech_materialid, TechnologyDB.Moisturemin <= waste.moistureContent, TechnologyDB.Moisturemax >= waste.moistureContent)
+        query = TechnologyDB.query.filter(TechnologyDB.materialId.in_(tech_materialid), 
+                                            TechnologyDB.Moisturemin <= waste.moistureContent, TechnologyDB.Moisturemax >= waste.moistureContent
+                                             #TechnologyDB.Homogeneitymin <= waste.homogeneity, TechnologyDB.Homogeneitymax >= waste.homogeneity,
+                                            )
 
 
     else:
 
-        query = TechnologyDB.query.filter(TechnologyDB.materialId == tech_materialid)
+        query = TechnologyDB.query.filter(TechnologyDB.materialId.in_(tech_materialid))
+
 
     result = []
     index = 1
@@ -52,6 +67,10 @@ def matching_algorithm_seller(giveoutwasteId):
         index +=1
 
     return result
+
+
+
+###########################################       Matching Algorithm for Recycling Service Providers      ############################
 
 def matching_algorithm_rsp(processwasteId):
 
@@ -76,8 +95,8 @@ def matching_algorithm_rsp(processwasteId):
 
 
         if techmaterialID == 14:           
-            if int(waste.wCRatio)>= tech.CRatiomin and int(waste.wCRatio) <= tech.CRatiomax and \
-                int(waste.wNRatio)>= tech.NRatiomin and int(waste.wNRatio) <= tech.NRatiomax:
+            if int(waste.CRatio)>= tech.CRatiomin and int(waste.CRatio) <= tech.CRatiomax and \
+                int(waste.NRatio)>= tech.NRatiomin and int(waste.NRatio) <= tech.NRatiomax:
                  #int(waste.moistureContent)>= tech.Moisturemin and int(waste.moistureContent) <= tech.Moisturemax and \
                     #int(waste.wphValue)>= tech.pHmin and int(waste.wphValue) <= tech.pHmax
                         #int(waste.homogeneity)>= tech.Homogeneitymin and int(waste.homogeneity) <= tech.Homogeneitymax:
