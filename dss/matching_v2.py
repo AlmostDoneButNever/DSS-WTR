@@ -18,7 +18,7 @@ from flask_login import current_user, login_required
 
 
 from dss.wasteIdGenerator import getWasteId
-from dss.matching_algorithm_v2 import matching_algorithm
+from dss.matching_algorithm_v2 import matching_algorithm_seller, matching_algorithm_rsp
 
 
 
@@ -166,9 +166,6 @@ def matching_questions_rsp(materialId):
         try:
             materialId = int(materialId)
             if materialId==14:
-                description = str(request.form['description'])
-                userId = int(current_user.id)
-                materialId = int(materialId)
                 CRatiomin = int(request.form['Q45_min_C'])
                 CRatiomax = int(request.form['Q45_max_C'])
                 NRatiomin = int(request.form['Q45_min_N'])
@@ -237,7 +234,6 @@ def matching_questions_rsp(materialId):
                     byproductBiogasCHFour = 0
                     byproductBiogasCOTwo = 0
                     
-
                 else:
                     byproductBiogas = 0
                     byproductBiogasEfficiency = 0
@@ -286,6 +282,154 @@ def matching_questions_rsp(materialId):
                     ByproductOthers = 0
                     ByproductOthersEfficiency = 0
 
+            elif materialId==15:
+
+                if len(request.form.getlist('Q46_homogeneity'))==2:
+                    Homogeneitymin = int(request.form['Q46_min_homogeneity'])
+                    Homogeneitymax = int(request.form['Q46_max_homogeneity'])
+                else:
+                    Homogeneitymin = 0
+                    Homogeneitymax = 100
+                
+                if len(request.form.getlist('Q46_moisture'))==2:
+                    Moisturemin = int(request.form['Q46_min_moisture'])
+                    Moisturemax = int(request.form['Q46_max_moisture'])
+                else:
+                    Moisturemin = 0
+                    Moisturemax = 100
+
+                if len(request.form.getlist('Q46_size'))==2:
+                    particleSizemin = int(request.form['Q46_min_Size'])
+                    particleSizemax = int(request.form['Q46_max_Size'])
+                else:
+                    particleSizemin = 0
+                    particleSizemax = 100
+
+                if len(request.form.getlist('Q51_Biogas'))==2:
+                    byproductBiogas = 1
+                    byproductBiogasEfficiency = int(request.form['Q51_Biogas_efficiency'])
+                    byproductBiogasCHFour = 0
+                    byproductBiogasCOTwo = 0
+                    
+                else:
+                    byproductBiogas = 0
+                    byproductBiogasEfficiency = 0
+                    byproductBiogasCHFour = 0
+                    byproductBiogasCOTwo = 0
+
+                if len(request.form.getlist('Q51_Chemical'))==2:
+                    ByproductChemical = 1
+                    ByproductChemicalEfficiency = int(request.form['Q51_Chemical_efficiency'])
+                else:
+                    ByproductChemical = 0
+                    ByproductChemicalEfficiency = 0
+
+                if len(request.form.getlist('Q51_Metal'))==2:
+                    ByproductMetal = 1
+                    ByproductMetalEfficiency = int(request.form['Q51_Metal_efficiency'])
+                else:
+                    ByproductMetal = 0
+                    ByproductMetalEfficiency = 0
+
+                if len(request.form.getlist('Q51_Biochar'))==2:
+                    ByproductBiochar = 1
+                    ByproductBiocharEfficency = int(request.form['Q51_Biochar_efficiency'])
+                else:
+                    ByproductBiochar = 0
+                    ByproductBiocharEfficency = 0
+
+                if len(request.form.getlist('Q51_Digestate'))==2:
+                    ByproductDigestate = 1
+                    ByproductDigestateEfficiency = int(request.form['Q51_Digestate_efficiency'])
+                else:
+                    ByproductDigestate = 0
+                    ByproductDigestateEfficiency = 0
+
+                if len(request.form.getlist('Q51_Oil'))==2:
+                    ByproductOil = 1
+                    ByproductOilEfficiency = int(request.form['Q51_Oil_efficiency'])
+                else:
+                    ByproductOil = 0
+                    ByproductOilEfficiency = 0
+
+                if len(request.form.getlist('Q51_Others'))==2:
+                    ByproductOthers = 1
+                    ByproductOthersEfficiency = int(request.form['Q51_Others_efficiency'])
+                else:
+                    ByproductOthers = 0
+                    ByproductOthersEfficiency = 0
+
+            elif materialId==16:
+
+                if len(request.form.getlist('Q46_homogeneity'))==2:
+                    Homogeneitymin = int(request.form['Q46_min_homogeneity'])
+                    Homogeneitymax = int(request.form['Q46_max_homogeneity'])
+                else:
+                    Homogeneitymin = 0
+                    Homogeneitymax = 100
+                
+                if len(request.form.getlist('Q46_moisture'))==2:
+                    Moisturemin = int(request.form['Q46_min_moisture'])
+                    Moisturemax = int(request.form['Q46_max_moisture'])
+                else:
+                    Moisturemin = 0
+                    Moisturemax = 100
+
+                if len(request.form.getlist('Q51_Biogas'))==2:
+                    byproductBiogas = 1
+                    byproductBiogasEfficiency = int(request.form['Q51_Biogas_efficiency'])
+                    byproductBiogasCHFour = 0
+                    byproductBiogasCOTwo = 0
+                    
+                else:
+                    byproductBiogas = 0
+                    byproductBiogasEfficiency = 0
+                    byproductBiogasCHFour = 0
+                    byproductBiogasCOTwo = 0
+
+                if len(request.form.getlist('Q51_Chemical'))==2:
+                    ByproductChemical = 1
+                    ByproductChemicalEfficiency = int(request.form['Q51_Chemical_efficiency'])
+                else:
+                    ByproductChemical = 0
+                    ByproductChemicalEfficiency = 0
+
+                if len(request.form.getlist('Q51_Metal'))==2:
+                    ByproductMetal = 1
+                    ByproductMetalEfficiency = int(request.form['Q51_Metal_efficiency'])
+                else:
+                    ByproductMetal = 0
+                    ByproductMetalEfficiency = 0
+
+                if len(request.form.getlist('Q51_Biochar'))==2:
+                    ByproductBiochar = 1
+                    ByproductBiocharEfficency = int(request.form['Q51_Biochar_efficiency'])
+                else:
+                    ByproductBiochar = 0
+                    ByproductBiocharEfficency = 0
+
+                if len(request.form.getlist('Q51_Digestate'))==2:
+                    ByproductDigestate = 1
+                    ByproductDigestateEfficiency = int(request.form['Q51_Digestate_efficiency'])
+                else:
+                    ByproductDigestate = 0
+                    ByproductDigestateEfficiency = 0
+
+                if len(request.form.getlist('Q51_Oil'))==2:
+                    ByproductOil = 1
+                    ByproductOilEfficiency = int(request.form['Q51_Oil_efficiency'])
+                else:
+                    ByproductOil = 0
+                    ByproductOilEfficiency = 0
+
+                if len(request.form.getlist('Q51_Others'))==2:
+                    ByproductOthers = 1
+                    ByproductOthersEfficiency = int(request.form['Q51_Others_efficiency'])
+                else:
+                    ByproductOthers = 0
+                    ByproductOthersEfficiency = 0
+
+
             description = str(request.form['description'])
             userId = int(current_user.id)
             materialId = int(materialId)
@@ -300,8 +444,7 @@ def matching_questions_rsp(materialId):
             else:
                 scaling = 0
             questionCode = "Submitted!"
-            
-            
+
         except Exception:
             traceback.print_exc()
             flash(f'Please ensure that the form is filled in correctly first before submitting','danger')
@@ -358,6 +501,61 @@ def matching_questions_rsp(materialId):
             url=url,
             forsale=forsale,
             scaling=scaling)
+
+        elif materialId==15:
+            techID = TechnologyDB(userId=userId,
+            materialId=materialId,
+            Homogeneitymin=Homogeneitymin,
+            Homogeneitymax=Homogeneitymax,
+            Moisturemin=Moisturemin,
+            Moisturemax=Moisturemax,
+            particleSizemin=particleSizemin,
+            particleSizemax=particleSizemax,
+            TechnologyName=TechnologyName,
+            byproductBiogas=byproductBiogas,
+            byproductBiogasEfficiency=byproductBiogasEfficiency,
+            ByproductChemical=ByproductChemical,
+            ByproductChemicalEfficiency=ByproductChemicalEfficiency,
+            ByproductMetal=ByproductMetal,
+            ByproductMetalEfficiency=ByproductMetalEfficiency,
+            ByproductBiochar=ByproductBiochar,
+            ByproductBiocharEfficency=ByproductBiocharEfficency,
+            ByproductDigestate=ByproductDigestate,
+            ByproductDigestateEfficiency=ByproductDigestateEfficiency,
+            ByproductOil=ByproductOil,
+            ByproductOilEfficiency=ByproductOilEfficiency,
+            ByproductOthers=ByproductOthers,
+            ByproductOthersEfficiency=ByproductOthersEfficiency,
+            AdditionalInformation=AdditionalInformation,
+            date=str(datetime.now())[0:19],
+            description=description)
+
+        elif materialId==16:
+            techID = TechnologyDB(userId=userId,
+            materialId=materialId,
+            Homogeneitymin=Homogeneitymin,
+            Homogeneitymax=Homogeneitymax,
+            Moisturemin=Moisturemin,
+            Moisturemax=Moisturemax,
+            TechnologyName=TechnologyName,
+            byproductBiogas=byproductBiogas,
+            byproductBiogasEfficiency=byproductBiogasEfficiency,
+            ByproductChemical=ByproductChemical,
+            ByproductChemicalEfficiency=ByproductChemicalEfficiency,
+            ByproductMetal=ByproductMetal,
+            ByproductMetalEfficiency=ByproductMetalEfficiency,
+            ByproductBiochar=ByproductBiochar,
+            ByproductBiocharEfficency=ByproductBiocharEfficency,
+            ByproductDigestate=ByproductDigestate,
+            ByproductDigestateEfficiency=ByproductDigestateEfficiency,
+            ByproductOil=ByproductOil,
+            ByproductOilEfficiency=ByproductOilEfficiency,
+            ByproductOthers=ByproductOthers,
+            ByproductOthersEfficiency=ByproductOthersEfficiency,
+            AdditionalInformation=AdditionalInformation,
+            date=str(datetime.now())[0:19],
+            description=description)
+
         else:
             techID=TechnologyDB(userId=userId,
             materialId=materialId,
@@ -518,147 +716,13 @@ def rsp(maincat):
 @app.route("/matching/filter_waste/<giveoutwasteId>", methods=['GET','POST'])
 def matching_filter_waste(giveoutwasteId):
     
-    result = matching_algorithm(giveoutwasteId)
+    result = matching_algorithm_seller(giveoutwasteId)
 
     return render_template('matching_results_waste.html', result=result )
 
 @app.route("/matching/filter_recycling/<processwasteId>", methods=['GET','POST'])
 def matching_filter_recycling(processwasteId):
-    techstuff=TechnologyDB.query.filter_by(id=processwasteId).first()
-    
-    techmaterialID = TechnologyDB.query.filter_by(id=processwasteId).first().materialId
-    rset = Giveoutwaste.query.all()
-    result = defaultdict(list)
-    for obj in rset:
-        instance = inspect(obj)
-        for key, x in instance.attrs.items():
-            result[key].append(x.value)    
-    df = pd.DataFrame(result)
-    rset = Materials.query.all()
-    result = defaultdict(list)
-    for obj in rset:
-        instance = inspect(obj)
-        for key, x in instance.attrs.items():
-            result[key].append(x.value)    
-    materialsdf = pd.DataFrame(result)
-    results = defaultdict(list)
-    instance = inspect(techstuff)
-    for key, x in instance.attrs.items():
-        results[key].append(x.value)    
-    #techdf = pd.DataFrame(result)
-    #print(results)
-    #print(df)
-    counter=0
-    result=[]
-    #TechnologyDB.query.filter_by(id=processwasteId).first()
-    attrib=['materialId',
-                    'CRatiomin',
-                    'CRatiomax',
-                    'NRatiomin',
-                    'NRatiomax',
-                    'Moisturemin',
-                    'Moisturemax',
-                    'pHmin',
-                    'pHmax',
-                    'cellulosicmin',
-                    'cellulosicmax',
-                    'particleSizemin',
-                    'particleSizemax',
-                    'unacceptableshells',
-                    'unacceptableshells',
-                    'unacceptableshellspercent',
-                    'unacceptablebones',
-                    'unacceptablebonespercent',
-                    'unacceptablebamboo',
-                    'unacceptablebamboopercent',
-                    'unacceptablebanana',
-                    'unacceptablebananapercent',
-                    'unacceptableothers',
-                    'unacceptableotherspercent',
-                    'TechnologyName',
-                    'byproductBiogas',
-                    'byproductBiogasEfficiency',
-                    'byproductBiogasCHFour',
-                    'byproductBiogasCOTwo',
-                    'ByproductChemical',
-                    'ByproductChemicalEfficiency',
-                    'ByproductMetal',
-                    'ByproductMetalEfficiency',
-                    'ByproductBiochar',
-                    'ByproductBiocharEfficency',
-                    'ByproductDigestate',
-                    'ByproductDigestateEfficiency',
-                    'ByproductOil',
-                    'ByproductOilEfficiency',
-                    'ByproductOthers',
-                    'ByproductOthersEfficiency',
-                    'TechnologyName',
-                    'AdditionalInformation']
-    techID = {}
-    for at in attrib:
-        #print(results[at][0])
-        techID[at]=results[at][0]
-        
-    #print(techmaterialID)
-    for i in range(len(df)):
-        wastematerialID=int(df.loc[i,'materialId'])
-        #print(techmaterialID)
-        #print(wastematerialID)      
-        if int(techmaterialID)==14 and int(wastematerialID)==1:
-            #print("Triggered")
-            wasteID = (df.loc[i,'questionCode'])
-            print(wasteID)
-            homogeneity=wasteID[1]
-            wCHNType=wasteID[2]
-            wCRatio=wasteID[3:5]
-            wHRatio=wasteID[5:7]
-            wNRatio=wasteID[7:9]
-            wproteinType=wasteID[9]
-            wproteinRatio=wasteID[10:12]
-            wcellulosic=wasteID[12]
-            wshellAndBones=wasteID[13:15]
-            wmoistureType=wasteID[15]
-            wmoistureContent=wasteID[16:18]
-            wsaltType=wasteID[18]
-            wsaltContent=wasteID[19:21]
-            wpHType=wasteID[21]
-            wphValue=wasteID[22:24]
-            wparticleSize=wasteID[24]
-            print(wCRatio)
-            print(techID['CRatiomin'])
-            print(techID['CRatiomax'])
-            
-            print(wNRatio)
-            print(techID['NRatiomin'])
-            print(techID['NRatiomax'])
-            
-            print(wphValue)
-            print(techID['pHmin'])
-            print(techID['pHmax'])
-                   
-            if (wCRatio=='__' or (int(wCRatio)>=int(techID['CRatiomin']) and int(wCRatio)<=int(techID['CRatiomax']))) and ((wNRatio)=='__' or (int(wNRatio)>=int(techID['NRatiomin']) and int(wNRatio)<=int(techID['NRatiomax']))) and ((wphValue)=='__' or (int(wphValue)>=int(techID['pHmin']) and int(wphValue)<=int(techID['pHmax']))):
-                counter+=1
-                index=(counter)
-                desc=(df.loc[i,'description'])
-                supplier=(User.query.filter_by(id=int(df.loc[i,'userId'])).first().username)
-                #print(supplier)
-                rawdate=str(df.loc[i,'date'])
-                rawdate=rawdate[:10]
-                result.append([index,desc,supplier,rawdate])
-        else:
-            counter=0
-            print(techmaterialID)
-            print(materialsdf.loc[wastematerialID-1,'material'])
-            print(materialsdf.loc[int(techmaterialID)-1,'material'][0:len(materialsdf.loc[wastematerialID-1,'material'])])
-            if materialsdf.loc[wastematerialID-1,'material'] == materialsdf.loc[int(techmaterialID)-1,'material'][0:len(materialsdf.loc[wastematerialID-1,'material'])]:
-                counter+=1
-                index=(counter)
-                desc=(df.loc[i,'description'])
-                supplier=(User.query.filter_by(id=int(df.loc[i,'userId'])).first().username)
-                #print(supplier)
-                rawdate=str(df.loc[i,'date'])
-                rawdate=rawdate[:10]
-                result.append([index,desc,supplier,rawdate])
+    result = matching_algorithm_rsp(processwasteId)
     return render_template('matching_results_recycling.html', result=result )
 
 @app.route("/matching/filter_resource/<byproduct>", methods=['GET','POST'])

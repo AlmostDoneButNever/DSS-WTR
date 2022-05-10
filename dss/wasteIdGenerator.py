@@ -41,6 +41,12 @@ def breakId(materialId, wasteID):
     if materialId == 1:
         waste = Food().decomposeId(wasteID)
 
+    if materialId == 4:
+        waste = AnimalManure().decomposeId(wasteID)
+
+    if materialId == 12:
+        waste = WoodWaste().decomposeId(wasteID)
+
     return waste
 
 
@@ -493,7 +499,7 @@ class AnimalManure(object):
         self.formData = formData
         self.populate()
         questionCode = ["A" + self.category 
-        + self.homogeneity
+        + self.homogeneityType
         + self.moistureType + self.moistureContent
         + self.CHNType + self.CRatio + self.HRatio + self.NRatio 
         + self.contaminantType + self.contaminantCu + self.contaminantZn + self.contaminantAs + self.contaminantPb + self.contaminantCd + self.contaminantCr]
@@ -501,7 +507,7 @@ class AnimalManure(object):
 
     def populate(self):
         self.category = self.formData.form['Q1']
-        self.homogeneity = self.formData.form['Q2']
+        self.homogeneityType = self.formData.form['Q2']
         
         if self.formData.form['Q3'] == '0':
             self.moistureType = '1'
@@ -534,6 +540,27 @@ class AnimalManure(object):
             #for estimated contaminants
             pass
         return
+
+    def decomposeId(self, wasteID):
+
+        self.id = wasteID
+        self.category =  self.id[1]
+        self.homogeneityType =  self.id[2]
+        self.moistureType =  self.id[3]
+        self.moistureContent =  self.id[4:6]
+        self.CHNType =  self.id[6]
+        self.CRatio =  self.id[7:9]
+        self.HRatio =  self.id[9:11]
+        self.NRatio =  self.id[11:13]
+        self.contaminantType =  self.id[13]
+        self.contaminantCu =  self.id[14:16]
+        self.contaminantZn =  self.id[16:18]
+        self.contaminantAs =  self.id[18:20]
+        self.contaminantPb =  self.id[20:22]
+        self.contaminantCd =  self.id[22:24]
+        self.contaminantCr =  self.id[24:26]
+
+        return self
 
 
 class WoodWaste(object):
@@ -606,6 +633,27 @@ class WoodWaste(object):
             #for estimated contaminants
             pass
         return
+
+    def decomposeId(self, wasteID):
+
+        self.id = wasteID
+        self.category = self.id[1]
+        self.homogeneityType = self.id[2]
+        self.moistureType = self.id[3]
+        self.moistureContent = self.id[4:6]
+        self.size = self.id[6]
+        self.CHNType = self.id[7]
+        self.CRatio = self.id[8:10]
+        self.HRatio = self.id[10:12]
+        self.NRatio = self.id[12:14]
+        self.contaminantType = self.id[14]
+        self.contaminantCu = self.id[15:17]
+        self.contaminantZn = self.id[17:19]
+        self.contaminantAs = self.id[19:21]
+        self.contaminantPb = self.id[21:23]
+        self.contaminantCd = self.id[23:25]
+        self.contaminantCr = self.id[25:27]
+        return self
 
 
 
