@@ -1,0 +1,577 @@
+{% extends "normal_layout.html" %}
+{% block content %}
+
+<style>
+.form-control {
+  display: block;
+  width: 100%;
+}
+.form-control-s {
+display: block;
+width: 50%;
+}
+.form-control-b {
+display: block;
+width: 150%;
+}
+
+select.form-control{
+-webkit-appearance: menulist!important;
+-moz-appearance: menulist!important;
+-ms-appearance: menulist!important;
+-o-appearance: menulist!important;
+appearance: menulist!important;
+}
+</style>
+
+
+<div class="container-fluid">
+    <legend class="border-bottom mb-4">Question Form - Recycling Service Providers</legend>
+
+    <br>
+    <h2>Common</h2>
+    <br>
+
+    <div class="form-group">
+        <label class="form-label" for="description">Product Name</label>
+        <textarea class="form-control" name="description" placeholder="Please name this entry for your recognition" required></textarea>
+    </div>
+
+
+    <br>
+    <h2> Food Waste </h2>
+    <br>
+
+    <div class="form-group">
+      <label class="form-label" for="Q45"><u>Please enter the acceptable C/N ratio of the feedstock </u></label>
+      <br>
+    
+    
+      <label for="Q45" class="form-label">Please key in the acceptable range</label>
+      <div class="form-group row">
+        <label for="Q45" class="col-sm-2 col-form-label">Carbon:</label>
+        <div class="col-sm-3">
+          <input type="text" class="form-control" id="Q45_min_C" name="Q45_min_C" placeholder="Min wt%">
+        </div>
+        <label for="Q45" class="col-sm-1 col-form-label"> to </label>
+        <div class="col-sm-3">
+          <input type="text" class="form-control" id="Q45_max_C" name="Q45_max_C" placeholder="Max wt%">
+        </div>
+      </div>
+    
+      <div class="form-group row">
+        <label for="Q45" class="col-sm-2 col-form-label">Nitrogen:</label>
+        <div class="col-sm-3">
+          <input type="text" class="form-control" id="Q45_min_N" name="Q45_min_N" placeholder="Min wt%">
+        </div>
+        <label for="Q45" class="col-sm-1 col-form-label"> to </label>
+        <div class="col-sm-3">
+          <input type="text" class="form-control" id="Q45_max_N" name="Q45_max_N" placeholder="Max wt%">
+        </div>
+    
+      </div>
+    
+    </div>
+
+   
+    <div class="form-group">
+      <label class="form-label" for="Q46"><u>Conditions of the waste</u></label>
+      <br>
+    
+    
+      <label for="Q46" class="form-label">Select the restrictions you wish to impose on the waste:</label>
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q46_moisture" name='Q46_moisture'>
+        <input type="checkbox" class="form-check-input" id="Q46_moisture" name="Q46_moisture" value="1" data-toggle='collapse' data-target='#Moisture' aria-expanded="false">
+        <label class="form-check-label" for="Q46">Moisture</label>
+      </div>
+      <div class="collapse" id="Moisture">
+        <div class="form-group row">
+          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max moisture required</label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_min_moisture" name="Q46_min_moisture" placeholder="Min wt%">
+          </div>
+          <label for="Q46" class="col-sm-1 col-form-label"> to </label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_max_moisture" name="Q46_max_moisture" placeholder="Max wt%">
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q46_pH" name='Q46_pH'>
+        <input type="checkbox" class="form-check-input" id="Q46_pH" name="Q46_pH" value="1" data-toggle='collapse' data-target='#pH' aria-expanded="false">
+        <label class="form-check-label" for="Q46">pH</label>
+      </div>
+      <div class="collapse" id="pH">
+        <div class="form-group row">
+          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max pH required</label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_min_ph" name="Q46_min_ph" placeholder="Min pH">
+          </div>
+          <label for="Q46" class="col-sm-1 col-form-label"> to </label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_max_ph" name="Q46_max_ph" placeholder="Max pH">
+          </div>
+        </div>
+      </div>
+    
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q46_cellulosic" name='Q46_cellulosic'>
+        <input type="checkbox" class="form-check-input" id="Q46_cellulosic" name="Q46_cellulosic" value="1" data-toggle='collapse' data-target='#cellulosic' aria-expanded="false">
+        <label class="form-check-label" for="Q46">Cellulosic</label>
+      </div>
+      <div class="collapse" id="cellulosic">
+        <div class="form-group row">
+          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max cellulosic required</label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_min_Cellulosic" name="Q46_min_Cellulosic" placeholder="Min wt%">
+          </div>
+          <label for="Q46" class="col-sm-1 col-form-label"></label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_max_Cellulosic" name="Q46_max_Cellulosic" placeholder="Max wt%">
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q46_size" name='Q46_size'>
+        <input type="checkbox" class="form-check-input" id="Q46_size" name="Q46_size" value="1" data-toggle='collapse' data-target='#size' aria-expanded="false">
+        <label class="form-check-label" for="Q46">Size of Solid Particles</label>
+      </div>
+      <div class="collapse" id="size">
+        <div class="form-group row">
+          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max size of solid particles required</label>
+          <div class="col-sm-3">
+          <input type="text" class="form-control" id="Q46_min_Size" name="Q46_min_Size" placeholder="Min">
+          </div>
+          <label for="Q46" class="col-sm-1 col-form-label"></label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_max_Size" name="Q46_max_Size" placeholder="Max">
+          </div>
+          <label for="Q46" class="col-sm-1 col-form-label"><var>mm</var></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="Q47"><u>Please state the unacceptable type of food waste</u></label>
+      <br>
+    
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q47_1" name='Q47_1'>
+        <input type="checkbox" class="form-check-input" id="Q47_1" name="Q47_1" value="1" data-toggle='collapse' data-target='#InorganicShell' aria-expanded="false">
+        <label class="form-check-label" for="Q47_1">Inorganic Shell (Clams Shell, Conch Shell)</label>
+        </div>
+        <div class="collapse" id="InorganicShell">
+          <div class="form-group row">
+          <label for="Q47" class="col-sm-4 col-form-label">Please key in unacceptable levels in %</label>
+          <div class="col-sm-2">
+            <input type="text" class="form-control" id="Q47_1_value" name="Q47_1_value" placeholder="~%">
+          </div>
+        </div>
+      </div>
+    
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q47_2" name='Q47_2'>
+        <input type="checkbox" class="form-check-input" id="Q47_2" name="Q47_2" value="1" data-toggle='collapse' data-target='#bones' aria-expanded="false">
+        <label class="form-check-label" for="Q47_2">Large Cattle, Pig and Sheep Bones</label>
+        </div>
+        <div class="collapse" id="bones">
+          <div class="form-group row">
+          <label for="Q47" class="col-sm-4 col-form-label">Please key in unacceptable levels in %</label>
+          <div class="col-sm-2">
+            <input type="text" class="form-control" id="Q47_2_value" name="Q47_2_value" placeholder="~%">
+          </div>
+        </div>
+      </div>
+    
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q47_3" name='Q47_3'>
+        <input type="checkbox" class="form-check-input" id="Q47_3" name="Q47_3" value="1" data-toggle='collapse' data-target='#bamboo' aria-expanded="false">
+        <label class="form-check-label" for="Q47_3">Bamboo Dumpling Leaves</label>
+        </div>
+        <div class="collapse" id="bamboo">
+          <div class="form-group row">
+          <label for="Q47" class="col-sm-4 col-form-label">Please key in unacceptable levels in %</label>
+          <div class="col-sm-2">
+            <input type="text" class="form-control" id="Q47_3_value" name="Q47_3_value" placeholder="~%">
+          </div>
+        </div>
+      </div>
+    
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q47_4" name='Q47_4'>
+        <input type="checkbox" class="form-check-input" id="Q47_4" name="Q47_4" value="1" data-toggle='collapse' data-target='#banana' aria-expanded="false">
+        <label class="form-check-label" for="Q47_4">Banana Leaf</label>
+        </div>
+        <div class="collapse" id="banana">
+          <div class="form-group row">
+          <label for="Q47" class="col-sm-4 col-form-label">Please key in unacceptable levels in %</label>
+          <div class="col-sm-2">
+            <input type="text" class="form-control" id="Q47_4_value" name="Q47_4_value" placeholder="~%">
+          </div>
+        </div>
+      </div>
+    
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q47_5" name='Q47_5'>
+        <input type="checkbox" class="form-check-input" id="Q47_5" name="Q47_5" value="1" data-toggle='collapse' data-target='#others' aria-expanded="false">
+        <label class="form-check-label" for="Q47_5">Others</label>
+        </div>
+        <div class="collapse" id="others">
+          <div class="form-group row">
+          <label for="Q47" class="col-sm-4 col-form-label">Please key in unacceptable levels in %</label>
+          <div class="col-sm-2">
+            <input type="text" class="form-control" id="Q47_5_value" name="Q47_5_value" placeholder="~%">
+          </div>
+        </div>
+      </div>
+    
+    </div>
+
+
+
+<br>
+<h2>Animal Manure</h2>
+<br>
+
+<div class="form-group">
+  <label class="form-label" for="Q46"><u>Conditions of the waste</u></label>
+  <br>      
+
+  <label for="Q46" class="form-label">Select the restrictions you wish to impose on the waste:</label>
+
+  <div class="form-check form-check">
+    <input type='hidden' value='0' id="Q46_homogeneity" name='Q46_homogeneity'>
+    <input type="checkbox" class="form-check-input" id="Q46_homogeneity" name="Q46_homogeneity" value="1" data-toggle='collapse' data-target='#homogeneity' aria-expanded="false">
+    <label class="form-check-label" for="Q46">Homogeneity</label>
+  </div>
+  <div class="collapse" id="homogeneity">
+    <div class="form-group row">
+      <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max percentage required</label>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="Q46_min_homogeneity" name="Q46_min_homogeneity" placeholder="Min wt%">
+      </div>
+      <label for="Q46" class="col-sm-1 col-form-label"> to </label>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="Q46_max_homogeneity" name="Q46_max_homogeneity" placeholder="Max wt%">
+      </div>
+    </div>
+    </div>
+
+  <div class="form-check form-check">
+    <input type='hidden' value='0' id="Q46_moisture" name='Q46_moisture'>
+    <input type="checkbox" class="form-check-input" id="Q46_moisture" name="Q46_moisture" value="1" data-toggle='collapse' data-target='#Moisture_manure' aria-expanded="false">
+    <label class="form-check-label" for="Q46">Moisture</label>
+  </div>
+
+  <div class="collapse" id="Moisture_manure">
+    <div class="form-group row">
+      <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max moisture required</label>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="Q46_min_moisture" name="Q46_min_moisture" placeholder="Min wt%">
+      </div>
+      <label for="Q46" class="col-sm-1 col-form-label"> to </label>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="Q46_max_moisture" name="Q46_max_moisture" placeholder="Max wt%">
+      </div>
+    </div>
+    </div>
+
+    <br>
+    <h2>Wood Waste</h2>
+    <br>
+
+    <div class="form-group">
+      <label class="form-label" for="Q46"><u>Conditions of the waste</u></label>
+      <br>      
+    
+      <label for="Q46" class="form-label">Select the restrictions you wish to impose on the waste:</label>
+
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q46_homogeneity" name='Q46_homogeneity'>
+        <input type="checkbox" class="form-check-input" id="Q46_homogeneity" name="Q46_homogeneity" value="1" data-toggle='collapse' data-target='#homogeneity_wood' aria-expanded="false">
+        <label class="form-check-label" for="Q46">Homogeneity</label>
+      </div>
+      <div class="collapse" id="homogeneity_wood">
+        <div class="form-group row">
+          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max percentage required</label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_min_homogeneity" name="Q46_min_homogeneity" placeholder="Min wt%">
+          </div>
+          <label for="Q46" class="col-sm-1 col-form-label"> to </label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_max_homogeneity" name="Q46_max_homogeneity" placeholder="Max wt%">
+          </div>
+        </div>
+        </div>
+
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q46_moisture" name='Q46_moisture'>
+        <input type="checkbox" class="form-check-input" id="Q46_moisture" name="Q46_moisture" value="1" data-toggle='collapse' data-target='#Moisture_wood' aria-expanded="false">
+        <label class="form-check-label" for="Q46">Moisture</label>
+      </div>
+
+      <div class="collapse" id="Moisture_wood">
+        <div class="form-group row">
+          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max moisture required</label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_min_moisture" name="Q46_min_moisture" placeholder="Min wt%">
+          </div>
+          <label for="Q46" class="col-sm-1 col-form-label"> to </label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_max_moisture" name="Q46_max_moisture" placeholder="Max wt%">
+          </div>
+        </div>
+        </div>
+      
+    
+      
+      <div class="form-check form-check">
+        <input type='hidden' value='0' id="Q46_size" name='Q46_size'>
+        <input type="checkbox" class="form-check-input" id="Q46_size" name="Q46_size" value="1" data-toggle='collapse' data-target='#size_wood' aria-expanded="false">
+        <label class="form-check-label" for="Q46">Size of feedstock</label>
+      </div>
+      <div class="collapse" id="size_wood">
+        <div class="form-group row">
+          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max size of feedstock in cm</label>
+          <div class="col-sm-3">
+          <input type="text" class="form-control" id="Q46_min_Size" name="Q46_min_Size" placeholder="Min">
+          </div>
+          <label for="Q46" class="col-sm-1 col-form-label"></label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" id="Q46_max_Size" name="Q46_max_Size" placeholder="Max">
+          </div>
+          <label for="Q46" class="col-sm-1 col-form-label"><var>cm</var></label>
+        </div>
+        </div>
+    </div>
+
+    <br>
+    <h2>Common</h2>
+    <br>
+
+    <div class="form-group">
+      <label class="form-label" for="Q50"><u>Technology</u></label>
+      <br>
+    
+    
+    
+      <div class="container">
+        <label for="Q50">State the treatment technology</label>
+        <div class="container">
+          <input type="text" class="form-control" id="Q50_tech" name="Q50_tech" placeholder="Technology">
+        </div>
+      
+    
+    </div>
+    
+    <br>
+    
+    <div class="form-group">
+      <label class="form-label" for="Q51"><u>What are the products/by-product of your technology</u></label>
+      <br>
+      <div class="form-check form-check">
+      <input type="hidden" name="Q51_Biogas" value="0" />
+      <input type="checkbox" class="form-check-input" id="Q51_Biogas" name="Q51_Biogas" value="1" data-toggle='collapse' data-target='#Biogas' aria-expanded="false">
+      <label class="form-check-label" for="Q51">Biogas</label>
+      </div>
+      <div class="collapse" id="Biogas">
+        <div class="form-group row">
+        <label for="Q51_Biogas_efficiency" class="col-sm-4 col-form-label">Please key in efficiency levels:</label>
+        <div class="col-sm-2">
+          <input type="text" class="form-control" id="Q51_Biogas_efficiency" name="Q51_Biogas_efficiency" placeholder="">  
+        </div>
+        <label for="Q51_Biogas_efficiency" class="col-sm-1 col-form-label">m^3/t</label>
+        </div>
+      
+      </div>
+      
+      <div class="form-check form-check">
+      <input type='hidden' value='0' id="Q51_Chemical" name='Q51_Chemical'>
+      <input type="checkbox" class="form-check-input" id="Q51_Chemical" name="Q51_Chemical" value="1" data-toggle='collapse' data-target='#Chemical' aria-expanded="false">
+      <label class="form-check-label" for="Q51">Chemical</label>
+      </div>
+      <div class="collapse" id="Chemical">
+        <div class="form-group row">
+        <label for="Q51_Biogas_efficiency" class="col-sm-4 col-form-label">Please key in efficiency levels:</label>
+        <div class="col-sm-2">
+          <input type="text" class="form-control" id="Q51_Chemical_efficiency" name="Q51_Chemical_efficiency" placeholder="%">
+        </div>
+        </div>
+      </div>
+    
+      <div class="form-check form-check">
+      <input type='hidden' value='0' id="Q51_Metal" name='Q51_Metal'>
+        <input type="checkbox" class="form-check-input" id="Q51_Metal" name="Q51_Metal" value="1" data-toggle='collapse' data-target='#Metal' aria-expanded="false">
+        <label class="form-check-label" for="Q51">Metal</label>
+      </div>
+      <div class="collapse" id="Metal">
+        <div class="form-group row">
+        <label for="Q51_Biogas_efficiency" class="col-sm-4 col-form-label">Please key in efficiency levels:</label>
+        <div class="col-sm-2">
+          <input type="text" class="form-control" id="Q51_Metal_efficiency" name="Q51_Metal_efficiency" placeholder="%">
+        </div>
+        </div>
+      </div>
+    
+      <div class="form-check form-check">
+      <input type='hidden' value='0' id="Q51_Biochar" name='Q51_Biochar'>
+      <input type="checkbox" class="form-check-input" id="Q51_Biochar" name="Q51_Biochar" value="1" data-toggle='collapse' data-target='#Biochar' aria-expanded="false">
+      <label class="form-check-label" for="Q51">Biochar</label>
+      </div>
+      <div class="collapse" id="Biochar">
+        <div class="form-group row">
+        <label for="Q51_Chemical_efficiency" class="col-sm-4 col-form-label">Please key in efficiency levels:</label>
+        <div class="col-sm-2">
+          <input type="text" class="form-control" id="Q51_Biochar_efficiency" name="Q51_Biochar_efficiency" placeholder="%">
+        </div>
+        </div>
+      </div>
+    
+      <div class="form-check form-check">
+      <input type='hidden' value='0' id="Q51_Digestate" name='Q51_Digestate'>
+      <input type="checkbox" class="form-check-input" id="Q51_Digestate" name="Q51_Digestate" value="1" data-toggle='collapse' data-target='#Digestate' aria-expanded="false">
+      <label class="form-check-label" for="Q51">Digestate</label>
+      </div>
+      <div class="collapse" id="Digestate">
+        <div class="form-group row">
+        <label for="Q51_Digestate_efficiency" class="col-sm-4 col-form-label">Please key in efficiency levels:</label>
+        <div class="col-sm-2">
+          <input type="text" class="form-control" id="Q51_Digestate_efficiency" name="Q51_Digestate_efficiency" placeholder=""> 
+        </div>
+        <label for="Q51_Digestate_efficiency" class="col-sm-1 col-form-label">t/t</label>
+        </div>
+      </div>
+    
+      <div class="form-check form-check">
+      <input type='hidden' value='0' id="Q51_Oil" name='Q51_Oil'>
+      <input type="checkbox" class="form-check-input" id="Q51_Oil" name="Q51_Oil" value="1" data-toggle='collapse' data-target='#Oil' aria-expanded="false">
+      <label class="form-check-label" for="Q51">Oil</label>
+      </div>
+      <div class="collapse" id="Oil">
+        <div class="form-group row">
+        <label for="Q51_Oil_efficiency" class="col-sm-4 col-form-label">Please key in efficiency levels:</label>
+        <div class="col-sm-2">
+          <input type="text" class="form-control" id="Q51_Oil_efficiency" name="Q51_Oil_efficiency" placeholder="%">
+        </div>
+        </div>
+      </div>
+    
+      <div class="form-check form-check">
+      <input type='hidden' value='0' id="Q51_Others" name='Q51_Others'>
+      <input type="checkbox" class="form-check-input" id="Q51_Others" name="Q51_Others" value="1" data-toggle='collapse' data-target='#Others' aria-expanded="false">
+      <label class="form-check-label" for="Q51">Others</label>
+      </div>
+      <div class="collapse" id="Others">
+        <div class="form-group row">
+        <label for="Q51_Others_efficiency" class="col-sm-4 col-form-label">Please key in efficiency levels:</label>
+        <div class="col-sm-2">
+          <input type="text" class="form-control" id="Q51_Others_efficiency" name="Q51_Others_efficiency" placeholder="%">
+        </div>
+        </div>
+      </div>
+
+    <div class="form-group">
+      <label class="form-label" for="Q53"><u>Additional Information</u></label>
+      <br>
+  
+    
+  
+      <div class="container">
+        <label for="Q53"></label>
+        <div class="container">
+          <input type="text" class="form-control" id="Q53" name="Q53" placeholder="Any other information">
+        </div>
+      
+    </div>
+  
+    <br>
+    <div class="form-group">
+      <label for="cost" class="form-label">Please input the capital cost of your technology ($):</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" id="cost" name="cost" placeholder="$">
+          </div>
+    </div>
+  <br>
+    <div class="form-group">
+      <label for="capacity" class="form-label">Please input the monthly capacity of your technology:</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" id="capacity" name="capacity" placeholder="tonnes">
+          </div>
+    </div>
+  <br>
+    <div class="form-group">
+      <label for="URL" class="form-label">Please input your company URL:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="URL" name="URL" placeholder="URL">
+          </div>
+    </div>
+  <br>
+  <div class="form-group">
+    
+    <label class="form-label" for="Q_tech">Is your technology available for sale?</label>
+    <br>
+    <div class="form-check form-check-inline" >
+      <input type="checkbox" class="form-check-input" id="Q_tech" name="Q_tech" value="1" onclick="onlyOne(this,'Q_tech')" data-toggle='collapse' data-target='#Q_scale' aria-expanded="false">
+      <label class="form-check-label" for="Q_tech">Yes</label>
+    </div>
+  
+    <div class="form-check form-check-inline">
+        <input type="checkbox" class="form-check-input" id="Q_tech" name="Q_tech" value="2">
+        <label class="form-check-label" for="Q_tech">No</label>
+    </div>
+  </div>
+  
+  
+  <div class="collapse" id="Q_scale">
+    <div class="form-group">
+    
+      <label class="form-label" for="Q_scale">Can your tech be scaled?</label>
+      <br>
+      <div class="form-check form-check-inline" >
+        <input type="checkbox" class="form-check-input" id="Q_scale" name="Q_scale" value="1" onclick="onlyOne(this,'Q_scale')">
+        <label class="form-check-label" for="Q_scale">Yes</label>
+      </div>
+  
+      <div class="form-check form-check-inline">
+          <input type="checkbox" class="form-check-input" id="Q_scale" name="Q_scale" value="2" onclick="onlyOne(this,'Q_scale')">
+          <label class="form-check-label" for="Q_scale">No</label>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  <br>
+  <a class="btn btn-outline-secondary" href="{{ url_for('matching') }}" role="button" onclick="return confirm('Inputs will not be saved, are you sure you want to go back?');">Back</a>
+  <button type="submit" style="float: right;" class="btn btn-success" onclick="return confirm('Please verify your response before submitting');">Submit</button>
+  
+
+
+
+
+</div>
+
+
+
+  <script>
+    function onlyOne(checkbox,name) {
+    var checkboxes = document.getElementsByName(name)
+    checkboxes.forEach((item) => {
+      if (item !== checkbox){
+        item.checked = false;
+        }
+      })
+    }
+  
+    $('a[data-toggle="tooltip"]').tooltip({
+        animated: 'fade',
+        placement: 'bottom',
+        html: true
+    });
+  
+  </script>
+
+{% endblock content %}
