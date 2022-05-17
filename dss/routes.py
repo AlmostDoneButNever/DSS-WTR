@@ -29,7 +29,9 @@ def questions_seller():
 @login_required
 def questions_rsp():
 
+    materialselected = session.get('my_var', None)
 
+    print('questions', materialselected)
     materialId = [0,1,2]
     material_questions_dict = {'0':['food_composition'], '1':['Q1','Q2'], '2':['Q2','Q3']}
 
@@ -39,4 +41,4 @@ def questions_rsp():
 
     questions_id = list(dict.fromkeys(questions_id))
 
-    return render_template('questions_template_rsp.html', questions_id = questions_id)
+    return render_template('questions_template_rsp.html', materialselected = materialselected)

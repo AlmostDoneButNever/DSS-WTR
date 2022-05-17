@@ -4,7 +4,7 @@ from sqlalchemy.inspection import inspect
 import os
 from datetime import datetime
 import pandas as pd
-from flask import render_template
+from flask import render_template, session
 from flask import url_for 
 from flask import flash 
 from flask import redirect
@@ -142,6 +142,14 @@ def recycling_service_provider():
             return redirect(url_for("matching_filter_recycling", processwasteId=form.technologyID.data))
         #creates new Tech ID
         else:
+            materialselected = []
+            keys = ['foodwaste', 'manure']
+            for item in request.form.keys():
+                if item in keys:
+                    materialselected.append(item)
+            print(materialselected)
+            session['my_var'] = materialselected
+            #return redirect(url_for("questions_rsp",materialselected=materialselected))
             return redirect(url_for("matching_questions_rsp",materialId=form.subcat.data))
     return render_template('recycling_service_provider.html', title="Matching", form=form)    
 

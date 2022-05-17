@@ -38,6 +38,8 @@ appearance: menulist!important;
     </div>
 
 
+  {% if "foodwaste" in materialselected %}
+
     <br>
     <h2> Food Waste </h2>
     <br>
@@ -229,8 +231,9 @@ appearance: menulist!important;
       </div>
     
     </div>
+  {% endif %}
 
-
+  {% if "manure" in materialselected %}
 
 <br>
 <h2>Animal Manure</h2>
@@ -278,6 +281,9 @@ appearance: menulist!important;
       </div>
     </div>
     </div>
+    {% endif %}
+
+    {% if "woodwaste" in materialselected %}
 
     <br>
     <h2>Wood Waste</h2>
@@ -347,7 +353,7 @@ appearance: menulist!important;
         </div>
         </div>
     </div>
-
+      {% endif %}
     <br>
     <h2>Common</h2>
     <br>
