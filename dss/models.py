@@ -189,6 +189,9 @@ class Sample(db.Model):
     Moisture = db.Column(db.Integer)
     pH = db.Column(db.Integer)
 
+class Product(db.Model):
+    ProductName = db.Column(db.String(100), primary_key = True)
+
 class Giveoutwaste(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
     materialId = db.Column(db.Integer, db.ForeignKey('materials.id'), nullable=False)
