@@ -13,8 +13,9 @@ from flask import jsonify
 from dss import app, db
 from dss.forms import (MaterialsForm, maxRowsForm, BuyingForm,RSPForm) 
 from dss.models import (User, RSP, Materials, Questions, Giveoutwaste, Processwaste, Technology, Takeinresource, Technologybreakdown, 
-     Sample, TechnologyDB)
+     Sample, TechnologyDB, MaterialsDB)
 from flask_login import current_user, login_required
+from dss.AddDBEntry import AddWasteToDB
 
 
 from dss.wasteIdGenerator import getWasteId
@@ -34,7 +35,10 @@ def matching():
 def selling_waste():
     form = MaterialsForm()
     form.type.choices = [(material.type, material.type) for material in Materials.query.group_by(Materials.type)]
-    form.material.choices = [(material.id, material.material) for material in Materials.query.filter_by(type=Materials.query.first().type).all()]
+    #form.material.choices = [(material.id, material.material) for material in Materials.query.filter_by(type=Materials.query.first().type).all()]
+
+    form.material.choices = [(material.id, material.material) for material in MaterialsDB.query.all()]
+    #form.material.choices = ['Food Waste', 'Animal Manure', 'Wood Waste', 'E-waste', 'Plastic waste']
     #get past waste ID
     prevEntries = [(waste.id, waste.questionCode + ': ' + waste.description + ' - ' + waste.date.strftime("%d/%m/%Y")) for waste in Giveoutwaste.query.filter_by(userId=int(current_user.id)).all()]
     prevEntries.insert(0,(None,None))
@@ -46,6 +50,7 @@ def selling_waste():
         if form.wasteID.data != None:
             print(form.wasteID.data)
             return redirect(url_for("matching_filter_waste", giveoutwasteId=form.wasteID.data))
+            
         #creates new Waste ID
         else:
             return redirect(url_for("matching_questions_sellers",materialId=form.material.data))
@@ -66,12 +71,7 @@ def matching_questions_sellers(materialId):
     df = pd.DataFrame(result)
     samplefood=df['FoodItem'].tolist()
 
-    #get questions
-    questionId = material.questionId.split(',')
-    questions = []
-    for id in questionId:
-        questions.append(Questions.query.filter_by(id=id).first())
-    
+   
     if request.method == 'POST':
         
         print(request.data)
@@ -91,20 +91,9 @@ def matching_questions_sellers(materialId):
         #convert output to a code    
         try:
 
-            questionCode = getWasteId(materialId, request)
-
-
-            if questionCode[0:5] == "Error":
-                flash(questionCode,'danger')
-                return redirect(url_for("matching_questions", materialId=materialId))       
-
-            # insert into database
-            waste = Giveoutwaste(materialId=int(materialId), questionCode=questionCode, reportCode=str(reportCode), userId=int(current_user.id), description=request.form['description'] or None, date=datetime.now())
-            db.session.add(waste)
-            db.session.commit()
-            
+          
             #success message:
-            flash(f'ID: {questionCode}', 'success')
+            #flash(f'ID: {questionCode}', 'success')
             flash('Your response has been recorded!','success')  
             
         except Exception:
@@ -117,7 +106,7 @@ def matching_questions_sellers(materialId):
         return redirect(url_for("selling_waste"))
 
 
-    return render_template('/matching/matching_questions_seller.html', title="Matching Questions", form=form, questions=questions, material=material, samplefood=samplefood, samplefoodlen=len(samplefood), materialId=materialId)
+    return render_template('/questions_template_seller.html', title="Matching Questions", form=form, samplefood=samplefood, samplefoodlen=len(samplefood), materialId=materialId)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Treatment provider ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -129,6 +118,9 @@ def recycling_service_provider():
     form = RSPForm()
     form.maincat.choices = [(rsp.maincat, rsp.maincat) for rsp in RSP.query.group_by(RSP.maincat)]
     form.subcat.choices = [(rsp.id, rsp.subcat) for rsp in RSP.query.filter_by(maincat=RSP.query.first().maincat).all()]
+
+    wastematerial = [(material.id, material.material) for material in MaterialsDB.query.all()]
+
     #get past technology ID
     prevEntries = [(waste.id, waste.description + ': ' + waste.TechnologyName + ' - ' + waste.date) for waste in TechnologyDB.query.filter_by(userId=int(current_user.id)).all()]
     prevEntries.insert(0,(None,None))
@@ -151,7 +143,7 @@ def recycling_service_provider():
             session['my_var'] = materialselected
             #return redirect(url_for("questions_rsp",materialselected=materialselected))
             return redirect(url_for("matching_questions_rsp",materialId=form.subcat.data))
-    return render_template('recycling_service_provider.html', title="Matching", form=form)    
+    return render_template('recycling_service_provider.html', title="Matching", form=form, wastematerial = wastematerial)    
 
 @app.route("/matching/rspquestions/<materialId>", methods=['GET', 'POST'])
 @login_required

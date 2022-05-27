@@ -2,15 +2,23 @@
 {% block content %}
 
 <style>
-
-  select.form-control{
-    -webkit-appearance: menulist!important;
-    -moz-appearance: menulist!important;
-    -ms-appearance: menulist!important;
-    -o-appearance: menulist!important;
-    appearance: menulist!important;
+  .form-control {
+    display: block;
+    width: 100%;
   }
-</style>
+  .form-control-s {
+  display: block;
+  width: 50%;
+  }
+  
+  select.form-control{
+  -webkit-appearance: menulist!important;
+  -moz-appearance: menulist!important;
+  -ms-appearance: menulist!important;
+  -o-appearance: menulist!important;
+  appearance: menulist!important;
+  }
+  </style>
 
   <div class="content-section" style="margin: 0 auto">
     <h2 style="color:deepskyblue"><strong>Matching</strong></h2>
@@ -49,36 +57,24 @@
     <div class="content-section" style="margin: 0 auto">
       <form method='POST'> 
         {{form.csrf_token}} 
+        <br>
 
-        <div class="form-group">
-          <h5>Category?</h5>
-         {{ form.maincat(class="form-control form-control-lg") }}
-        </div>
+        <h6>Select the acceptable type of feedstock</h6>
 
-        <div class="form-group">
-          <h5>Subcategory?</h5>
-          {{ form.subcat(class="form-control form-control-lg") }}
-        </div>
+        <div class="row">
+          <label class="col-form-label col-sm-1">1)</label>
+          <select class="form-control form-control-s col-sm-3" name="tech_waste_id_1">
+            <option value="None">None</option>
+            {% for (id , waste) in wastematerial %}
+            <option value="{{id}}">{{waste}}</option>
+            {% endfor %}
+          </select>
+        </div>  
+        <br>
+        <button type="button" class="btn btn-outline-info" onclick="addCode()" id = 'addItembutton'>Add Item</button>  
+        <br>   
+        <br>
 
-
-
-        <div class="form-group">
-          <h5>Select the acceptable type of feedstock</h5>
-
-        <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name = 'foodwaste'>
-        <label class="form-check-label" for="flexCheckDefault">
-          Food waste
-        </label>
-
-        <input class="form-check-input" type="checkbox" value="4" id="flexCheckDefault2" name = 'manure'>
-        <label class="form-check-label" for="flexCheckDefault">
-          Animal manure
-        </label>
-
-
-        </div>
-
-<br>
         <div class="form-group">
           {{ form.submit(class="btn btn-success btn-lg") }}
         </div>
@@ -99,6 +95,29 @@
   </div> -->
 
 <script>
+  index = 1
+
+  function addCode() {
+        index += 1
+        document.getElementById("addItembutton").insertAdjacentHTML("beforebegin",
+        
+        `
+        <div class="row">
+          <label class="col-form-label col-sm-1">${index})</label>
+          <select class="form-control form-control-s col-sm-3" name="tech_waste_id_${index}">
+            <option value="None">None</option>
+            {% for (id , waste) in wastematerial %}
+            <option value="{{id}}">{{waste}}</option>
+            {% endfor %}
+          </select>
+        </div>  
+        <br>
+                
+        `
+
+        );
+    }
+
 	function showForm(){
 		var hiddenInputs = document.getElementsByClassName('hidden');
 

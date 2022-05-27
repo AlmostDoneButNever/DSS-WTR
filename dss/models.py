@@ -170,6 +170,10 @@ class Materials(db.Model):
     material = db.Column(db.String(100), nullable=False)
     questionId = db.Column(db.String(100), nullable=False)
 
+class MaterialsDB(db.Model):
+    id = db.Column(db.Integer, primary_key = True) 
+    category = db.Column(db.String(100), nullable=False)
+    material = db.Column(db.String(100), nullable=False)
 class RSP(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
     maincat = db.Column(db.String(100), nullable=False)
@@ -186,8 +190,9 @@ class Sample(db.Model):
     C = db.Column(db.Integer)
     H = db.Column(db.Integer)
     N = db.Column(db.Integer)
-    Moisture = db.Column(db.Integer)
-    pH = db.Column(db.Integer)
+    moisture = db.Column(db.Float(500))
+    pH = db.Column(db.Float(500))
+    cellulose = db.Column(db.Float(500))
 
 class Product(db.Model):
     ProductName = db.Column(db.String(100), primary_key = True)
@@ -199,6 +204,23 @@ class Giveoutwaste(db.Model):
     reportCode = db.Column(db.String(100), nullable=False)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
+    date = db.Column(db.DateTime)
+
+class WasteDB(db.Model):
+    id = db.Column(db.Integer, primary_key = True) 
+    materialID = db.Column(db.Integer, nullable=False)
+    wasteID = db.Column(db.String(1000), nullable=False)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    description = db.Column(db.String(1000), nullable=False)
+    size = db.Column(db.String(1000))
+    impurities = db.Column(db.Integer)
+    lab = db.Column(db.Integer)
+    moistureType = db.Column(db.String(1000))
+    moistureValue = db.Column(db.Float(500))
+    cellulosicValue = db.Column(db.Float(500))
+    pH = db.Column(db.Float(500))
+    CNratio = db.Column(db.Float(500))
+
     date = db.Column(db.DateTime)
 
 class Processwaste(db.Model):
