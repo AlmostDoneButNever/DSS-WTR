@@ -194,6 +194,15 @@ class Sample(db.Model):
     pH = db.Column(db.Float(500))
     cellulose = db.Column(db.Float(500))
 
+class ManureDB(db.Model):
+    ManureType = db.Column(db.String(100), primary_key = True)
+    C = db.Column(db.Float(500))
+    H = db.Column(db.Float(500))
+    N = db.Column(db.Float(500))
+    moisture = db.Column(db.Float(500))
+    pH = db.Column(db.Float(500))
+    cellulose = db.Column(db.Float(500))
+
 class Product(db.Model):
     ProductName = db.Column(db.String(100), primary_key = True)
 
@@ -211,13 +220,16 @@ class WasteDB(db.Model):
     materialID = db.Column(db.Integer, nullable=False)
     wasteID = db.Column(db.String(1000), nullable=False)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    description = db.Column(db.String(1000), nullable=False)
+    type = db.Column(db.String(1000))
+    description = db.Column(db.String(1000))
     size = db.Column(db.String(1000))
     impurities = db.Column(db.Integer)
     lab = db.Column(db.Integer)
     moistureType = db.Column(db.String(1000))
     moistureValue = db.Column(db.Float(500))
     cellulosicValue = db.Column(db.Float(500))
+    homogeneityType = db.Column(db.String(1000))
+    homogeneityValue = db.Column(db.Float(500))
     pH = db.Column(db.Float(500))
     CNratio = db.Column(db.Float(500))
 

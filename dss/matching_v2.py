@@ -13,13 +13,14 @@ from flask import jsonify
 from dss import app, db
 from dss.forms import (MaterialsForm, maxRowsForm, BuyingForm,RSPForm) 
 from dss.models import (User, RSP, Materials, Questions, Giveoutwaste, Processwaste, Technology, Takeinresource, Technologybreakdown, 
-     Sample, TechnologyDB, MaterialsDB)
+     Sample, TechnologyDB, MaterialsDB, ManureDB)
 from flask_login import current_user, login_required
 from dss.AddDBEntry import AddWasteToDB
 
 
 from dss.wasteIdGenerator import getWasteId
 from dss.matching_algorithm_v2 import matching_algorithm_seller, matching_algorithm_rsp
+from dss.standards import FoodStandard, ManureStandard, WoodStandard
 
 
 
@@ -71,6 +72,18 @@ def matching_questions_sellers(materialId):
     df = pd.DataFrame(result)
     samplefood=df['FoodItem'].tolist()
 
+    samples = ManureDB.query.all()
+    result = defaultdict(list)
+    for obj in samples:
+        instance = inspect(obj)
+        for key, x in instance.attrs.items():
+            result[key].append(x.value)    
+    df = pd.DataFrame(result)
+    samplemanure=df['ManureType'].tolist()
+
+    foodref = FoodStandard()
+    manureref = ManureStandard()
+    woodref = WoodStandard()
    
     if request.method == 'POST':
         
@@ -90,8 +103,8 @@ def matching_questions_sellers(materialId):
         
         #convert output to a code    
         try:
-
-          
+            output = AddWasteToDB(materialId, request)
+            print(output)
             #success message:
             #flash(f'ID: {questionCode}', 'success')
             flash('Your response has been recorded!','success')  
@@ -106,7 +119,7 @@ def matching_questions_sellers(materialId):
         return redirect(url_for("selling_waste"))
 
 
-    return render_template('/questions_template_seller.html', title="Matching Questions", form=form, samplefood=samplefood, samplefoodlen=len(samplefood), materialId=materialId)
+    return render_template('/questions_template_seller.html', title="Matching Questions", form=form, samplefood=samplefood, samplemanure = samplemanure, materialId=materialId, foodref = foodref, manureref = manureref, woodref = woodref)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Treatment provider ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -134,15 +147,9 @@ def recycling_service_provider():
             return redirect(url_for("matching_filter_recycling", processwasteId=form.technologyID.data))
         #creates new Tech ID
         else:
-            materialselected = []
-            keys = ['foodwaste', 'manure']
-            for item in request.form.keys():
-                if item in keys:
-                    materialselected.append(item)
-            print(materialselected)
-            session['my_var'] = materialselected
+            materialId = request.form['tech_waste_id']
             #return redirect(url_for("questions_rsp",materialselected=materialselected))
-            return redirect(url_for("matching_questions_rsp",materialId=form.subcat.data))
+            return redirect(url_for("matching_questions_rsp",materialId=materialId))
     return render_template('recycling_service_provider.html', title="Matching", form=form, wastematerial = wastematerial)    
 
 @app.route("/matching/rspquestions/<materialId>", methods=['GET', 'POST'])
