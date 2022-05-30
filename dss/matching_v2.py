@@ -13,9 +13,9 @@ from flask import jsonify
 from dss import app, db
 from dss.forms import (MaterialsForm, maxRowsForm, BuyingForm,RSPForm) 
 from dss.models import (User, RSP, Materials, Questions, Giveoutwaste, Processwaste, Technology, Takeinresource, Technologybreakdown, 
-     Sample, TechnologyDB, MaterialsDB, ManureDB)
+     Sample, TechnologyDB, MaterialsDB, ManureDB, Product)
 from flask_login import current_user, login_required
-from dss.AddDBEntry import AddWasteToDB
+from dss.AddDBEntry import AddWasteToDB, AddTechtoDB
 
 
 from dss.wasteIdGenerator import getWasteId
@@ -135,7 +135,7 @@ def recycling_service_provider():
     wastematerial = [(material.id, material.material) for material in MaterialsDB.query.all()]
 
     #get past technology ID
-    prevEntries = [(waste.id, waste.description + ': ' + waste.TechnologyName + ' - ' + waste.date) for waste in TechnologyDB.query.filter_by(userId=int(current_user.id)).all()]
+    prevEntries = [(waste.id, waste.description + ': ' + waste.technology + ' - ' + waste.date) for waste in TechnologyDB.query.filter_by(userId=int(current_user.id)).all()]
     prevEntries.insert(0,(None,None))
     form.technologyID.choices = prevEntries
     # flash(prevEntries, 'success')
@@ -147,436 +147,45 @@ def recycling_service_provider():
             return redirect(url_for("matching_filter_recycling", processwasteId=form.technologyID.data))
         #creates new Tech ID
         else:
-            materialId = request.form['tech_waste_id']
-            #return redirect(url_for("questions_rsp",materialselected=materialselected))
+            materialId = []
+            for key, value in request.form.items():
+                if 'tech_waste_id' in key:
+                    materialId.extend(value)
+
             return redirect(url_for("matching_questions_rsp",materialId=materialId))
     return render_template('recycling_service_provider.html', title="Matching", form=form, wastematerial = wastematerial)    
 
 @app.route("/matching/rspquestions/<materialId>", methods=['GET', 'POST'])
 @login_required
 def matching_questions_rsp(materialId):
-    form = []
-    material = Materials.query.filter_by(id=materialId).first()
+    print(materialId)
+    foodref = FoodStandard()
+    manureref = ManureStandard()
+    woodref = WoodStandard()
 
-    #get questions
-    questionId = material.questionId.split(',')
-    questions = []
-    for id in questionId:
-        questions.append(Questions.query.filter_by(id=id).first())
+    sampleproduct = [(product.ProductName, product.unit) for product in Product.query.all()]
     
     if request.method == 'POST':
         
         print(request.data)
         print(request.form)
-        
-        #convert output to a code    
+
         try:
-            materialId = int(materialId)
-            if materialId==14:
-                CRatiomin = int(request.form['Q45_min_C'])
-                CRatiomax = int(request.form['Q45_max_C'])
-                NRatiomin = int(request.form['Q45_min_N'])
-                NRatiomax = int(request.form['Q45_max_N'])
-                if len(request.form.getlist('Q46_moisture'))==2:
-                    Moisturemin = int(request.form['Q46_min_moisture'])
-                    Moisturemax = int(request.form['Q46_max_moisture'])
-                else:
-                    Moisturemin = 0
-                    Moisturemax = 100
-                if len(request.form.getlist('Q46_pH'))==2:
-                    pHmin = int(request.form['Q46_min_ph'])
-                    pHmax = int(request.form['Q46_max_ph'])
-                else:
-                    pHmin = 1
-                    pHmax = 14
-                if len(request.form.getlist('Q46_cellulosic'))==2:
-                    cellulosicmin = int(request.form['Q46_min_Cellulosic'])
-                    cellulosicmax = int(request.form['Q46_max_Cellulosic'])
-                else:
-                    cellulosicmin = 0
-                    cellulosicmax = 100
-                if len(request.form.getlist('Q46_size'))==2:
-                    particleSizemin = int(request.form['Q46_min_Size'])
-                    particleSizemax = int(request.form['Q46_max_Size'])
-                else:
-                    particleSizemin = 0
-                    particleSizemax = 100
-                
-                
-                if len(request.form.getlist('Q47_1'))==2:
-                    unacceptableshells = 1
-                    unacceptableshellspercent = int(request.form['Q47_1_value'])
-                else:
-                    unacceptableshells = 0
-                    unacceptableshellspercent = 0
-                if len(request.form.getlist('Q47_2'))==2:
-                    unacceptablebones = 1
-                    unacceptablebonespercent = int(request.form['Q47_2_value'])
-                else:
-                    unacceptablebones = 0
-                    unacceptablebonespercent = 0
-                if len(request.form.getlist('Q47_3'))==2:
-                    unacceptablebamboo = 1
-                    unacceptablebamboopercent = int(request.form['Q47_3_value'])
-                else:
-                    unacceptablebamboo = 0
-                    unacceptablebamboopercent = 0
-                if len(request.form.getlist('Q47_4'))==2:
-                    unacceptablebanana = 1
-                    unacceptablebananapercent = int(request.form['Q47_4_value'])
-                else:
-                    unacceptablebanana = 0
-                    unacceptablebananapercent = 0
-                        
-                if len(request.form.getlist('Q47_5'))==2:
-                    unacceptableothers = 1
-                    unacceptableotherspercent = int(request.form['Q47_5_value'])
-                else:
-                    unacceptableothers = 0
-                    unacceptableotherspercent = 0
-                
-                if len(request.form.getlist('Q51_Biogas'))==2:
-                    byproductBiogas = 1
-                    byproductBiogasEfficiency = int(request.form['Q51_Biogas_efficiency'])
-                    byproductBiogasCHFour = 0
-                    byproductBiogasCOTwo = 0
-                    
-                else:
-                    byproductBiogas = 0
-                    byproductBiogasEfficiency = 0
-                    byproductBiogasCHFour = 0
-                    byproductBiogasCOTwo = 0
-
-                if len(request.form.getlist('Q51_Chemical'))==2:
-                    ByproductChemical = 1
-                    ByproductChemicalEfficiency = int(request.form['Q51_Chemical_efficiency'])
-                else:
-                    ByproductChemical = 0
-                    ByproductChemicalEfficiency = 0
-
-                if len(request.form.getlist('Q51_Metal'))==2:
-                    ByproductMetal = 1
-                    ByproductMetalEfficiency = int(request.form['Q51_Metal_efficiency'])
-                else:
-                    ByproductMetal = 0
-                    ByproductMetalEfficiency = 0
-
-                if len(request.form.getlist('Q51_Biochar'))==2:
-                    ByproductBiochar = 1
-                    ByproductBiocharEfficency = int(request.form['Q51_Biochar_efficiency'])
-                else:
-                    ByproductBiochar = 0
-                    ByproductBiocharEfficency = 0
-
-                if len(request.form.getlist('Q51_Digestate'))==2:
-                    ByproductDigestate = 1
-                    ByproductDigestateEfficiency = int(request.form['Q51_Digestate_efficiency'])
-                else:
-                    ByproductDigestate = 0
-                    ByproductDigestateEfficiency = 0
-
-                if len(request.form.getlist('Q51_Oil'))==2:
-                    ByproductOil = 1
-                    ByproductOilEfficiency = int(request.form['Q51_Oil_efficiency'])
-                else:
-                    ByproductOil = 0
-                    ByproductOilEfficiency = 0
-
-                if len(request.form.getlist('Q51_Others'))==2:
-                    ByproductOthers = 1
-                    ByproductOthersEfficiency = int(request.form['Q51_Others_efficiency'])
-                else:
-                    ByproductOthers = 0
-                    ByproductOthersEfficiency = 0
-
-            elif materialId==15:
-
-                if len(request.form.getlist('Q46_homogeneity'))==2:
-                    Homogeneitymin = int(request.form['Q46_min_homogeneity'])
-                    Homogeneitymax = int(request.form['Q46_max_homogeneity'])
-                else:
-                    Homogeneitymin = 0
-                    Homogeneitymax = 100
-                
-                if len(request.form.getlist('Q46_moisture'))==2:
-                    Moisturemin = int(request.form['Q46_min_moisture'])
-                    Moisturemax = int(request.form['Q46_max_moisture'])
-                else:
-                    Moisturemin = 0
-                    Moisturemax = 100
-
-                if len(request.form.getlist('Q46_size'))==2:
-                    particleSizemin = int(request.form['Q46_min_Size'])
-                    particleSizemax = int(request.form['Q46_max_Size'])
-                else:
-                    particleSizemin = 0
-                    particleSizemax = 100
-
-                if len(request.form.getlist('Q51_Biogas'))==2:
-                    byproductBiogas = 1
-                    byproductBiogasEfficiency = int(request.form['Q51_Biogas_efficiency'])
-                    byproductBiogasCHFour = 0
-                    byproductBiogasCOTwo = 0
-                    
-                else:
-                    byproductBiogas = 0
-                    byproductBiogasEfficiency = 0
-                    byproductBiogasCHFour = 0
-                    byproductBiogasCOTwo = 0
-
-                if len(request.form.getlist('Q51_Chemical'))==2:
-                    ByproductChemical = 1
-                    ByproductChemicalEfficiency = int(request.form['Q51_Chemical_efficiency'])
-                else:
-                    ByproductChemical = 0
-                    ByproductChemicalEfficiency = 0
-
-                if len(request.form.getlist('Q51_Metal'))==2:
-                    ByproductMetal = 1
-                    ByproductMetalEfficiency = int(request.form['Q51_Metal_efficiency'])
-                else:
-                    ByproductMetal = 0
-                    ByproductMetalEfficiency = 0
-
-                if len(request.form.getlist('Q51_Biochar'))==2:
-                    ByproductBiochar = 1
-                    ByproductBiocharEfficency = int(request.form['Q51_Biochar_efficiency'])
-                else:
-                    ByproductBiochar = 0
-                    ByproductBiocharEfficency = 0
-
-                if len(request.form.getlist('Q51_Digestate'))==2:
-                    ByproductDigestate = 1
-                    ByproductDigestateEfficiency = int(request.form['Q51_Digestate_efficiency'])
-                else:
-                    ByproductDigestate = 0
-                    ByproductDigestateEfficiency = 0
-
-                if len(request.form.getlist('Q51_Oil'))==2:
-                    ByproductOil = 1
-                    ByproductOilEfficiency = int(request.form['Q51_Oil_efficiency'])
-                else:
-                    ByproductOil = 0
-                    ByproductOilEfficiency = 0
-
-                if len(request.form.getlist('Q51_Others'))==2:
-                    ByproductOthers = 1
-                    ByproductOthersEfficiency = int(request.form['Q51_Others_efficiency'])
-                else:
-                    ByproductOthers = 0
-                    ByproductOthersEfficiency = 0
-
-            elif materialId==16:
-
-                if len(request.form.getlist('Q46_homogeneity'))==2:
-                    Homogeneitymin = int(request.form['Q46_min_homogeneity'])
-                    Homogeneitymax = int(request.form['Q46_max_homogeneity'])
-                else:
-                    Homogeneitymin = 0
-                    Homogeneitymax = 100
-                
-                if len(request.form.getlist('Q46_moisture'))==2:
-                    Moisturemin = int(request.form['Q46_min_moisture'])
-                    Moisturemax = int(request.form['Q46_max_moisture'])
-                else:
-                    Moisturemin = 0
-                    Moisturemax = 100
-
-                if len(request.form.getlist('Q51_Biogas'))==2:
-                    byproductBiogas = 1
-                    byproductBiogasEfficiency = int(request.form['Q51_Biogas_efficiency'])
-                    byproductBiogasCHFour = 0
-                    byproductBiogasCOTwo = 0
-                    
-                else:
-                    byproductBiogas = 0
-                    byproductBiogasEfficiency = 0
-                    byproductBiogasCHFour = 0
-                    byproductBiogasCOTwo = 0
-
-                if len(request.form.getlist('Q51_Chemical'))==2:
-                    ByproductChemical = 1
-                    ByproductChemicalEfficiency = int(request.form['Q51_Chemical_efficiency'])
-                else:
-                    ByproductChemical = 0
-                    ByproductChemicalEfficiency = 0
-
-                if len(request.form.getlist('Q51_Metal'))==2:
-                    ByproductMetal = 1
-                    ByproductMetalEfficiency = int(request.form['Q51_Metal_efficiency'])
-                else:
-                    ByproductMetal = 0
-                    ByproductMetalEfficiency = 0
-
-                if len(request.form.getlist('Q51_Biochar'))==2:
-                    ByproductBiochar = 1
-                    ByproductBiocharEfficency = int(request.form['Q51_Biochar_efficiency'])
-                else:
-                    ByproductBiochar = 0
-                    ByproductBiocharEfficency = 0
-
-                if len(request.form.getlist('Q51_Digestate'))==2:
-                    ByproductDigestate = 1
-                    ByproductDigestateEfficiency = int(request.form['Q51_Digestate_efficiency'])
-                else:
-                    ByproductDigestate = 0
-                    ByproductDigestateEfficiency = 0
-
-                if len(request.form.getlist('Q51_Oil'))==2:
-                    ByproductOil = 1
-                    ByproductOilEfficiency = int(request.form['Q51_Oil_efficiency'])
-                else:
-                    ByproductOil = 0
-                    ByproductOilEfficiency = 0
-
-                if len(request.form.getlist('Q51_Others'))==2:
-                    ByproductOthers = 1
-                    ByproductOthersEfficiency = int(request.form['Q51_Others_efficiency'])
-                else:
-                    ByproductOthers = 0
-                    ByproductOthersEfficiency = 0
-
-
-            description = str(request.form['description'])
-            userId = int(current_user.id)
-            materialId = int(materialId)
-            TechnologyName = str(request.form['Q50_tech'])
-            AdditionalInformation = str(request.form['Q53'])
-            cost = int(request.form['cost'])
-            capacity = int(request.form['capacity'])
-            url = str(request.form['URL'])
-            forsale=int(request.form['Q_tech'])
-            if forsale == 1:
-                scaling=int(request.form['Q_scale'])
-            else:
-                scaling = 0
-            questionCode = "Submitted!"
+            output = AddTechtoDB(materialId, request)
+            print('output', output)
+            flash('Your response has been recorded!','success')
+            return redirect(url_for("recycling_service_provider"))
+        
+       
 
         except Exception:
             traceback.print_exc()
             flash(f'Please ensure that the form is filled in correctly first before submitting','danger')
             return redirect(url_for("matching_questions_rsp", materialId=materialId))
 
-        flash(f'ID: {questionCode}', 'success')
 
-        # insert into database
-        if materialId==14:
-            techID = TechnologyDB(userId=userId,
-            materialId=materialId,
-            CRatiomin=CRatiomin,
-            CRatiomax=CRatiomax,
-            NRatiomin=NRatiomin,
-            NRatiomax=NRatiomax,
-            Moisturemin=Moisturemin,
-            Moisturemax=Moisturemax,
-            pHmin=pHmin,
-            pHmax=pHmax,
-            cellulosicmin=cellulosicmin,
-            cellulosicmax=cellulosicmax,
-            particleSizemin=particleSizemin,
-            particleSizemax=particleSizemax,
-            unacceptableshells=unacceptableshells,
-            unacceptableshellspercent=unacceptableshellspercent,
-            unacceptablebones=unacceptablebones,
-            unacceptablebonespercent=unacceptablebonespercent,
-            unacceptablebamboo=unacceptablebamboo,
-            unacceptablebamboopercent=unacceptablebamboopercent,
-            unacceptablebanana=unacceptablebanana,
-            unacceptablebananapercent=unacceptablebananapercent,
-            unacceptableothers=unacceptableothers,
-            unacceptableotherspercent=unacceptableotherspercent,
-            TechnologyName=TechnologyName,
-            byproductBiogas=byproductBiogas,
-            byproductBiogasEfficiency=byproductBiogasEfficiency,
-            ByproductChemical=ByproductChemical,
-            ByproductChemicalEfficiency=ByproductChemicalEfficiency,
-            ByproductMetal=ByproductMetal,
-            ByproductMetalEfficiency=ByproductMetalEfficiency,
-            ByproductBiochar=ByproductBiochar,
-            ByproductBiocharEfficency=ByproductBiocharEfficency,
-            ByproductDigestate=ByproductDigestate,
-            ByproductDigestateEfficiency=ByproductDigestateEfficiency,
-            ByproductOil=ByproductOil,
-            ByproductOilEfficiency=ByproductOilEfficiency,
-            ByproductOthers=ByproductOthers,
-            ByproductOthersEfficiency=ByproductOthersEfficiency,
-            AdditionalInformation=AdditionalInformation,
-            date=str(datetime.now())[0:19],
-            description=description,
-            cost=cost,
-            capacity=capacity,
-            url=url,
-            forsale=forsale,
-            scaling=scaling)
 
-        elif materialId==15:
-            techID = TechnologyDB(userId=userId,
-            materialId=materialId,
-            Homogeneitymin=Homogeneitymin,
-            Homogeneitymax=Homogeneitymax,
-            Moisturemin=Moisturemin,
-            Moisturemax=Moisturemax,
-            particleSizemin=particleSizemin,
-            particleSizemax=particleSizemax,
-            TechnologyName=TechnologyName,
-            byproductBiogas=byproductBiogas,
-            byproductBiogasEfficiency=byproductBiogasEfficiency,
-            ByproductChemical=ByproductChemical,
-            ByproductChemicalEfficiency=ByproductChemicalEfficiency,
-            ByproductMetal=ByproductMetal,
-            ByproductMetalEfficiency=ByproductMetalEfficiency,
-            ByproductBiochar=ByproductBiochar,
-            ByproductBiocharEfficency=ByproductBiocharEfficency,
-            ByproductDigestate=ByproductDigestate,
-            ByproductDigestateEfficiency=ByproductDigestateEfficiency,
-            ByproductOil=ByproductOil,
-            ByproductOilEfficiency=ByproductOilEfficiency,
-            ByproductOthers=ByproductOthers,
-            ByproductOthersEfficiency=ByproductOthersEfficiency,
-            AdditionalInformation=AdditionalInformation,
-            date=str(datetime.now())[0:19],
-            description=description)
-
-        elif materialId==16:
-            techID = TechnologyDB(userId=userId,
-            materialId=materialId,
-            Homogeneitymin=Homogeneitymin,
-            Homogeneitymax=Homogeneitymax,
-            Moisturemin=Moisturemin,
-            Moisturemax=Moisturemax,
-            TechnologyName=TechnologyName,
-            byproductBiogas=byproductBiogas,
-            byproductBiogasEfficiency=byproductBiogasEfficiency,
-            ByproductChemical=ByproductChemical,
-            ByproductChemicalEfficiency=ByproductChemicalEfficiency,
-            ByproductMetal=ByproductMetal,
-            ByproductMetalEfficiency=ByproductMetalEfficiency,
-            ByproductBiochar=ByproductBiochar,
-            ByproductBiocharEfficency=ByproductBiocharEfficency,
-            ByproductDigestate=ByproductDigestate,
-            ByproductDigestateEfficiency=ByproductDigestateEfficiency,
-            ByproductOil=ByproductOil,
-            ByproductOilEfficiency=ByproductOilEfficiency,
-            ByproductOthers=ByproductOthers,
-            ByproductOthersEfficiency=ByproductOthersEfficiency,
-            AdditionalInformation=AdditionalInformation,
-            date=str(datetime.now())[0:19],
-            description=description)
-
-        else:
-            techID=TechnologyDB(userId=userId,
-            materialId=materialId,
-            AdditionalInformation=AdditionalInformation,
-            TechnologyName=TechnologyName,
-            date=str(datetime.now())[0:19],
-            description=description,
-            cost=cost)
-        db.session.add(techID)
-        db.session.commit()
-        flash('Your response has been recorded!','success')
-        return redirect(url_for("recycling_service_provider"))
-
-    return render_template('/matching/matching_questions_rsp.html', title="Matching Questions", form=form, questions=questions, material=material, materialId=materialId)
+    return render_template('/questions_template_rsp.html', title="Matching Questions",  materialId=materialId, sampleproduct = sampleproduct, foodref = foodref, manureref = manureref, woodref = woodref)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ resource buyers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #

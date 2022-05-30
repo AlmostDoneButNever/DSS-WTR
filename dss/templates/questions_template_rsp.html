@@ -24,6 +24,7 @@ appearance: menulist!important;
 }
 </style>
 
+<form method='POST' enctype="multipart/form-data"> 
 
 <div class="container-fluid">
   <legend class="border-bottom mb-4">Question Form - Recycling Service Providers</legend>
@@ -40,32 +41,32 @@ appearance: menulist!important;
   <br>
 
   <div class="form-group">
-      <label class="form-label" for="Q50"><u>State the treatment technology</u></label>
-      <input type="text" class="form-control" id="Q50_tech" name="Q50_tech" placeholder="Technology">    
+      <label class="form-label" for="technology"><u>State the treatment technology</u></label>
+      <input type="text" class="form-control" name="technology" placeholder="Technology">    
   </div>
     
   <br>
 
   <div class="form-group">
-    <label class="form-label" for="Q51"><u>What are the products/by-product of your technology</u></label>
+    <label class="form-label" for="products"><u>What are the products/by-product of your technology</u></label>
     <br>
 
     <div class="row">
-      <label class="col-form-label col-sm-1" id="Q3_1">1)</label>
-      <select class="form-control form-control-s col-sm-3" id="Q3_1" name="Q3_1">
-        <option value="None">None</option>
-        {% for i in range(0,samplefoodlen) %}
-        <option value="{{i}}">{{samplefood[i]}}</option>
+      <label class="col-form-label col-sm-1">1)</label>
+      <select class="form-control form-control-s col-sm-3" id="product_name_1" name="product_name_1" onchange="ShowUnit()">
+        <option selected> Select a product</option>
+        {% for product, unit in sampleproduct %}
+        <option value="{{product}}" id = 'selectedproduct'>{{product}}</option>
         {% endfor %}
       </select>
       <div class="col-sm-2">
-        <input type="text" class="form-control" id="Q3_1_w" name="Q3_1_w" placeholder="0">
+        <input type="text" class="form-control" id="product_yield_1" name="product_yield_1">
       </div>
-      <label for="Q3_1" class="col-sm-2 col-form-label">wt %</label>
+      <label class="col-sm-2 col-form-label" id="efficiency">%</label>
     </div>  
     <br>
   
-    <button onclick="addCode()" id = 'addItembutton'>Add Item</button>  
+    <button onclick="addCode()" id = 'addItembutton' type ="button", class =  'btn btn-outline-info'>Add Item</button>  
 
   </div>
 
@@ -75,163 +76,133 @@ appearance: menulist!important;
   <h4> Feedstock Requirements: </h4>
   <br>
 
-  {% if "foodwaste" in materialselected %}
+  {% if "1" in materialId %}
 
    
     <div class="form-group">
-      <label class="form-label" for="Q46"><u>Food waste</u></label>
+      <label class="form-label"><u>Food waste</u></label>
       <br>
     
     
-      <label for="Q46" class="form-label">Select the restrictions you wish to impose on the waste:</label>
+      <label  class="form-label">Select the restrictions you wish to impose on the waste:</label>
 
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_moisture" name='Q46_moisture'>
-        <input type="checkbox" class="form-check-input" id="Q46_moisture" name="Q46_moisture" value="1" data-toggle='collapse' data-target='#CNratio' aria-expanded="false">
-        <label class="form-check-label" for="Q46">Carbon-to-nitrogen (C/N) ratio</label>
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='CN_yesno_food'>
+        <input type="checkbox" class="form-check-input" name="cn_yesno_food" value="1" data-toggle='collapse' data-target='#CNratio' aria-expanded="false">
+        <label class="form-check-label" for="CN_yesno_food">Carbon-to-nitrogen (C/N) ratio</label>
       </div>
-      <div class="collapse" id="CNratio">
+      <div class="collapse bg-light" id="CNratio">
         <div class="form-group row">
-          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max C/N ratio</label>
+          <label  class="col-sm-4 col-form-label">Please key in the min/max C/N ratio (i.e. 7.5 for C:N of 15:2)</label>
           <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_min_moisture" name="Q46_min_moisture" placeholder="Min">
+            <input type="text" class="form-control" name="CN_min_food" placeholder="Min">
+          </div>
+          <label class="col-sm-1 col-form-label"> to </label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" name="CN_max_food" placeholder="Max">
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='pH_yesno_food'>
+        <input type="checkbox" class="form-check-input" name="pH_yesno_food" value="1" data-toggle='collapse' data-target='#pH' aria-expanded="false">
+        <label class="form-check-label">pH</label>
+      </div>
+      <div class="collapse  bg-light" id="pH">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label">Please key in the min/max pH required</label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control"  name="pH_min_food" placeholder="Min pH">
           </div>
           <label for="Q46" class="col-sm-1 col-form-label"> to </label>
           <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_max_moisture" name="Q46_max_moisture" placeholder="Max">
-          </div>
-        </div>
-      </div>
-
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_moisture" name='Q46_moisture'>
-        <input type="checkbox" class="form-check-input" id="Q46_moisture" name="Q46_moisture" value="1" data-toggle='collapse' data-target='#Moisture' aria-expanded="false">
-        <label class="form-check-label" for="Q46">Moisture</label>
-      </div>
-      <div class="collapse border border-info" id="Moisture">
-        <div class="form-group">
-           <label class="form-label" for="Q4">Select the acceptable moisture level </label>
-          <br>
-          <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" id="Q4" name="Q4" value="1" onclick="onlyOne(this,'Q4')">
-            <label class="form-check-label" for="Q4">Dry/powdered</label>
-          </div>
-  
-          <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" id="Q4" name="Q4" value="2" onclick="onlyOne(this,'Q4')">
-            <label class="form-check-label" for="Q4">Slightly wet</label>
-          </div>
-  
-          <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" id="Q4" name="Q4" value="3" onclick="onlyOne(this,'Q4')">
-            <label class="form-check-label" for="Q4">Wet</label>
-          </div>
-  
-          <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" id="Q4" name="Q4" value="4" onclick="onlyOne(this,'Q4')">
-            <label class="form-check-label" for="Q4">Liquid</label>
-          </div>
-      
-        </div>
-  
-        <div class="collapse" id="moistureLevel">
-          <div class="form-group row">
-            <label for="Q4Moisture" class="col-sm-3 col-form-label">Please key in value in %</label>
-            <div class="col-sm-2">
-              <input type="text" class="form-control" id="Q4Moisture" name="Q4Moisture" placeholder="~%">
-            </div>
-          </div>
-        </div>
-
-
-
-      </div>
-      
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_pH" name='Q46_pH'>
-        <input type="checkbox" class="form-check-input" id="Q46_pH" name="Q46_pH" value="1" data-toggle='collapse' data-target='#pH' aria-expanded="false">
-        <label class="form-check-label" for="Q46">pH</label>
-      </div>
-      <div class="collapse" id="pH">
-        <div class="form-group row">
-          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max pH required</label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_min_ph" name="Q46_min_ph" placeholder="Min pH">
-          </div>
-          <label for="Q46" class="col-sm-1 col-form-label"> to </label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_max_ph" name="Q46_max_ph" placeholder="Max pH">
+            <input type="text" class="form-control" name="pH_max_food" placeholder="Max pH">
           </div>
         </div>
       </div>
     
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_cellulosic" name='Q46_cellulosic'>
-        <input type="checkbox" class="form-check-input" id="Q46_cellulosic" name="Q46_cellulosic" value="1" data-toggle='collapse' data-target='#cellulosic' aria-expanded="false">
-        <label class="form-check-label" for="Q46">Cellulosic</label>
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='cellulose_yesno_food'>
+        <input type="checkbox" class="form-check-input" name="cellulosic_yesno_food" value="1" data-toggle='collapse' data-target='#cellulosic' aria-expanded="false">
+        <label class="form-check-label">Cellulosic content</label>
       </div>
-      <div class="collapse" id="cellulosic">
+      <div class="collapse  bg-light" id="cellulosic">
         <div class="form-group row">
-          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max cellulosic required</label>
+          <label class="col-sm-4 col-form-label">Please key in the min/max acceptable cellulose content</label>
           <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_min_Cellulosic" name="Q46_min_Cellulosic" placeholder="Min wt%">
+            <input type="text" class="form-control" name="cellulose_min_food" placeholder="Min wt%">
           </div>
-          <label for="Q46" class="col-sm-1 col-form-label"></label>
+          <label class="col-sm-1 col-form-label"> to </label>
           <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_max_Cellulosic" name="Q46_max_Cellulosic" placeholder="Max wt%">
+            <input type="text" class="form-control" name="cellulose_max_food" placeholder="Max wt%">
           </div>
         </div>
       </div>
 
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_homogeneity" name='Q46_homogeneity'>
-        <input type="checkbox" class="form-check-input" id="Q46_homogeneity" name="Q46_homogeneity" value="1" data-toggle='collapse' data-target='#homogeneity-food' aria-expanded="false">
-        <label class="form-check-label" for="Q46">Homogeneity</label>
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='moisture_yesno_food'>
+        <input type="checkbox" class="form-check-input" name="moisture_yesno_food" value="1" data-toggle='collapse' data-target='#Moisture' aria-expanded="false">
+        <label class="form-check-label">Moisture</label>
       </div>
-      <div class="collapse" id="homogeneity-food">
-        <div class="form-group row">
-          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max percentage required</label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_min_homogeneity" name="Q46_min_homogeneity" placeholder="Min wt%">
+
+      <div class="collapse bg-light" id="Moisture">
+        <div class="form-group">
+           <label class="form-label">Select the acceptable moisture level </label>
+          <br>
+
+          {% for key,(label, _, _) in foodref.moisture.items() %}
+          {% if label != 'Not sure' %}
+          <div class="form-check form-check-inline" >
+            <input type="checkbox" class="form-check-input" name="moisture_food" value="{{key}}">
+            <label class="form-check-label">{{label}}</label>
           </div>
-          <label for="Q46" class="col-sm-1 col-form-label"> to </label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_max_homogeneity" name="Q46_max_homogeneity" placeholder="Max wt%">
+          {% endif %}
+          {% endfor %}
+
+        </div>
+      </div>
+
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='homogeneity_yesno_food'>
+        <input type="checkbox" class="form-check-input" name="homogeneity_yesno_food" value="1" data-toggle='collapse' data-target='#homogeneity-food' aria-expanded="false">
+        <label class="form-check-label">Homogeneity</label>
+      </div>
+      <div class="collapse  bg-light" id="homogeneity-food">
+        <div class="form-group">
+          <label class="form-label">Select the acceptable homogeneity level </label>
+          <br>
+
+          {% for key,(label, _, _) in foodref.homogeneity.items() %}
+          {% if label != 'Not sure' %}
+          <div class="form-check form-check-inline" >
+            <input type="checkbox" class="form-check-input" name="homogeneity_food" value="{{key}}">
+            <label class="form-check-label" for="homogeneity_food">{{label}}</label>
           </div>
+          {% endif %}
+          {% endfor %}
+
         </div>
       </div>
       
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_size" name='Q46_size'>
-        <input type="checkbox" class="form-check-input" id="Q46_size" name="Q46_size" value="1" data-toggle='collapse' data-target='#size' aria-expanded="false">
-        <label class="form-check-label" for="Q46">Size of Solid Particles</label>
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='size_yesno_food'>
+        <input type="checkbox" class="form-check-input" name="size_yesno_food" value="1" data-toggle='collapse' data-target='#size' aria-expanded="false">
+        <label class="form-check-label">Size of Solid Particles</label>
       </div>
-      <div class="collapse border border-info" id="size">
+      <div class="collapse  bg-light" id="size">
         <div class="form-group">
-          <label class="form-label" for="Q7">Q: Select the acceptable size of solid particles in the waste</label>
+          <label class="form-label" for="Q7"> Select the acceptable size of solid particles in the waste</label>
           <br>
+
+          {% for key,(label) in foodref.size.items() %}
+          {% if label != 'Not sure' %}
           <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" id="Q7" name="Q7" value="1" onclick="onlyOne(this,'Q7')">
-            <label class="form-check-label" for="Q7">Chunky 
-              <a href="#" data-toggle="tooltip" title="" >
-                <IMG SRC="/static/icons/information.png" ALT="logo" WIDTH=15 HEIGHT=15>
-              </a>
-            </label>
+            <input type="checkbox" class="form-check-input" name="size_food" value="{{key}}">
+            <label class="form-check-label" for="size_food">{{label}}</label>
           </div>
-      
-          <div class="form-check form-check-inline">
-              <input type="checkbox" class="form-check-input" id="Q7" name="Q7" value="2" onclick="onlyOne(this,'Q7')">
-              <label class="form-check-label" for="Q7">Fine particles
-                <a href="#" data-toggle="tooltip" title="" >
-                  <IMG SRC="/static/icons/information.png" ALT="logo" WIDTH=15 HEIGHT=15>
-                </a>
-              </label>
-          </div>
-      
-          <div class="form-check form-check-inline">
-              <input type="checkbox" class="form-check-input" id="Q7" name="Q7" value="3" onclick="onlyOne(this,'Q7')">
-              <label class="form-check-label" for="Q7">Mix</label>
-          </div>
+          {% endif %}
+          {% endfor %}
       
       </div>
 
@@ -242,93 +213,120 @@ appearance: menulist!important;
 
   {% endif %}
 
-  {% if "manure" in materialselected %}
+  {% if "2" in materialId %}
 
 
     <div class="form-group">
-      <label class="form-label" for="Q46"><u>Animal manure</u></label>
+      <label class="form-label"><u>Animal manure</u></label>
       <br>      
 
       <label for="Q46" class="form-label">Select the restrictions you wish to impose on the waste:</label>
 
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_homogeneity" name='Q46_homogeneity'>
-        <input type="checkbox" class="form-check-input" id="Q46_homogeneity" name="Q46_homogeneity" value="1" data-toggle='collapse' data-target='#homogeneity' aria-expanded="false">
-        <label class="form-check-label" for="Q46">Homogeneity</label>
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='cn_yesno_manure'>
+        <input type="checkbox" class="form-check-input" name="cn_yesno_manure" value="1" data-toggle='collapse' data-target='#CNratio-manure' aria-expanded="false">
+        <label class="form-check-label" for="cn_yesno_manure">Carbon-to-nitrogen (C/N) ratio</label>
       </div>
-      <div class="collapse border border-info" id="homogeneity">
-
-        <label class="form-label" for="Q2">Select the acceptable homogeneity level: </label>
-        <br>
-        <div class="form-check form-check-inline" >
-          <input type="checkbox" class="form-check-input" id="Q2" name="Q2" value="1" onclick="onlyOne(this,'Q2')">
-          <label class="form-check-label" for="Q2">Pure</label>
+      <div class="collapse bg-light" id="CNratio-manure">
+        <div class="form-group row">
+          <label  class="col-sm-4 col-form-label">Please key in the min/max C/N ratio (i.e. 7.5 for C:N of 15:2)</label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" name="cn_min_manure" placeholder="Min">
+          </div>
+          <label class="col-sm-1 col-form-label"> to </label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" name="cn_max_manure" placeholder="Max">
+          </div>
         </div>
-
-        <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" id="Q2" name="Q2" value="2" onclick="onlyOne(this,'Q2')" data-toggle='collapse' data-target='#homogeneity' aria-expanded="false">
-            <label class="form-check-label" for="Q2">Slightly Mixed (<10%)</label>
+      </div>
+      
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='pH_yesno'>
+        <input type="checkbox" class="form-check-input" name="pH_yesno_manure" value="1" data-toggle='collapse' data-target='#pH-manure' aria-expanded="false">
+        <label class="form-check-label" >pH</label>
+      </div>
+      <div class="collapse  bg-light" id="pH-manure">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label">Please key in the min/max pH required</label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control"  name="pH_min_manure" placeholder="Min pH">
+          </div>
+          <label for="Q46" class="col-sm-1 col-form-label"> to </label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" name="pH_max_manure" placeholder="Max pH">
+          </div>
         </div>
-
-        <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" id="Q2" name="Q2" value="3" onclick="onlyOne(this,'Q2')" data-toggle='collapse' data-target='#homogeneity' aria-expanded="false">
-            <label class="form-check-label" for="Q2">Medially mixed (10-30%)</label>
+      </div>
+    
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='cellulosic_yesno_manure'>
+        <input type="checkbox" class="form-check-input" name="cellulosic_yesno_manure" value="1" data-toggle='collapse' data-target='#cellulosic-manure' aria-expanded="false">
+        <label class="form-check-label">Cellulosic content</label>
+      </div>
+      <div class="collapse  bg-light" id="cellulosic-manure">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label">Please key in the min/max acceptable cellulose content</label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" name="cellulose_min_manure" placeholder="Min wt%">
+          </div>
+          <label class="col-sm-1 col-form-label"> to </label>
+          <div class="col-sm-3">
+            <input type="text" class="form-control" name="cellulose_max_manure" placeholder="Max wt%">
+          </div>
         </div>
-
-        <div class="form-check form-check-inline">
-            <input type="checkbox" class="form-check-input" id="Q2" name="Q2" value="4" onclick="onlyOne(this,'Q2')" data-toggle='collapse' data-target='#homogeneity' aria-expanded="false">
-            <label class="form-check-label" for="Q2">Largely Mixed (>30%)</label>
-        </div>
-
       </div>
 
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_moisture" name='Q46_moisture'>
-        <input type="checkbox" class="form-check-input" id="Q46_moisture" name="Q46_moisture" value="1" data-toggle='collapse' data-target='#Moisture_manure' aria-expanded="false">
-        <label class="form-check-label" for="Q46">Moisture</label>
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='moisture_yesno_manure'>
+        <input type="checkbox" class="form-check-input" name="moisture_yesno_manure" value="1" data-toggle='collapse' data-target='#Moisture-manure' aria-expanded="false">
+        <label class="form-check-label">Moisture</label>
       </div>
 
-      <div class="collapse" id="Moisture_manure">
-        
-        <div class="form-group border border-info">
-          <label class="form-label" for="Q3">Select acceptable moisture level: </label>
-        <br>
+      <div class="collapse bg-light" id="Moisture-manure">
+        <div class="form-group">
+           <label class="form-label">Select the acceptable moisture level </label>
+          <br>
+
+          {% for key,(label, _, _) in manureref.moisture.items() %}
+          {% if label != 'Not sure' %}
           <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" id="Q3" name="Q3" value="05" onclick="onlyOne(this,'Q3')">
-            <label class="form-check-label" for="Q3">Very Low (<10%)</label>
+            <input type="checkbox" class="form-check-input" name="moisture_manure" value="{{key}}">
+            <label class="form-check-label" for="moisture_manure">{{label}}</label>
           </div>
-      
-          <div class="form-check form-check-inline">
-              <input type="checkbox" class="form-check-input" id="Q3" name="Q3" value="20" onclick="onlyOne(this,'Q3')">
-              <label class="form-check-label" for="Q3">Low (10-30%)</label>
-          </div>
-      
-          <div class="form-check form-check-inline">
-              <input type="checkbox" class="form-check-input" id="Q3" name="Q3" value="40" onclick="onlyOne(this,'Q3')">
-              <label class="form-check-label" for="Q3">Mid (30-50%)</label>
-          </div>
-          <br>
-          <div class="form-check form-check-inline">
-              <input type="checkbox" class="form-check-input" id="Q3" name="Q3" value="60" onclick="onlyOne(this,'Q3')">
-              <label class="form-check-label" for="Q3">High (50-70%)</label>
-          </div>
-      
-          <div class="form-check form-check-inline">
-              <input type="checkbox" class="form-check-input" id="Q3" name="Q3" value="85" onclick="onlyOne(this,'Q3')">
-              <label class="form-check-label" for="Q3">Very High (>70%)</label>
-          </div>
-          <br>
-      
+          {% endif %}
+          {% endfor %}
+
         </div>
-
-
-
       </div>
+
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='homogeneity_yesno_manure'>
+        <input type="checkbox" class="form-check-input" name="homogeneity_yesno_manure" value="1" data-toggle='collapse' data-target='#homogeneity-manure' aria-expanded="false">
+        <label class="form-check-label">Homogeneity</label>
+      </div>
+      <div class="collapse  bg-light" id="homogeneity-manure">
+        <div class="form-group">
+          <label class="form-label">Select the acceptable homogeneity level </label>
+          <br>
+
+          {% for key,(label, _, _) in manureref.homogeneity.items() %}
+          {% if label != 'Not sure' %}
+          <div class="form-check form-check-inline" >
+            <input type="checkbox" class="form-check-input" name="homogeneity_manure" value="{{key}}">
+            <label class="form-check-label" for="homogeneity_manure">{{label}}</label>
+          </div>
+          {% endif %}
+          {% endfor %}
+
+        </div>
+      </div>
+
+    </div>
   {% endif %}
 
   <br>
 
-  {% if "woodwaste" in materialselected %}
+  {% if "3" in materialId %}
 
     <div class="form-group">
       <label class="form-label" for="Q46"><u>Wood waste</u></label>
@@ -336,141 +334,75 @@ appearance: menulist!important;
     
       <label for="Q46" class="form-label">Select the restrictions you wish to impose on the waste:</label>
 
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_homogeneity" name='Q46_homogeneity'>
-        <input type="checkbox" class="form-check-input" id="Q46_homogeneity" name="Q46_homogeneity" value="1" data-toggle='collapse' data-target='#homogeneity_wood' aria-expanded="false">
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='moisture_yesno_wood'>
+        <input type="checkbox" class="form-check-input" name="moisture_yesno_wood" value="1" data-toggle='collapse' data-target='#Moisture-wood' aria-expanded="false">
+        <label class="form-check-label">Moisture</label>
+      </div>
+
+      <div class="collapse bg-light" id="Moisture-wood">
+        <div class="form-group">
+           <label class="form-label">Select the acceptable moisture level </label>
+          <br>
+
+          {% for key,(label, _, _) in woodref.moisture.items() %}
+          {% if label != 'Not sure' %}
+          <div class="form-check form-check-inline" >
+            <input type="checkbox" class="form-check-input" name="moisture_wood" value="{{key}}">
+            <label class="form-check-label" for="moisture_wood">{{label}}</label>
+          </div>
+          {% endif %}
+          {% endfor %}
+
+        </div>
+      </div>
+
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='homogeneity_yesno_wood'>
+        <input type="checkbox" class="form-check-input" name="homogeneity_yesno_wood" value="1" data-toggle='collapse' data-target='#homogeneity-wood' aria-expanded="false">
         <label class="form-check-label" for="Q46">Homogeneity</label>
       </div>
-      <div class="collapse" id="homogeneity_wood">
-        <div class="form-group row">
-          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max percentage required</label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_min_homogeneity" name="Q46_min_homogeneity" placeholder="Min wt%">
-          </div>
-          <label for="Q46" class="col-sm-1 col-form-label"> to </label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_max_homogeneity" name="Q46_max_homogeneity" placeholder="Max wt%">
-          </div>
-        </div>
-        </div>
+      <div class="collapse  bg-light" id="homogeneity-wood">
+        <div class="form-group">
+          <label class="form-label">Select the acceptable homogeneity level </label>
+          <br>
 
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_moisture" name='Q46_moisture'>
-        <input type="checkbox" class="form-check-input" id="Q46_moisture" name="Q46_moisture" value="1" data-toggle='collapse' data-target='#Moisture_wood' aria-expanded="false">
-        <label class="form-check-label" for="Q46">Moisture</label>
-      </div>
+          {% for key,(label, _, _) in woodref.homogeneity.items() %}
+          {% if label != 'Not sure' %}
+          <div class="form-check form-check-inline" >
+            <input type="checkbox" class="form-check-input" name="homogeneity_wood" value="{{key}}">
+            <label class="form-check-label" for="homogeneity_wood">{{label}}</label>
+          </div>
+          {% endif %}
+          {% endfor %}
 
-      <div class="collapse" id="Moisture_wood">
-        <div class="form-group row">
-          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max moisture required</label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_min_moisture" name="Q46_min_moisture" placeholder="Min wt%">
-          </div>
-          <label for="Q46" class="col-sm-1 col-form-label"> to </label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_max_moisture" name="Q46_max_moisture" placeholder="Max wt%">
-          </div>
         </div>
-        </div>
-      
-    
-      
-      <div class="form-check form-check">
-        <input type='hidden' value='0' id="Q46_size" name='Q46_size'>
-        <input type="checkbox" class="form-check-input" id="Q46_size" name="Q46_size" value="1" data-toggle='collapse' data-target='#size_wood' aria-expanded="false">
-        <label class="form-check-label" for="Q46">Size of feedstock</label>
       </div>
-      <div class="collapse" id="size_wood">
-        <div class="form-group row">
-          <label for="Q46" class="col-sm-4 col-form-label">Please key in the min/max size of feedstock in cm</label>
-          <div class="col-sm-3">
-          <input type="text" class="form-control" id="Q46_min_Size" name="Q46_min_Size" placeholder="Min">
+      
+      <div class="form-check form-switch">
+        <input type='hidden' value='0' name='size_yesno_wood'>
+        <input type="checkbox" class="form-check-input" name="size_yesno_wood" value="1" data-toggle='collapse' data-target='#size-wood' aria-expanded="false">
+        <label class="form-check-label">Size of Solid Particles</label>
+      </div>
+      <div class="collapse  bg-light" id="size-wood">
+        <div class="form-group">
+          <label class="form-label"> Select the acceptable size of solid particles in the waste</label>
+          <br>
+
+          {% for key,(label) in woodref.size.items() %}
+          {% if label != 'Not sure' %}
+          <div class="form-check form-check-inline" >
+            <input type="checkbox" class="form-check-input" name="size_wood" value="{{key}}">
+            <label class="form-check-label" for="size_wood">{{label}}</label>
           </div>
-          <label for="Q46" class="col-sm-1 col-form-label"></label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" id="Q46_max_Size" name="Q46_max_Size" placeholder="Max">
-          </div>
-          <label for="Q46" class="col-sm-1 col-form-label"><var>cm</var></label>
-        </div>
-        </div>
-    </div>
+          {% endif %}
+          {% endfor %}
+      
+      </div>
   {% endif %}
    
 
-<!--
-  <div class="form-group">
-    <label class="form-label" for="Q53"><u>Additional Information</u></label>
-    <br>
-
-    <div class="container">
-      <label for="Q53"></label>
-      <div class="container">
-        <input type="text" class="form-control" id="Q53" name="Q53" placeholder="Any other information">
-      </div>
-
-    </div>
-
-  </div>
-  
-  <br>
-  <div class="form-group">
-    <label for="cost" class="form-label">Please input the capital cost of your technology ($):</label>
-        <div class="col-sm-4">
-          <input type="text" class="form-control" id="cost" name="cost" placeholder="$">
-        </div>
-  </div>
-
-  <br>
-  <div class="form-group">
-    <label for="capacity" class="form-label">Please input the monthly capacity of your technology:</label>
-        <div class="col-sm-4">
-          <input type="text" class="form-control" id="capacity" name="capacity" placeholder="tonnes">
-        </div>
-  </div>
-
-  <br>
-  <div class="form-group">
-    <label for="URL" class="form-label">Please input your company URL:</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="URL" name="URL" placeholder="URL">
-        </div>
-  </div>
-  
-  <br>
-  <div class="form-group">
-    
-    <label class="form-label" for="Q_tech">Is your technology available for sale?</label>
-    <br>
-    <div class="form-check form-check-inline" >
-      <input type="checkbox" class="form-check-input" id="Q_tech" name="Q_tech" value="1" onclick="onlyOne(this,'Q_tech')" data-toggle='collapse' data-target='#Q_scale' aria-expanded="false">
-      <label class="form-check-label" for="Q_tech">Yes</label>
-    </div>
-  
-    <div class="form-check form-check-inline">
-        <input type="checkbox" class="form-check-input" id="Q_tech" name="Q_tech" value="2">
-        <label class="form-check-label" for="Q_tech">No</label>
-    </div>
-  </div>
-  
-  
-  <div class="collapse" id="Q_scale">
-    <div class="form-group">
-    
-      <label class="form-label" for="Q_scale">Can your tech be scaled?</label>
-      <br>
-      <div class="form-check form-check-inline" >
-        <input type="checkbox" class="form-check-input" id="Q_scale" name="Q_scale" value="1" onclick="onlyOne(this,'Q_scale')">
-        <label class="form-check-label" for="Q_scale">Yes</label>
-      </div>
-  
-      <div class="form-check form-check-inline">
-          <input type="checkbox" class="form-check-input" id="Q_scale" name="Q_scale" value="2" onclick="onlyOne(this,'Q_scale')">
-          <label class="form-check-label" for="Q_scale">No</label>
-      </div>
-    </div>
-  </div>
-  -->
-  
+ 
   
   <br>
   <a class="btn btn-outline-secondary" href="{{ url_for('matching') }}" role="button" onclick="return confirm('Inputs will not be saved, are you sure you want to go back?');">Back</a>
@@ -482,50 +414,68 @@ appearance: menulist!important;
 
 </div>
 
+</form>
+
+<script>
+
+/*
+  function ShowUnit() {
+
+    const productlist = '{{sampleproduct}}'
+
+    const selected = (document.getElementById("selectedproduct").value)
+
+    const [prod, unit] = selected
 
 
-  <script>
-    function onlyOne(checkbox,name) {
-    var checkboxes = document.getElementsByName(name)
-    checkboxes.forEach((item) => {
-      if (item !== checkbox){
-        item.checked = false;
-        }
-      })
-    }
-  
-    $('a[data-toggle="tooltip"]').tooltip({
-        animated: 'fade',
-        placement: 'bottom',
-        html: true
-    });
-
-    counter = 1
-
-  function addCode() {
-      counter += 1
-      document.getElementById("addItembutton").insertAdjacentHTML("beforebegin",
-
-          `
-          <div class="row">
-            <label class="col-form-label col-sm-1" id="Q3_1"> ${counter})</label>
-            <select class="form-control form-control-s col-sm-3" id="Q3_1" name="Q3_1">
-              <option value="None">None</option>
-              {% for i in range(0,samplefoodlen) %}
-              <option value="{{i}}">{{samplefood[i]}}</option>
-              {% endfor %}
-            </select>
-            <div class="col-sm-2">
-              <input type="text" class="form-control" id="Q3_1_w" name="Q3_1_w" placeholder="0">
-            </div>
-            <label for="Q3_1" class="col-sm-2 col-form-label">wt %</label>
-          </div>  
-          <br>
-
-          `            
-          );
+        
+    document.getElementById("Q3_1_w").placeholder = 0
+    document.getElementById("test").textContent = "tonne/tonne waste input"
   }
-    
-  </script>
+*/
+
+
+
+
+
+
+  $('a[data-toggle="tooltip"]').tooltip({
+      animated: 'fade',
+      placement: 'bottom',
+      html: true
+  });
+
+  counter = 1
+
+function addCode() {
+    counter += 1
+    document.getElementById("addItembutton").insertAdjacentHTML("beforebegin",
+
+        `
+        <div class="row">
+          <label class="col-form-label col-sm-1">${counter})</label>
+          <select class="form-control form-control-s col-sm-3" id="product_name_${counter}" name="product_name_${counter}" onchange="ShowUnit()">
+            <option selected> Select a product</option>
+            {% for product, unit in sampleproduct %}
+            <option value="{{product}}" id = 'selectedproduct'>{{product}}</option>
+            {% endfor %}
+          </select>
+          <div class="col-sm-2">
+            <input type="text" class="form-control" id="product_yield_${counter}" name="product_yield_${counter}">
+          </div>
+          <label class="col-sm-2 col-form-label" id="efficiency">%</label>
+        </div>  
+        <br>
+
+        `            
+        );
+}
+
+
+
+
+
+  
+</script>
 
 {% endblock content %}
