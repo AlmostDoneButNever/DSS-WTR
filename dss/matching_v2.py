@@ -13,13 +13,16 @@ from flask import jsonify
 from dss import app, db
 from dss.forms import (MaterialsForm, maxRowsForm, BuyingForm,RSPForm) 
 from dss.models import (User, RSP, Materials, Questions, Giveoutwaste, Processwaste, Technology, Takeinresource, Technologybreakdown, 
-     Sample, TechnologyDB, MaterialsDB, ManureDB, Product)
+     Sample, TechnologyDB, MaterialsDB, ManureDB, Product, WasteDB)
 from flask_login import current_user, login_required
-from dss.AddDBEntry import AddWasteToDB, AddTechtoDB
+from dss.AddWasteToDB import AddWasteToDB
+from dss.AddTechToDB import AddTechToDB
 
 
 from dss.wasteIdGenerator import getWasteId
-from dss.matching_algorithm_v2 import matching_algorithm_seller, matching_algorithm_rsp
+#from dss.matching_algorithm_v2 import  matching_algorithm_rsp
+from dss.matching_algorithm_v3 import matching_algorithm_seller, matching_algorithm_rsp
+
 from dss.standards import FoodStandard, ManureStandard, WoodStandard
 
 
@@ -41,7 +44,7 @@ def selling_waste():
     form.material.choices = [(material.id, material.material) for material in MaterialsDB.query.all()]
     #form.material.choices = ['Food Waste', 'Animal Manure', 'Wood Waste', 'E-waste', 'Plastic waste']
     #get past waste ID
-    prevEntries = [(waste.id, waste.questionCode + ': ' + waste.description + ' - ' + waste.date.strftime("%d/%m/%Y")) for waste in Giveoutwaste.query.filter_by(userId=int(current_user.id)).all()]
+    prevEntries = [(waste.id, waste.description + ' - ' + waste.date.strftime("%d/%m/%Y")) for waste in WasteDB.query.filter_by(userId=int(current_user.id)).all()]
     prevEntries.insert(0,(None,None))
     form.wasteID.choices = prevEntries
     # flash(prevEntries, 'success')
@@ -135,7 +138,7 @@ def recycling_service_provider():
     wastematerial = [(material.id, material.material) for material in MaterialsDB.query.all()]
 
     #get past technology ID
-    prevEntries = [(waste.id, waste.description + ': ' + waste.technology + ' - ' + waste.date) for waste in TechnologyDB.query.filter_by(userId=int(current_user.id)).all()]
+    prevEntries = [(waste.id, waste.description + ': ' + waste.technology + ' - ' + waste.date) for waste in TechnologyDB.query.filter_by(userId=int(current_user.id)).group_by(TechnologyDB.description, TechnologyDB.date).all()]
     prevEntries.insert(0,(None,None))
     form.technologyID.choices = prevEntries
     # flash(prevEntries, 'success')
@@ -171,7 +174,7 @@ def matching_questions_rsp(materialId):
         print(request.form)
 
         try:
-            output = AddTechtoDB(materialId, request)
+            output = AddTechToDB(materialId, request)
             print('output', output)
             flash('Your response has been recorded!','success')
             return redirect(url_for("recycling_service_provider"))

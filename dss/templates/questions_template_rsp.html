@@ -53,14 +53,14 @@ appearance: menulist!important;
 
     <div class="row">
       <label class="col-form-label col-sm-1">1)</label>
-      <select class="form-control form-control-s col-sm-3" id="product_name_1" name="product_name_1" onchange="ShowUnit()">
+      <select class="form-control form-control-s col-sm-3" id="product_name" name="product_name" onchange="ShowUnit()">
         <option selected> Select a product</option>
         {% for product, unit in sampleproduct %}
         <option value="{{product}}" id = 'selectedproduct'>{{product}}</option>
         {% endfor %}
       </select>
       <div class="col-sm-2">
-        <input type="text" class="form-control" id="product_yield_1" name="product_yield_1">
+        <input type="text" class="form-control" id="product_yield" name="product_yield">
       </div>
       <label class="col-sm-2 col-form-label" id="efficiency">%</label>
     </div>  
@@ -87,7 +87,6 @@ appearance: menulist!important;
       <label  class="form-label">Select the restrictions you wish to impose on the waste:</label>
 
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='CN_yesno_food'>
         <input type="checkbox" class="form-check-input" name="cn_yesno_food" value="1" data-toggle='collapse' data-target='#CNratio' aria-expanded="false">
         <label class="form-check-label" for="CN_yesno_food">Carbon-to-nitrogen (C/N) ratio</label>
       </div>
@@ -105,7 +104,6 @@ appearance: menulist!important;
       </div>
       
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='pH_yesno_food'>
         <input type="checkbox" class="form-check-input" name="pH_yesno_food" value="1" data-toggle='collapse' data-target='#pH' aria-expanded="false">
         <label class="form-check-label">pH</label>
       </div>
@@ -123,7 +121,6 @@ appearance: menulist!important;
       </div>
     
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='cellulose_yesno_food'>
         <input type="checkbox" class="form-check-input" name="cellulosic_yesno_food" value="1" data-toggle='collapse' data-target='#cellulosic' aria-expanded="false">
         <label class="form-check-label">Cellulosic content</label>
       </div>
@@ -141,30 +138,29 @@ appearance: menulist!important;
       </div>
 
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='moisture_yesno_food'>
         <input type="checkbox" class="form-check-input" name="moisture_yesno_food" value="1" data-toggle='collapse' data-target='#Moisture' aria-expanded="false">
         <label class="form-check-label">Moisture</label>
       </div>
 
       <div class="collapse bg-light" id="Moisture">
         <div class="form-group">
-           <label class="form-label">Select the acceptable moisture level </label>
+          <label class="form-label">Select the acceptable moisture level </label>
           <br>
-
-          {% for key,(label, _, _) in foodref.moisture.items() %}
-          {% if label != 'Not sure' %}
-          <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" name="moisture_food" value="{{key}}">
-            <label class="form-check-label">{{label}}</label>
-          </div>
-          {% endif %}
-          {% endfor %}
+        
+            {% for key,(label, _, _) in foodref.moisture.items() %}
+            {% if label != 'Not sure' %}
+            <div class="form-check form-check-inline" >
+              <input type="checkbox" class="form-check-input" name="moisture_level_food" value="{{key}}">
+              <label class="form-check-label">{{label}}</label>
+            </div>
+            {% endif %}
+            {% endfor %}
 
         </div>
       </div>
+      
 
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='homogeneity_yesno_food'>
         <input type="checkbox" class="form-check-input" name="homogeneity_yesno_food" value="1" data-toggle='collapse' data-target='#homogeneity-food' aria-expanded="false">
         <label class="form-check-label">Homogeneity</label>
       </div>
@@ -176,7 +172,7 @@ appearance: menulist!important;
           {% for key,(label, _, _) in foodref.homogeneity.items() %}
           {% if label != 'Not sure' %}
           <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" name="homogeneity_food" value="{{key}}">
+            <input type="checkbox" class="form-check-input" name="homogeneity_level_food" value="{{key}}">
             <label class="form-check-label" for="homogeneity_food">{{label}}</label>
           </div>
           {% endif %}
@@ -186,7 +182,6 @@ appearance: menulist!important;
       </div>
       
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='size_yesno_food'>
         <input type="checkbox" class="form-check-input" name="size_yesno_food" value="1" data-toggle='collapse' data-target='#size' aria-expanded="false">
         <label class="form-check-label">Size of Solid Particles</label>
       </div>
@@ -198,7 +193,7 @@ appearance: menulist!important;
           {% for key,(label) in foodref.size.items() %}
           {% if label != 'Not sure' %}
           <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" name="size_food" value="{{key}}">
+            <input type="checkbox" class="form-check-input" name="size_level_food" value="{{key}}">
             <label class="form-check-label" for="size_food">{{label}}</label>
           </div>
           {% endif %}
@@ -223,25 +218,23 @@ appearance: menulist!important;
       <label for="Q46" class="form-label">Select the restrictions you wish to impose on the waste:</label>
 
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='cn_yesno_manure'>
-        <input type="checkbox" class="form-check-input" name="cn_yesno_manure" value="1" data-toggle='collapse' data-target='#CNratio-manure' aria-expanded="false">
+        <input type="checkbox" class="form-check-input" name="CN_yesno_manure" value="1" data-toggle='collapse' data-target='#CNratio-manure' aria-expanded="false">
         <label class="form-check-label" for="cn_yesno_manure">Carbon-to-nitrogen (C/N) ratio</label>
       </div>
       <div class="collapse bg-light" id="CNratio-manure">
         <div class="form-group row">
           <label  class="col-sm-4 col-form-label">Please key in the min/max C/N ratio (i.e. 7.5 for C:N of 15:2)</label>
           <div class="col-sm-3">
-            <input type="text" class="form-control" name="cn_min_manure" placeholder="Min">
+            <input type="text" class="form-control" name="CN_min_manure" placeholder="Min">
           </div>
           <label class="col-sm-1 col-form-label"> to </label>
           <div class="col-sm-3">
-            <input type="text" class="form-control" name="cn_max_manure" placeholder="Max">
+            <input type="text" class="form-control" name="CN_max_manure" placeholder="Max">
           </div>
         </div>
       </div>
       
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='pH_yesno'>
         <input type="checkbox" class="form-check-input" name="pH_yesno_manure" value="1" data-toggle='collapse' data-target='#pH-manure' aria-expanded="false">
         <label class="form-check-label" >pH</label>
       </div>
@@ -259,8 +252,7 @@ appearance: menulist!important;
       </div>
     
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='cellulosic_yesno_manure'>
-        <input type="checkbox" class="form-check-input" name="cellulosic_yesno_manure" value="1" data-toggle='collapse' data-target='#cellulosic-manure' aria-expanded="false">
+        <input type="checkbox" class="form-check-input" name="cellulose_yesno_manure" value="1" data-toggle='collapse' data-target='#cellulosic-manure' aria-expanded="false">
         <label class="form-check-label">Cellulosic content</label>
       </div>
       <div class="collapse  bg-light" id="cellulosic-manure">
@@ -277,7 +269,6 @@ appearance: menulist!important;
       </div>
 
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='moisture_yesno_manure'>
         <input type="checkbox" class="form-check-input" name="moisture_yesno_manure" value="1" data-toggle='collapse' data-target='#Moisture-manure' aria-expanded="false">
         <label class="form-check-label">Moisture</label>
       </div>
@@ -290,7 +281,7 @@ appearance: menulist!important;
           {% for key,(label, _, _) in manureref.moisture.items() %}
           {% if label != 'Not sure' %}
           <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" name="moisture_manure" value="{{key}}">
+            <input type="checkbox" class="form-check-input" name="moisture_level_manure" value="{{key}}">
             <label class="form-check-label" for="moisture_manure">{{label}}</label>
           </div>
           {% endif %}
@@ -300,7 +291,6 @@ appearance: menulist!important;
       </div>
 
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='homogeneity_yesno_manure'>
         <input type="checkbox" class="form-check-input" name="homogeneity_yesno_manure" value="1" data-toggle='collapse' data-target='#homogeneity-manure' aria-expanded="false">
         <label class="form-check-label">Homogeneity</label>
       </div>
@@ -312,7 +302,7 @@ appearance: menulist!important;
           {% for key,(label, _, _) in manureref.homogeneity.items() %}
           {% if label != 'Not sure' %}
           <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" name="homogeneity_manure" value="{{key}}">
+            <input type="checkbox" class="form-check-input" name="homogeneity_level_manure" value="{{key}}">
             <label class="form-check-label" for="homogeneity_manure">{{label}}</label>
           </div>
           {% endif %}
@@ -335,7 +325,6 @@ appearance: menulist!important;
       <label for="Q46" class="form-label">Select the restrictions you wish to impose on the waste:</label>
 
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='moisture_yesno_wood'>
         <input type="checkbox" class="form-check-input" name="moisture_yesno_wood" value="1" data-toggle='collapse' data-target='#Moisture-wood' aria-expanded="false">
         <label class="form-check-label">Moisture</label>
       </div>
@@ -348,7 +337,7 @@ appearance: menulist!important;
           {% for key,(label, _, _) in woodref.moisture.items() %}
           {% if label != 'Not sure' %}
           <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" name="moisture_wood" value="{{key}}">
+            <input type="checkbox" class="form-check-input" name="moisture_level_wood" value="{{key}}">
             <label class="form-check-label" for="moisture_wood">{{label}}</label>
           </div>
           {% endif %}
@@ -358,7 +347,6 @@ appearance: menulist!important;
       </div>
 
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='homogeneity_yesno_wood'>
         <input type="checkbox" class="form-check-input" name="homogeneity_yesno_wood" value="1" data-toggle='collapse' data-target='#homogeneity-wood' aria-expanded="false">
         <label class="form-check-label" for="Q46">Homogeneity</label>
       </div>
@@ -370,7 +358,7 @@ appearance: menulist!important;
           {% for key,(label, _, _) in woodref.homogeneity.items() %}
           {% if label != 'Not sure' %}
           <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" name="homogeneity_wood" value="{{key}}">
+            <input type="checkbox" class="form-check-input" name="homogeneity_level_wood" value="{{key}}">
             <label class="form-check-label" for="homogeneity_wood">{{label}}</label>
           </div>
           {% endif %}
@@ -380,7 +368,6 @@ appearance: menulist!important;
       </div>
       
       <div class="form-check form-switch">
-        <input type='hidden' value='0' name='size_yesno_wood'>
         <input type="checkbox" class="form-check-input" name="size_yesno_wood" value="1" data-toggle='collapse' data-target='#size-wood' aria-expanded="false">
         <label class="form-check-label">Size of Solid Particles</label>
       </div>
@@ -392,13 +379,15 @@ appearance: menulist!important;
           {% for key,(label) in woodref.size.items() %}
           {% if label != 'Not sure' %}
           <div class="form-check form-check-inline" >
-            <input type="checkbox" class="form-check-input" name="size_wood" value="{{key}}">
+            <input type="checkbox" class="form-check-input" name="size_level_wood" value="{{key}}">
             <label class="form-check-label" for="size_wood">{{label}}</label>
           </div>
           {% endif %}
           {% endfor %}
       
       </div>
+    </div>
+
   {% endif %}
    
 
@@ -413,6 +402,7 @@ appearance: menulist!important;
 
 
 </div>
+
 
 </form>
 
@@ -454,14 +444,14 @@ function addCode() {
         `
         <div class="row">
           <label class="col-form-label col-sm-1">${counter})</label>
-          <select class="form-control form-control-s col-sm-3" id="product_name_${counter}" name="product_name_${counter}" onchange="ShowUnit()">
+          <select class="form-control form-control-s col-sm-3" id="product_name" name="product_name" onchange="ShowUnit()">
             <option selected> Select a product</option>
             {% for product, unit in sampleproduct %}
             <option value="{{product}}" id = 'selectedproduct'>{{product}}</option>
             {% endfor %}
           </select>
           <div class="col-sm-2">
-            <input type="text" class="form-control" id="product_yield_${counter}" name="product_yield_${counter}">
+            <input type="text" class="form-control" id="product_yield" name="product_yield">
           </div>
           <label class="col-sm-2 col-form-label" id="efficiency">%</label>
         </div>  

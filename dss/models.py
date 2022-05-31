@@ -187,7 +187,7 @@ class WasteDB(db.Model):
     pH = db.Column(db.Float(500))
     CNratio = db.Column(db.Float(500))
 
-    date = db.Column(db.DateTime)
+    date = db.Column(db.String(100))
 
 class Processwaste(db.Model):
     id = db.Column(db.Integer, primary_key = True)
