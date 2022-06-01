@@ -74,6 +74,14 @@ class TechnologyDB(db.Model):
     moisture = db.Column(db.String(100))
     homogeneity = db.Column(db.String(100))
     size = db.Column(db.String(100))
+    impurities = db.Column(db.String(100))
+    CN_criteria = db.Column(db.String(100))
+    pH_criteria = db.Column(db.String(100))
+    cellulose_criteria = db.Column(db.String(100))
+    moisture_criteria = db.Column(db.String(100))
+    homogeneity_criteria = db.Column(db.String(100))
+    size_criteria = db.Column(db.String(100))
+    impurities_criteria = db.Column(db.String(100))
     date = db.Column(db.String(100))
     
 

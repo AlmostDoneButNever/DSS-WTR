@@ -76,7 +76,7 @@ appearance: menulist!important;
   <h4> Feedstock Requirements: </h4>
   <br>
 
-  {% if "1" in materialId %}
+    {% if "1" in materialId %}
 
    
     <div class="form-group">
@@ -87,7 +87,7 @@ appearance: menulist!important;
       <label  class="form-label">Select the restrictions you wish to impose on the waste:</label>
 
       <div class="form-check form-switch">
-        <input type="checkbox" class="form-check-input" name="cn_yesno_food" value="1" data-toggle='collapse' data-target='#CNratio' aria-expanded="false">
+        <input type="checkbox" class="form-check-input" name="CN_yesno_food" value="1" data-toggle='collapse' data-target='#CNratio' aria-expanded="false">
         <label class="form-check-label" for="CN_yesno_food">Carbon-to-nitrogen (C/N) ratio</label>
       </div>
       <div class="collapse bg-light" id="CNratio">
@@ -121,7 +121,7 @@ appearance: menulist!important;
       </div>
     
       <div class="form-check form-switch">
-        <input type="checkbox" class="form-check-input" name="cellulosic_yesno_food" value="1" data-toggle='collapse' data-target='#cellulosic' aria-expanded="false">
+        <input type="checkbox" class="form-check-input" name="cellulose_yesno_food" value="1" data-toggle='collapse' data-target='#cellulosic' aria-expanded="false">
         <label class="form-check-label">Cellulosic content</label>
       </div>
       <div class="collapse  bg-light" id="cellulosic">
@@ -199,12 +199,32 @@ appearance: menulist!important;
           {% endif %}
           {% endfor %}
       
+        </div>
       </div>
 
 
+      <div class="form-check form-switch">
+        <input type="checkbox" class="form-check-input" name="impurities_yesno_food" value="1" data-toggle='collapse' data-target='#impurities-food' aria-expanded="false">
+        <label class="form-check-label">Impurities</label>
+      </div>
+      <div class="collapse  bg-light" id="impurities-food">
+        <div class="form-group">
+          <label class="form-label"> Is the presence of indigestible/non-degradable materials in feedstock acceptable?</label>
+          <br>
+
+          <div class="form-check form-check-inline" >
+            <input type="radio" class="form-check-input" name=impurities_food value = 1>
+            <label class="form-check-label" for="impurities">Yes </label>
+          </div>
       
+          <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" name="impurities_food" value = 0>
+            <label class="form-check-label" for="impurities">No </label>
+          </div>     
+        </div>
       </div>
     </div>
+
 
   {% endif %}
 
@@ -311,6 +331,27 @@ appearance: menulist!important;
         </div>
       </div>
 
+      <div class="form-check form-switch">
+        <input type="checkbox" class="form-check-input" name="impurities_yesno_manure" value="1" data-toggle='collapse' data-target='#impurities-manure' aria-expanded="false">
+        <label class="form-check-label">Impurities</label>
+      </div>
+      <div class="collapse  bg-light" id="impurities-manure">
+        <div class="form-group">
+          <label class="form-label" for="Q7"> Is the presence of indigestible/non-degradable materials in feedstock acceptable?</label>
+          <br>
+
+          <div class="form-check form-check-inline" >
+            <input type="radio" class="form-check-input" name=impurities_manure value = 1>
+            <label class="form-check-label" for="impurities">Yes </label>
+          </div>
+      
+          <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" name="impurities_manure" value = 0>
+            <label class="form-check-label" for="impurities">No </label>
+          </div>     
+        </div>
+      </div>
+
     </div>
   {% endif %}
 
@@ -385,6 +426,29 @@ appearance: menulist!important;
           {% endif %}
           {% endfor %}
       
+        </div>
+      </div>
+
+
+      <div class="form-check form-switch">
+        <input type="checkbox" class="form-check-input" name="impurities_yesno_wood" value="1" data-toggle='collapse' data-target='#impurities-wood' aria-expanded="false">
+        <label class="form-check-label">Impurities</label>
+      </div>
+      <div class="collapse  bg-light" id="impurities-wood">
+        <div class="form-group">
+          <label class="form-label" > Is the presence of indigestible/non-degradable materials in feedstock acceptable?</label>
+          <br>
+
+          <div class="form-check form-check-inline" >
+            <input type="radio" class="form-check-input" name=impurities_wood value = 1>
+            <label class="form-check-label" for="impurities">Yes </label>
+          </div>
+      
+          <div class="form-check form-check-inline">
+            <input type="radio" class="form-check-input" name="impurities_wood" value = 0>
+            <label class="form-check-label" for="impurities">No </label>
+          </div>     
+        </div>
       </div>
     </div>
 

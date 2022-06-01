@@ -20,7 +20,7 @@ class FoodStandard(object):
         self.homogeneity = {  #  key              label   lb ub   
                         "Pure":          ["Pure",100,100],
                         "Slightly Mixed":["Slightly Mixed (<10%)",90,100],
-                        "Medially mixed":["Medially mixed (10-30%)",70,90],
+                        "Medially Mixed":["Medially Mixed (10-30%)",70,90],
                         "Largely Mixed": ["Largely Mixed (>30%)",0,70]
                     }
 
@@ -40,7 +40,7 @@ class ManureStandard(object):
         self.homogeneity = {  #  key              label   lb ub   
                                 "Pure":          ["Pure",100,100],
                                 "Slightly Mixed":["Slightly Mixed (<10%)",90,100],
-                                "Medially mixed":["Medially mixed (10-30%)",70,90],
+                                "Medially Mixed":["Medially Mixed (10-30%)",70,90],
                                 "Largely Mixed": ["Largely Mixed (>30%)",0,70]
                            }
 
@@ -57,7 +57,7 @@ class WoodStandard(object):
         self.homogeneity = {  #  key              label   lb ub   
                                 "Pure":          ["Pure",100,100],
                                 "Slightly Mixed":["Slightly Mixed (<10%)",90,100],
-                                "Medially mixed":["Medially mixed (10-30%)",70,90],
+                                "Medially Mixed":["Medially Mixed (10-30%)",70,90],
                                 "Largely Mixed": ["Largely Mixed (>30%)",0,70]
                            }
 

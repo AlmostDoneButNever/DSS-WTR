@@ -18,12 +18,12 @@ def matching_algorithm_seller(giveoutwasteId):
 
  
     query = TechnologyDB.query.filter(TechnologyDB.materialId == str(waste.materialID),
-                                        or_(and_(coalesce(TechnologyDB.CN_min, 0) <= waste.CNratio, coalesce(TechnologyDB.CN_max, 999) >= waste.CNratio), waste.CNratio == None),
-                                        or_(and_(coalesce(TechnologyDB.pH_min, 0) <= waste.pH, coalesce(TechnologyDB.pH_max, 14) >= waste.pH), waste.pH == None),
-                                        or_(and_(coalesce(TechnologyDB.cellulose_min, 0) <= waste.cellulosicValue, coalesce(TechnologyDB.cellulose_max, 100) >= waste.cellulosicValue), waste.cellulosicValue == None),
-                                        or_(TechnologyDB.size.contains(coalesce(waste.size,'')), or_(TechnologyDB.size == None, waste.size == None)),
-                                        or_(TechnologyDB.homogeneity.contains(coalesce(waste.homogeneityType,'')), or_(TechnologyDB.homogeneity == None, waste.homogeneityType == None)),
-                                        or_(TechnologyDB.moisture.contains(coalesce(waste.moistureType,'')), or_(TechnologyDB.moisture == None, waste.moistureType == None)),
+                                        or_(and_(coalesce(TechnologyDB.CN_min, 0) <= coalesce(waste.CNratio, 0), coalesce(TechnologyDB.CN_max, 999) >= coalesce(waste.CNratio, 0)),TechnologyDB.CN_criteria != '1'),
+                                        or_(and_(coalesce(TechnologyDB.pH_min, 0) <= coalesce(waste.pH, 0), coalesce(TechnologyDB.pH_max, 14) >= coalesce(waste.pH, 0)), TechnologyDB.pH_criteria != '1'),
+                                        or_(and_(coalesce(TechnologyDB.cellulose_min, 0) <= coalesce(waste.cellulosicValue, 0), coalesce(TechnologyDB.cellulose_max, 100) >= coalesce(waste.cellulosicValue, 0)), TechnologyDB.cellulose_criteria != '1'),
+                                        or_(TechnologyDB.size.contains(coalesce(waste.size,'')), or_(TechnologyDB.size == None, TechnologyDB.size_criteria != '1')),
+                                        or_(TechnologyDB.homogeneity.contains(coalesce(waste.homogeneityType,'')), or_(TechnologyDB.homogeneity == None, TechnologyDB.homogeneity_criteria != '1')),
+                                        or_(TechnologyDB.moisture.contains(coalesce(waste.moistureType,'')), or_(TechnologyDB.moisture == None, TechnologyDB.moisture_criteria != '1')),
                                     )
 
 
@@ -50,15 +50,26 @@ def matching_algorithm_rsp(processwasteId):
 
     for tech in all_tech:
 
-        tech_homogeneity = tech.homogeneity.split(',')
+        tech_homogeneity = []
+        tech_moisture = []
+        tech_size = []
+
+        if tech.homogeneity != None:
+            tech_homogeneity = tech.homogeneity.split(',')
+            
+        if tech.moisture != None:
+            tech_moisture = tech.moisture.split(',')
+
+        if tech.size != None:
+            tech_size = tech.size.split(',')
 
         query = WasteDB.query.filter(WasteDB.materialID == int(tech.materialId),
-                                        or_(and_(coalesce(tech.CN_min, 0) <= WasteDB.CNratio, coalesce(tech.CN_max, 999) >= WasteDB.CNratio), tech.CN_max == None),
-                                        or_(and_(coalesce(tech.pH_min, 0) <= WasteDB.pH, coalesce(tech.pH_max, 14) >= WasteDB.pH), tech.pH_max == None),
-                                        or_(and_(coalesce(tech.cellulose_min, 0) <= WasteDB.cellulosicValue, coalesce(tech.cellulose_max, 100) >= WasteDB.cellulosicValue), tech.cellulose_max == None),
-                                        #or_(or_((coalesce(WasteDB.size,'')).in_(coalesce(tech.size,'')), tech.size == None), WasteDB.size == None),
-                                        or_(or_((coalesce(WasteDB.homogeneityType,'')).in_(tech_homogeneity), tech.homogeneity == None), tech_homogeneity == None),
-                                        #or_(or_((coalesce(WasteDB.moistureType,'')).in_(coalesce(tech.moisture,'')), tech.moisture == None), WasteDB.moistureType == None),
+                                        or_(and_(coalesce(tech.CN_min, 0) <= coalesce(WasteDB.CNratio, 0), coalesce(tech.CN_max, 999) >= coalesce(WasteDB.CNratio, 0)), tech.CN_criteria != '1'),
+                                        or_(and_(coalesce(tech.pH_min, 0) <= WasteDB.pH, coalesce(tech.pH_max, 14) >= WasteDB.pH), tech.pH_criteria != '1'),
+                                        or_(and_(coalesce(tech.cellulose_min, 0) <= coalesce(WasteDB.cellulosicValue,0), coalesce(tech.cellulose_max, 100) >= coalesce(WasteDB.cellulosicValue,0)), tech.cellulose_criteria != '1'),
+                                        or_((coalesce(WasteDB.moistureType,'')).in_(tech_moisture), tech.moisture_criteria != '1'),
+                                        or_((coalesce(WasteDB.homogeneityType,'')).in_(tech_homogeneity), tech.homogeneity_criteria != '1'),
+                                        or_((coalesce(WasteDB.size,'')).in_(tech_size), tech.size_criteria != '1'),
                                     )
 
         for entry in query:
@@ -70,7 +81,5 @@ def matching_algorithm_rsp(processwasteId):
 
             index += 1
     
-    print('tech',tech.homogeneity.split(','))
-    print('waste',WasteDB.homogeneityType)
 
     return result

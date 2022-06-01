@@ -44,7 +44,7 @@ def selling_waste():
     form.material.choices = [(material.id, material.material) for material in MaterialsDB.query.all()]
     #form.material.choices = ['Food Waste', 'Animal Manure', 'Wood Waste', 'E-waste', 'Plastic waste']
     #get past waste ID
-    prevEntries = [(waste.id, waste.description + ' - ' + waste.date.strftime("%d/%m/%Y")) for waste in WasteDB.query.filter_by(userId=int(current_user.id)).all()]
+    prevEntries = [(waste.id, waste.description + ' - ' + waste.date) for waste in WasteDB.query.filter_by(userId=int(current_user.id)).all()]
     prevEntries.insert(0,(None,None))
     form.wasteID.choices = prevEntries
     # flash(prevEntries, 'success')
