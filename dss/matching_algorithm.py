@@ -1,132 +1,85 @@
-# Old version
+# New version (Angel edits)
 
 from collections import defaultdict
+from operator import contains, or_, and_
 from sqlalchemy.inspection import inspect
 import pandas as pd
-from dss.models import (User, Materials, Giveoutwaste,TechnologyDB)
+from dss.models import (User, MaterialsDB, WasteDB,TechnologyDB)
+from dss.wasteIdGenerator import breakId
+from sqlalchemy.sql.functions import coalesce
 
-def matching_algorithm(giveoutwasteId):
 
-    wasteID = Giveoutwaste.query.filter_by(id=giveoutwasteId).first().questionCode
-    wastematerialID = Giveoutwaste.query.filter_by(id=giveoutwasteId).first().materialId
-    rset = TechnologyDB.query.all()
-    result = defaultdict(list)
-    for obj in rset:
-        instance = inspect(obj)
-        for key, x in instance.attrs.items():
-            result[key].append(x.value)    
-    df = pd.DataFrame(result)
-    rset = Materials.query.all()
-    result = defaultdict(list)
-    for obj in rset:
-        instance = inspect(obj)
-        for key, x in instance.attrs.items():
-            result[key].append(x.value)    
-    materialsdf = pd.DataFrame(result)
+###########################################       Matching Algorithm for Waste Sellers      ############################
 
-    print('Technology_df')
-    print(df)
 
-    print('Material_df')
-    print(materialsdf)
+def matching_algorithm_seller(giveoutwasteId):
 
-    counter=0
-    result=[]
-    homogeneity=wasteID[1]
-    wCHNType=wasteID[2]
-    wCRatio=wasteID[3:5]
-    wHRatio=wasteID[5:7]
-    wNRatio=wasteID[7:9]
-    wproteinType=wasteID[9]
-    wproteinRatio=wasteID[10:12]
-    wcellulosic=wasteID[12]
-    wshellAndBones=wasteID[13:15]
-    wmoistureType=wasteID[15]
-    wmoistureContent=wasteID[16:18]
-    wsaltType=wasteID[18]
-    wsaltContent=wasteID[19:21]
-    wpHType=wasteID[21]
-    wphValue=wasteID[22:24]
-    wparticleSize=wasteID[24]
+    waste = WasteDB.query.filter_by(id=giveoutwasteId).first()
 
-    for i in range(len(df)):
-        techmaterialID=int(df.loc[i,'materialId'])      
-        if wastematerialID==1 and techmaterialID==14:
+ 
+    query = TechnologyDB.query.filter(TechnologyDB.materialId == str(waste.materialID),
+                                        or_(and_(coalesce(TechnologyDB.CN_min, 0) <= coalesce(waste.CNratio, 0), coalesce(TechnologyDB.CN_max, 999) >= coalesce(waste.CNratio, 0)),TechnologyDB.CN_criteria != '1'),
+                                        or_(and_(coalesce(TechnologyDB.pH_min, 0) <= coalesce(waste.pH, 0), coalesce(TechnologyDB.pH_max, 14) >= coalesce(waste.pH, 0)), TechnologyDB.pH_criteria != '1'),
+                                        or_(and_(coalesce(TechnologyDB.cellulose_min, 0) <= coalesce(waste.cellulosicValue, 0), coalesce(TechnologyDB.cellulose_max, 100) >= coalesce(waste.cellulosicValue, 0)), TechnologyDB.cellulose_criteria != '1'),
+                                        or_(TechnologyDB.size.contains(coalesce(waste.size,'')), or_(TechnologyDB.size == None, TechnologyDB.size_criteria != '1')),
+                                        or_(TechnologyDB.homogeneity.contains(coalesce(waste.homogeneityType,'')), or_(TechnologyDB.homogeneity == None, TechnologyDB.homogeneity_criteria != '1')),
+                                        or_(TechnologyDB.moisture.contains(coalesce(waste.moistureType,'')), or_(TechnologyDB.moisture == None, TechnologyDB.moisture_criteria != '1')),
+                                    )
 
-            attrib=['materialId',
-                    'CRatiomin',
-                    'CRatiomax',
-                    'NRatiomin',
-                    'NRatiomax',
-                    'Moisturemin',
-                    'Moisturemax',
-                    'pHmin',
-                    'pHmax',
-                    'cellulosicmin',
-                    'cellulosicmax',
-                    'particleSizemin',
-                    'particleSizemax',
-                    'unacceptableshells',
-                    'unacceptableshells',
-                    'unacceptableshellspercent',
-                    'unacceptablebones',
-                    'unacceptablebonespercent',
-                    'unacceptablebamboo',
-                    'unacceptablebamboopercent',
-                    'unacceptablebanana',
-                    'unacceptablebananapercent',
-                    'unacceptableothers',
-                    'unacceptableotherspercent',
-                    'TechnologyName',
-                    'byproductBiogas',
-                    'byproductBiogasEfficiency',
-                    'byproductBiogasCHFour',
-                    'byproductBiogasCOTwo',
-                    'ByproductChemical',
-                    'ByproductChemicalEfficiency',
-                    'ByproductMetal',
-                    'ByproductMetalEfficiency',
-                    'ByproductBiochar',
-                    'ByproductBiocharEfficency',
-                    'ByproductDigestate',
-                    'ByproductDigestateEfficiency',
-                    'ByproductOil',
-                    'ByproductOilEfficiency',
-                    'ByproductOthers',
-                    'ByproductOthersEfficiency',
-                    'TechnologyName',
-                    'AdditionalInformation',
-                    'url']
-            techID = {}
-            #print(df.loc[i,'description'])
-            #print(techID)
-            for at in attrib:
-                techID[at]=df.loc[i,at]
+
+    result = []
+    index = 1
+    for row in query:
+        supplier=(User.query.filter_by(id=row.userId).first().username)
+        result.append([index, row.description, supplier, row.date[:10]])
+        index +=1
+
+    return result
+
+
+###########################################       Matching Algorithm for Recycling Service Providers      ############################
+
+def matching_algorithm_rsp(processwasteId):
+
+    first_tech = TechnologyDB.query.filter_by(id=processwasteId).first()
+    all_tech = TechnologyDB.query.filter_by(description = first_tech.description).all()
+   
+    result = []
+
+    index = 1
+
+    for tech in all_tech:
+
+        tech_homogeneity = []
+        tech_moisture = []
+        tech_size = []
+
+        if tech.homogeneity != None:
+            tech_homogeneity = tech.homogeneity.split(',')
             
-            if (wCRatio=='__' or (int(wCRatio)>=int(techID['CRatiomin']) and int(wCRatio)<=int(techID['CRatiomax']))) and ((wNRatio)=='__' or (int(wNRatio)>=int(techID['NRatiomin']) and int(wNRatio)<=int(techID['NRatiomax']))) and ((wphValue)=='__' or (int(wphValue)>=int(techID['pHmin']) and int(wphValue)<=int(techID['pHmax']))):
-                counter+=1
-                index=(counter)
-                desc=(df.loc[i,'description'])
-                supplier=(User.query.filter_by(id=int(df.loc[i,'userId'])).first().username)
-                #print(supplier)
-                rawdate=str(df.loc[i,'date'])
-                rawdate=rawdate[:10]
-                url = df.loc[i,'url']
-                result.append([index,desc,supplier,rawdate,url])
-        else:
-            counter=0
-            print(techmaterialID)
-            print(materialsdf.loc[wastematerialID-1,'material'])
-            print(materialsdf.loc[int(techmaterialID)-1,'material'][0:len(materialsdf.loc[wastematerialID-1,'material'])])
-            if materialsdf.loc[wastematerialID-1,'material'] == materialsdf.loc[int(techmaterialID)-1,'material'][0:len(materialsdf.loc[wastematerialID-1,'material'])]:
-                counter+=1
-                index=(counter)
-                desc=(df.loc[i,'description'])
-                supplier=(User.query.filter_by(id=int(df.loc[i,'userId'])).first().username)
-                #print(supplier)
-                rawdate=str(df.loc[i,'date'])
-                rawdate=rawdate[:10]
-                url = df.loc[i,'url']
-                result.append([index,desc,supplier,rawdate,url])
-    print(result)
+        if tech.moisture != None:
+            tech_moisture = tech.moisture.split(',')
+
+        if tech.size != None:
+            tech_size = tech.size.split(',')
+
+        query = WasteDB.query.filter(WasteDB.materialID == int(tech.materialId),
+                                        or_(and_(coalesce(tech.CN_min, 0) <= coalesce(WasteDB.CNratio, 0), coalesce(tech.CN_max, 999) >= coalesce(WasteDB.CNratio, 0)), tech.CN_criteria != '1'),
+                                        or_(and_(coalesce(tech.pH_min, 0) <= WasteDB.pH, coalesce(tech.pH_max, 14) >= WasteDB.pH), tech.pH_criteria != '1'),
+                                        or_(and_(coalesce(tech.cellulose_min, 0) <= coalesce(WasteDB.cellulosicValue,0), coalesce(tech.cellulose_max, 100) >= coalesce(WasteDB.cellulosicValue,0)), tech.cellulose_criteria != '1'),
+                                        or_((coalesce(WasteDB.moistureType,'')).in_(tech_moisture), tech.moisture_criteria != '1'),
+                                        or_((coalesce(WasteDB.homogeneityType,'')).in_(tech_homogeneity), tech.homogeneity_criteria != '1'),
+                                        or_((coalesce(WasteDB.size,'')).in_(tech_size), tech.size_criteria != '1'),
+                                    )
+
+        for entry in query:
+
+            supplier=(User.query.filter_by(id=entry.userId).first().username)
+            date=str(entry.date)[:10]
+
+            result.append([index, entry.description, supplier, date])
+
+            index += 1
+    
+
     return result

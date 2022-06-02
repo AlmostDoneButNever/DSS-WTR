@@ -133,6 +133,9 @@ class maxRowsForm(FlaskForm):
 class dispatchMatchingForm(FlaskForm):
     type = SelectField('Type', choices=[('0','Selling Waste'),('1','Purchasing Waste')])
     submit = SubmitField('Next')
+    wasteSelect = SelectField('Select the waste to sell:', choices=[])
+    techSelect = SelectField('Select the technology that requires feedstock:', choices=[])
+
 
 
 class dispatchMatchingQuestionsForm(FlaskForm):

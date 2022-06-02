@@ -247,3 +247,186 @@ def AddWasteToDB(materialId, request):
         db.session.add(waste)
         db.session.commit()
 
+def AddTechToDB(materialId, request):
+
+    description = request.form['description']
+    technology = request.form['technology']
+
+    product_list_name = request.form.getlist("product_name")
+    product_list_yield = request.form.getlist("product_yield")
+    product_list = dict(zip(product_list_name, product_list_yield))
+
+
+    if '1' in materialId:
+
+        suffix = '_food'
+
+        data = {}
+
+        list_parameters = ['moisture_level', 'homogeneity_level', 'size_level' ]
+
+        scalar_parameters = ['CN_yesno', 'CN_min', 'CN_max', 'pH_yesno', 'pH_min', 'pH_max', 'cellulose_yesno', 'cellulose_min', 
+                                'cellulose_max', 'moisture_yesno',  'homogeneity_yesno', 'size_yesno', 'impurities_yesno', 'impurities']
+
+        for par in list_parameters:
+
+            data[par] = None
+
+            try:
+
+                value = request.form.getlist(par + suffix)
+
+                if value:
+                    string = '' 
+
+                    for item in value:
+                        string +=  item + ',' 
+
+                    data[par] = string[0:len(string) - 1]
+            except:
+                pass
+               
+        for par in scalar_parameters:
+            data[par] = None
+
+            try:
+                value = request.form[par + suffix]
+                
+                if value:
+                    data[par] = value
+
+            except:
+                pass
+
+
+        tech = TechnologyDB(
+                    materialId='1', userId=int(current_user.id), description=description, technology = technology, 
+                    product_list = str(product_list), CN_min = data['CN_min'], CN_max = data['CN_max'], pH_min = data['pH_min'], pH_max = data['pH_max'], 
+                    cellulose_min = data['cellulose_min'], cellulose_max = data['cellulose_max'], moisture = data['moisture_level'], 
+                    homogeneity = data['homogeneity_level'], size = data['size_level'], impurities = data['impurities'],
+                    CN_criteria = data['CN_yesno'], pH_criteria = data['pH_yesno'], cellulose_criteria = data['cellulose_yesno'], 
+                    moisture_criteria = data['moisture_yesno'], homogeneity_criteria = data['homogeneity_yesno'], 
+                    size_criteria = data['size_yesno'], impurities_criteria = data['impurities_yesno'], date=str(datetime.now())[0:19]
+                    )
+
+        db.session.add(tech)
+        db.session.commit()
+
+    if '2' in materialId:
+
+        suffix = '_manure'
+
+        data = {}
+
+        list_parameters = ['moisture_level', 'homogeneity_level', 'size_level' ]
+
+        scalar_parameters = ['CN_yesno', 'CN_min', 'CN_max', 'pH_yesno', 'pH_min', 'pH_max', 'cellulose_yesno', 'cellulose_min', 
+                                'cellulose_max', 'moisture_yesno',  'homogeneity_yesno', 'size_yesno', 'impurities_yesno', 'impurities']
+
+        for par in list_parameters:
+
+            data[par] = None
+
+            try:
+
+                value = request.form.getlist(par + suffix)
+
+                if value:
+                    string = '' 
+
+                    for item in value:
+                        string +=  item + ',' 
+
+                    data[par] = string[0:len(string) - 1]
+
+            except:
+                pass
+               
+        for par in scalar_parameters:
+            data[par] = None
+
+            try:
+                value = request.form[par + suffix]
+                
+                if value:
+                    data[par] = value
+
+            except:
+                pass
+
+
+        tech = TechnologyDB(
+                    materialId='2', userId=int(current_user.id), description=description, technology = technology, 
+                    product_list = str(product_list), CN_min = data['CN_min'], CN_max = data['CN_max'], pH_min = data['pH_min'], pH_max = data['pH_max'], 
+                    cellulose_min = data['cellulose_min'], cellulose_max = data['cellulose_max'], moisture = data['moisture_level'], 
+                    homogeneity = data['homogeneity_level'], size = data['size_level'], impurities = data['impurities'],
+                    CN_criteria = data['CN_yesno'], pH_criteria = data['pH_yesno'], cellulose_criteria = data['cellulose_yesno'], 
+                    moisture_criteria = data['moisture_yesno'], homogeneity_criteria = data['homogeneity_yesno'], 
+                    size_criteria = data['size_yesno'], impurities_criteria = data['impurities_yesno'], date=str(datetime.now())[0:19]
+                    )
+
+        db.session.add(tech)
+        db.session.commit()
+
+    if '3' in materialId:
+
+        suffix = '_wood'
+
+        data = {}
+
+        list_parameters = ['moisture_level', 'homogeneity_level', 'size_level' ]
+
+        scalar_parameters = ['CN_yesno', 'CN_min', 'CN_max', 'pH_yesno', 'pH_min', 'pH_max', 'cellulose_yesno', 'cellulose_min', 
+                                'cellulose_max', 'moisture_yesno',  'homogeneity_yesno', 'size_yesno', 'impurities_yesno', 'impurities']
+
+        for par in list_parameters:
+
+            data[par] = None
+
+            try:
+
+                value = request.form.getlist(par + suffix)
+
+                if value:
+                    string = '' 
+
+                    for item in value:
+                        string +=  item + ',' 
+
+                    data[par] = string[0:len(string) - 1]
+                    
+            except:
+                pass
+                
+        for par in scalar_parameters:
+            data[par] = None
+
+            try:
+                value = request.form[par + suffix]
+                
+                if value:
+                    data[par] = value
+
+            except:
+                pass
+
+
+        tech = TechnologyDB(
+                    materialId='3', userId=int(current_user.id), description=description, technology = technology, 
+                    product_list = str(product_list), CN_min = data['CN_min'], CN_max = data['CN_max'], pH_min = data['pH_min'], pH_max = data['pH_max'], 
+                    cellulose_min = data['cellulose_min'], cellulose_max = data['cellulose_max'], moisture = data['moisture_level'], 
+                    homogeneity = data['homogeneity_level'], size = data['size_level'], impurities = data['impurities'],
+                    CN_criteria = data['CN_yesno'], pH_criteria = data['pH_yesno'], cellulose_criteria = data['cellulose_yesno'], 
+                    moisture_criteria = data['moisture_yesno'], homogeneity_criteria = data['homogeneity_yesno'], 
+                    size_criteria = data['size_yesno'], impurities_criteria = data['impurities_yesno'], date=str(datetime.now())[0:19]
+                    )
+
+        db.session.add(tech)
+        db.session.commit()
+
+
+
+   
+
+    return materialId
+    
