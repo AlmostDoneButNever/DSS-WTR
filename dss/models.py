@@ -427,22 +427,26 @@ class Dispatchmatchinginvestment(db.Model):
 class Dispatchmatchingsupply(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    giveOutWasteId = db.Column(db.Integer, nullable=False)
+    wasteId = db.Column(db.Integer, nullable=False)
+    materialId = db.Column(db.Integer)
     quantity = db.Column(db.Float(500), nullable=False)
     reservePrice = db.Column(db.Float(500), nullable=False)
     deliveryFee = db.Column(db.Float(500), nullable=False)
     matchedFlag = db.Column(db.Integer, nullable=False)
     postalCode = db.Column(db.String(500))
+    date = db.Column(db.String(500))
 
 
 class Dispatchmatchingdemand(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    takeInResourceId = db.Column(db.Integer, nullable=False)
+    techId = db.Column(db.Integer, nullable=False)
+    materialId = db.Column(db.Integer)
     quantity = db.Column(db.Float(500), nullable=False)
     reservePrice = db.Column(db.Float(500), nullable=False)
     matchedFlag = db.Column(db.Integer, nullable=False)
     postalCode = db.Column(db.String(500))
+    date = db.Column(db.String(500))
 
 
 class Distance(db.Model):

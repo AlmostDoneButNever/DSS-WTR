@@ -136,8 +136,6 @@ class dispatchMatchingForm(FlaskForm):
     wasteSelect = SelectField('Select the waste to sell:', choices=[])
     techSelect = SelectField('Select the technology that requires feedstock:', choices=[])
 
-
-
 class dispatchMatchingQuestionsForm(FlaskForm):
     wasteName = SelectField('Select below to trade from what you have created:', choices=[])
     quantity = StringField('Supply Quantity: (t/month)', validators=[Required()])

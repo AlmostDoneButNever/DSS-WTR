@@ -1,0 +1,91 @@
+{% extends "normal_layout.html" %}
+{% block content %}
+<style>
+
+  select.form-control{
+    -webkit-appearance: menulist!important;
+    -moz-appearance: menulist!important;
+    -ms-appearance: menulist!important;
+    -o-appearance: menulist!important;
+    appearance: menulist!important;
+  }
+</style>
+ 
+  <div class="content-section" style="margin: 0 auto">
+    <h2 style="color:deepskyblue"><strong>Dispatch Matching</strong></h2>
+    <br>
+
+
+    <form method='POST'> 
+      {{form.csrf_token}} 
+      
+      <!--
+      <div class="form-group">
+        <h5>What is your purpose?</h5>
+       {{ form.type(class="form-control form-control-lg") }}
+      </div>
+      -->
+
+      <h5> <u> Select your role: </u></h5>
+      <br>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="select_role" value="waste_seller" data-toggle='collapse' data-target='#seller' aria-expanded="false">
+        <label class="form-check-label">Waste seller</label>
+
+      </div>
+
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" name="select_role" value="tech_provider" data-toggle='collapse' data-target='#tech' aria-expanded="false">
+        <label class="form-check-label">Treatment provider</label>
+
+      </div>
+
+      <br>
+
+      <div class="collapse" id="seller">
+
+        <h5>{{form.wasteSelect.label}}</h5>
+        {{ form.wasteSelect(class="form-control form-control-lg") }}
+        <small id="wasteName" class="form-text text-muted">
+          If not in the list, please <a class="ml-2" style="margin: 0 auto" href="{{ url_for('matching') }}">register your waste</a> with us first
+        </small>
+        <br>
+
+      </div>
+
+
+      <div class="collapse" id="tech">
+
+        <h5>{{form.techSelect.label}}</h5>
+        {{ form.techSelect(class="form-control form-control-lg") }}
+        <small id="wasteName" class="form-text text-muted">
+          If not in the list, please <a class="ml-2" style="margin: 0 auto" href="{{ url_for('matching') }}">register your technology</a> with us first
+        </small>
+        <br>
+
+      </div>
+
+      <br>
+
+      <div class="form-group">
+        {{ form.submit(class="btn btn-success btn-lg") }}
+      </div>
+    </form>
+  </div> 
+    <br>
+
+  <div class="content-section" style="margin: 0 auto">
+    <h5>View past matching results</h5>
+    <br>
+    <div class="form-group">
+      <a class="btn btn-outline-primary" href="{{ url_for('dispatch_matching_results') }}" role="button">View Results</a>
+    </div>
+  </div>
+
+
+
+
+{% endblock content %}
+
+
+

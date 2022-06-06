@@ -12,12 +12,13 @@ from sqlalchemy.sql.functions import coalesce
 ###########################################       Matching Algorithm for Waste Sellers      ############################
 
 
-def matching_algorithm_seller(giveoutwasteId):
+def matching_algorithm_seller(giveoutwasteId, techId = None):
 
-    waste = WasteDB.query.filter_by(id=giveoutwasteId).first()
+    waste = WasteDB.query.filter_by(id=int(giveoutwasteId)).first()
 
  
-    query = TechnologyDB.query.filter(TechnologyDB.materialId == str(waste.materialID),
+    query = TechnologyDB.query.filter(  or_(TechnologyDB.id == int(techId), techId == None),
+                                        TechnologyDB.materialId == str(waste.materialID),
                                         or_(and_(coalesce(TechnologyDB.CN_min, 0) <= coalesce(waste.CNratio, 0), coalesce(TechnologyDB.CN_max, 999) >= coalesce(waste.CNratio, 0)),TechnologyDB.CN_criteria != '1'),
                                         or_(and_(coalesce(TechnologyDB.pH_min, 0) <= coalesce(waste.pH, 0), coalesce(TechnologyDB.pH_max, 14) >= coalesce(waste.pH, 0)), TechnologyDB.pH_criteria != '1'),
                                         or_(and_(coalesce(TechnologyDB.cellulose_min, 0) <= coalesce(waste.cellulosicValue, 0), coalesce(TechnologyDB.cellulose_max, 100) >= coalesce(waste.cellulosicValue, 0)), TechnologyDB.cellulose_criteria != '1'),

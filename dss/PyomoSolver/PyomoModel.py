@@ -19,26 +19,13 @@ def runModel():
     os.chdir('dss/PyomoSolver')
     #os.chdir('PyomoSolver')
     
+    base_data = pd.read_excel('data_input.xlsx', None)
 
-    base_data = DataView.from_excel('case_data.xlsx', ['entity', 'material'])
+    supply = base_data['supply'].set_index(['id', "materialId"])
 
+    demand = base_data['demand'].set_index(['id', "materialId"])
 
-    agent = base_data['entity']
-    agent = agent.rename(columns={'entity': 'name'})
-
-    material = base_data['material']
-    material = material.rename(columns={'material': 'name'})
-
-    supply = base_data['industry_supply']
-    supply.index.names = ['agent_id', 'material_id']
-
-    demand = base_data['industry_demand']
-    demand.index.names = ['agent_id', 'material_id']
-
-    distance = base_data['distance']
-    distance = distance.reset_index().melt(id_vars='entity')
-    distance = distance.rename(columns={'entity': 'producer_id', 'variable': 'consumer_id', 'value': 'distance'})
-    distance = distance.set_index(['producer_id', 'consumer_id'])
+    distance = base_data['distance'].set_index(['seller_id', "buyer_id"])
     distance = distance.dropna()
 
     edges = pd.merge(
@@ -56,7 +43,13 @@ def runModel():
 
     E = edges.index
 
-
+    # parameters
+    r_p = supply.reservePrice
+    r_c = demand.reservePrice
+    mu = distance.distance
+    tau = supply.deliveryFee
+    S_bar = supply.quantity
+    D_bar = demand.quantity
 
     # building the model
     model = ConcreteModel()
@@ -66,26 +59,13 @@ def runModel():
     model.supply = Var(E,domain=NonNegativeReals)
     model.demand = Var(E,domain=NonNegativeReals)
 
-
-
-    # declare objective
-    r_p = supply.reserve_price
-    r_c = demand.reserve_price
-    mu = distance.distance
-    tau = supply.delivery_fee
-
-    #Objective function
+        #Objective function
     # Objective = producer_surplus + consumer_surplus - delivery_fees
     model.surplus = Objective(expr = 
         sum(-r_p[i,m] * model.supply[i,j,m] for i,j,m in E)                #producer surplus
         +  sum(r_c[j,m] * model.demand[i,j,m] for i,j,m in E)              #consumer surplus
         -  sum(mu[i,j] * tau[i,m] * model.demand[i,j,m] for i,j,m in E)    #delivery fees
         ,sense = maximize)
-
-
-    # declare constraints
-    S_bar = supply.quantity
-    D_bar = demand.quantity
 
     # Constraints
 
@@ -103,7 +83,6 @@ def runModel():
         x_jm = sum(model.demand[i,j,m] for i,j,m in E_jm) <= D_bar[j,m]
         model.demand_capacity.add(x_jm)
 
-
     model.market_equilibrium = ConstraintList()
     for i,j,m in edges.index:
         x_ijm = model.demand[i,j,m] - model.supply[i,j,m] == 0
@@ -111,9 +90,8 @@ def runModel():
 
     # solve
 
-    SolverFactory('cbc').solve(model).write()
-
-
+    solver = SolverFactory('cbc')
+    results = solver.solve(model)
 
     demand_quantity = []
     for i,j,m in E:
@@ -123,13 +101,13 @@ def runModel():
     market_equilibrium_val = []
     for index in model.market_equilibrium:
         market_equilibrium_val.append(-model.dual[model.market_equilibrium[index]])
-        
 
     soln = pd.DataFrame(
         data = map(list, zip(*[market_equilibrium_val,demand_quantity])), #transpose data
         index = pd.MultiIndex.from_tuples(E, names=['producer_id', 'consumer_id', 'material_id']),
-        columns = ['price','quantity'],
-    )
+        columns = ['price','quantity'])
+        
     soln = soln[soln!=0].dropna()
+
     
     return soln
