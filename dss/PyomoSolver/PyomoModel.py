@@ -16,10 +16,10 @@ from .data import DataView
 
 def runModel():
     originalPath = os.getcwd()
-    os.chdir('dss/PyomoSolver')
+    #os.chdir('dss/PyomoSolver')
     #os.chdir('PyomoSolver')
     
-    base_data = pd.read_excel('data_input.xlsx', None)
+    base_data = pd.read_excel('dss/PyomoSolver/data_input.xlsx', None)
 
     supply = base_data['supply'].set_index(['id', "materialId"])
 

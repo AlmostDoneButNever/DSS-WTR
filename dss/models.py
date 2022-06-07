@@ -179,8 +179,8 @@ class Giveoutwaste(db.Model):
 
 class WasteDB(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
-    materialID = db.Column(db.Integer, nullable=False)
-    wasteID = db.Column(db.String(1000), nullable=False)
+    materialId = db.Column(db.Integer, nullable=False)
+    wasteId = db.Column(db.String(1000), nullable=False)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     type = db.Column(db.String(1000))
     description = db.Column(db.String(1000))

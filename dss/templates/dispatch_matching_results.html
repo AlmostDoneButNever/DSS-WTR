@@ -66,43 +66,47 @@ span {
       <legend class="border-bottom mb-4">Recommended Trading Plan</legend>
       <br>
         
-        {% if sell %}
+        {% if sellers %}
           <h5 class="font-weight-normal">Selling Waste</h5>
 
           <table class="table" id="dispatch_matching_results" >
             <thead>
               <tr>
                 <th scope="col">No.</th>
+                <th scope="col">Product Name</th>
                 <th scope="col">Material</th>
-                <th scope="col">Buyer</th>
-                <th scope="col">Postal<br>Code</th>   
-                <th scope="col">Final Unit Selling<br>Price (SGD/t)</th>
-                <th scope="col">Selling<br>Quantity (t)</th>
+                <th scope="col">Buyer</th>   
+                <th scope="col">Price (SGD/t)</th>
+                <th scope="col">Quantity (t)</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+
               </tr>
             </thead>
 
             <tbody>
-              {% for sell in sell%}
+              {% for sell in sellers%}
                 <tr>
-                  <td>{{sell.no}}</td>
-                  <td>{{sell.materialSupplyName()}}</td>
-                  <td>{{sell.usernameDemand() | safe}}</td>
-                  <td>{{sell.postalCodeDemand()}}</td>              
-                  <td>{{sell.priceDisplay()}}</td>
-                  <td>{{sell.quantityDisplay()}}</td>
+                  <td>{{sell[0] + 1}}</td>
+                  <td>{{sell[8]}}</td>
+                  <td>{{sell[10]}}</td>
+                  <td>{{sell[11]}}</td>              
+                  <td>{{sell[5]}}</td>
+                  <td>{{sell[6]}}</td>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Start Chat</button></td>
-                  <td><a class="btn btn-outline-success btn-sm" href="{{ url_for('dispatch_matching_results_contact') }}" role="button">Create Synergy</a></td>
+                  <td><a class="btn btn-outline-success btn-sm" href="#" role="button">Create Synergy</a></td>
                 </tr>
               {% endfor %}
             </tbody>
           </table>
-
+          <!--
           {% if supplierSurplus %}
             <div>
               <a class="btn btn-info btn-sm" href="{{ url_for('dispatch_matching_results_savings', date=date, buySell=0) }}" role="button" style="float:right;">View Savings Breakdown</a>
               <h5 class="font-weight-normal">Total Cost Savings: ${{supplierSurplus}}</h5>
             <div>
           {% endif %}
+          -->
 
         {% endif %}
 
@@ -110,7 +114,7 @@ span {
         <br>
         <br>
 
-        {% if buy %}
+        {% if buyers %}
 
           <h5 class="font-weight-normal">Purchasing Resource</h5>
 
@@ -118,39 +122,40 @@ span {
             <thead>
               <tr>
                 <th scope="col">No.</th>
+                <th scope="col">Product Name</th>
                 <th scope="col">Material</th>
-                <th scope="col">Seller</th>
-                <th scope="col">Postal<br>Code</th>
-                <!-- <th scope="col">Transportation<br>Distance (km)</th>  
-                <th scope="col">Transportation<br>Cost (SGD/t/km)</th> --> 
-                <th scope="col">Final Unit Purchasing<br>Price (SGD/t)</th>
-                <th scope="col">Purchasing<br>Quantity (t)</th>
+                <th scope="col">Seller</th>   
+                <th scope="col">Price (SGD/t)</th>
+                <th scope="col">Quantity (t)</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+
               </tr>
             </thead>
 
             <tbody>
-              {% for buy in buy%}
+              {% for buy in buyers%}
                 <tr>
-                  <td>{{buy.no}}</td>
-                  <td>{{buy.materialSupplyName()}}</td>
-                  <td>{{buy.usernameSupply() | safe}}</td>
-                  <td>{{buy.postalCodeSupply()}}</td>
-                  <!-- <td>{{buy.transportDist()}}</td>
-                  <td>{{buy.transportationCost()}}</td> -->
-                  <td>{{buy.priceDisplay()}}</td>
-                  <td>{{buy.quantityDisplay()}}</td>
+                  <td>{{buy[0] + 1}}</td>
+                  <td>{{buy[8]}}</td>
+                  <td>{{buy[10]}}</td>
+                  <td>{{buy[11]}}</td>              
+                  <td>{{buy[5]}}</td>
+                  <td>{{buy[6]}}</td>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Start Chat</button></td>
-                  <td><a class="btn btn-outline-success btn-sm" href="{{ url_for('dispatch_matching_results_contact') }}" role="button">Create Synergy</a></td>
+                  <td><a class="btn btn-outline-success btn-sm" href="#" role="button">Create Synergy</a></td>
                   
                 </tr>
               {% endfor %}
             </tbody>
           </table>
-          
+
+          <!--
           {% if demandSurplus %}
               <a class="btn btn-info btn-sm" href="{{ url_for('dispatch_matching_results_savings', date=date, buySell=1) }}" role="button" style="float:right;">View Savings Breakdown</a>
               <h5 class="font-weight-normal">Total Cost Savings: ${{demandSurplus}}</h5>
           {% endif %}
+          -->
 
         {% endif %}
     
@@ -158,7 +163,7 @@ span {
     <br>
     <br>
     <div>
-      <a class="btn btn-success" href="{{ url_for('dispatch_matching_results_contact') }}" role="button">Accept all Recommendations</a>
+      <a class="btn btn-success" href="#" role="button">Accept all Recommendations</a>
     </div>
   {% endif %}
 
