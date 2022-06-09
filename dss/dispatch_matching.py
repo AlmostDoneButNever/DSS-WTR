@@ -204,11 +204,10 @@ def dispatch_matching_results():
     buyer_df = pd.read_sql_table('Dispatchmatchingdemand', db.session.bind).set_index('id')
     user_df = pd.read_sql_table('user', db.session.bind).set_index('id')
 
-    userId = current_user.id
+    
+    supplyIds = pd.read_sql_query(sql = Dispatchmatchingsupply.query.filter(Dispatchmatchingsupply.userId == current_user.id).statement, con=db.session.bind).set_index('id')
 
-    supplyIds = pd.read_sql_query(sql = Dispatchmatchingsupply.query.filter(Dispatchmatchingsupply.userId == userId).statement, con=db.session.bind).set_index('id')
-
-    print(supplyIds)
+  
 
     sellers = pd.read_sql_query(sql = Dispatchmatchingresults.query.filter(Dispatchmatchingresults.supplyId.in_(supplyIds.index), Dispatchmatchingresults.date == form.date.data).statement, con=db.session.bind)
     sellers['supplyName']  = ''
@@ -217,7 +216,7 @@ def dispatch_matching_results():
     sellers['buyerName']  = ''
 
 
-    demandIds = pd.read_sql_query(sql = Dispatchmatchingdemand.query.filter(userId == userId).statement, con=db.session.bind).set_index('id')
+    demandIds = pd.read_sql_query(sql = Dispatchmatchingdemand.query.filter(Dispatchmatchingdemand.userId == current_user.id).statement, con=db.session.bind).set_index('id')
 
     buyers = pd.read_sql_query(sql = Dispatchmatchingresults.query.filter(Dispatchmatchingresults.demandId.in_(demandIds.index), Dispatchmatchingresults.date == form.date.data).statement, con=db.session.bind)
     buyers['supplyName']  = ''
@@ -227,6 +226,13 @@ def dispatch_matching_results():
 
     sellers_list = []
     buyers_list = []
+
+    print(supplyIds)
+    print(sellers)
+
+    print(demandIds)
+    print(buyers)
+
 
     if request.method == 'POST':
 
