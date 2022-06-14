@@ -13,8 +13,7 @@ class FoodStandard(object):
                             "dry":["Dry/powdered",0,10],
                             "swet":["Slightly wet",10,30],
                             "wet":["Wet",30,50],
-                            "liquid":["Liquid",50,70],
-                            "not sure":["Not sure",70,100]
+                            "liquid":["Liquid",50,100]
                         }
 
         self.homogeneity = {  #  key              label   lb ub   
