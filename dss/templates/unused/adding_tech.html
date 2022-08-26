@@ -1,0 +1,43 @@
+{% extends "normal_layout.html" %}
+{% block content %}
+
+<h3 class="box-title">Capacity Planning</h3>
+<p class="text-muted">Adding New Technology</code></p>
+<div class="col-lg-8 col-xlg-9 col-md-12">
+    <div class="card">
+      <div class="card-body">
+        
+        <form class="form-horizontal form-material" method='POST' enctype="multipart/form-data">
+        
+        {{form.csrf_token}} 
+        
+          <br>
+          <div class="form-group mb-4">
+            <label class="col-md-12 p-0">Select Technology to add</label>
+            <div class="col-md-12 border-bottom p-0">
+              {{ form.technologyID(class="form-control form-control-sm") }}
+            </div>
+          </div>
+          
+          <div class="form-group mb-4">
+            <div class="col-sm-12">
+              {{ form.submit(class="btn btn-success btn-lg") }}
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+        <!-- ============================================================== -->
+        <!-- End PAge Content -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Right sidebar -->
+        <!-- ============================================================== -->
+        <!-- .right-sidebar -->
+        <!-- ============================================================== -->
+        <!-- End Right sidebar -->
+        <!-- ============================================================== -->
+    </div>
+{% endblock content %}

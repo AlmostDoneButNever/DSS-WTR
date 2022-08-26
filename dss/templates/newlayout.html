@@ -26,8 +26,11 @@
     <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='ample/css/style.min.css')}}" rel="stylesheet">
 
-
-
+    <!-- For data table pagination-->
+        <!-- Datatable plugin CSS file -->
+        <link rel="stylesheet" href= "https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+            
+                   
     
 </head>
 
@@ -126,6 +129,8 @@
             <nav class="sidebar-nav">
                 <ul id="sidebarnav">
                     <!-- User Profile-->
+                    <!--
+
                     <li class="sidebar-item pt-2">
                         <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url_for('dashboard')}}"
                             aria-expanded="false">
@@ -133,15 +138,17 @@
                             <span class="hide-menu">Dashboard</span>
                         </a>
                     </li>
-                    <!--
+
+                -->
+                    
                     <li class="sidebar-item">
-                        <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url_for('account')}}"
+                        <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url_for('profile', user_id = current_user.id)}}"
                             aria-expanded="false">
                             <i class="fa fa-user" aria-hidden="true"></i>
                             <span class="hide-menu">Profile</span>
                         </a>
                     </li>
-                    -->
+                    
                     <li class="sidebar-item">
                         <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ url_for('matching')}}"
                             aria-expanded="false">
@@ -323,6 +330,15 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
 
+<!-- jQuery library file -->
+<script type="text/javascript" 
+        src="https://code.jquery.com/jquery-3.5.1.js"> 
+</script>
+    
+<!-- Datatable plugin JS library file -->
+<script type="text/javascript" src=
+    "https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"> 
+</script>
 
 </body>
 

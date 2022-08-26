@@ -2,7 +2,7 @@ import secrets
 import os
 from PIL import Image 
 
-from flask import render_template
+from flask import render_template, send_from_directory
 from flask import url_for 
 from flask import flash 
 from flask import redirect
@@ -13,35 +13,40 @@ from dss.models import (User, Post)
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
 
+from apscheduler.schedulers.blocking import BlockingScheduler
+from flask_apscheduler import APScheduler
+import json
+from datetime import datetime
+import pandas as pd
+
+from dss.models import (User, MaterialsDB, WasteDB,TechnologyDB)
+from flask import current_app
+
+
 @app.route("/") 
 def home():
-    return render_template('index.html')
+    print("this is home")
+    return render_template('/base/index.html')
 
 @app.route("/index")
 def index():
-    return render_template('index.html')
+    return render_template('/base/index.html')
 
 @app.route("/dashboard")
 @login_required
 def dashboard():
     #posts=db.execute("SELECT * FROM post order by id")
-    return render_template('dashboard.html')
+    return render_template('/base/dashboard.html')
 
-'''
-@app.route("/home") 
-@login_required
-def home():
-    return render_template('dashboard.html') 
-'''
 @app.route("/about")
 def about():
-    return render_template('about.html', title='About') 
+    return render_template('/base/about.html', title='About') 
 
 @app.route("/posts_home")
 def posts_home():
     page = request.args.get('page', 1, type=int) 
     posts = Post.query.paginate(page=page, per_page=2) 
-    return render_template('posts_home.html', title="Posts Home", posts=posts)
+    return render_template('/base/posts_home.html', title="Posts Home", posts=posts)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -56,7 +61,7 @@ def register():
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
         return redirect(url_for('login'))
-    return render_template('register.html', title="Register", form=form)
+    return render_template('/base/register.html', title="Register", form=form)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -72,7 +77,7 @@ def login():
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
 
-    return render_template('login.html', title="Login", form=form)
+    return render_template('/base/login.html', title="Login", form=form)
 
 @app.route("/logout")
 def logout():
@@ -114,7 +119,7 @@ def account():
 @app.route("/post/<int:post_id>")
 def post(post_id):
     post = Post.query.get_or_404(post_id) 
-    return render_template('Post.html', title=post.title, post=post)
+    return render_template('/base/Post.html', title=post.title, post=post)
 
 @app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
 @login_required
@@ -146,7 +151,7 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
     flash('Your post has been deleted!', 'success')
-    return redirect(url_for('home'))
+    return redirect(url_for('/base/home'))
 
 @app.route("/user/<string:username>") 
 def user_posts(username):
@@ -156,7 +161,7 @@ def user_posts(username):
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=2) 
 
-    return render_template('user_posts.html', posts=posts, user=user) 
+    return render_template('/base/user_posts.html', posts=posts, user=user) 
 
 def send_reset_email(user):
     token = user.get_reset_token()
@@ -178,7 +183,7 @@ def reset_request():
         send_reset_email(user)
         flash('An email has been sent with instructions to reset your password.', 'info')
         return redirect(url_for('login'))
-    return render_template('reset_request.html', title="Reset Password", form=form)
+    return render_template('/base/reset_request.html', title="Reset Password", form=form)
 
 @app.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
@@ -196,5 +201,43 @@ def reset_token(token):
         db.session.commit()
         flash("Your password has been updated! You are now able to log in", 'success') 
         return redirect(url_for('login'))
-    return render_template('reset_token.html', title='Reset Password', form=form)
+    return render_template('/base/reset_token.html', title='Reset Password', form=form)
 
+
+@app.route("/profile/<user_id>")
+@login_required 
+def profile(user_id):
+    user = User.query.filter_by(id=int(user_id)).first()
+    waste = WasteDB.query.filter_by(userId=int(user_id)).all()
+    tech = TechnologyDB.query.filter_by(userId=int(user_id)).all()
+
+    
+    return  render_template('/base/profile.html', title='My Profile', user = user, waste = waste, tech = tech)
+
+
+@app.route("/waste/<waste_id>")
+@login_required 
+def waste(waste_id):
+    waste = WasteDB.query.filter_by(id=waste_id).first()
+
+    supplier = User.query.filter_by(id=int(waste.userId)).first()
+
+    
+    return  render_template('/base/waste.html', title='Waste information', waste = waste, supplier = supplier)
+
+@app.route("/tech/<tech_id>")
+@login_required 
+def technology(tech_id):
+    tech = TechnologyDB.query.filter_by(id=int(tech_id)).first()
+
+    tech_provider = User.query.filter_by(id=int(tech.userId)).first()
+
+    
+    return  render_template('/base/technology.html', title='Waste information', tech = tech, tech_provider = tech_provider)
+
+
+@app.route('/uploads/<filename>')
+def download_file(filename):
+    path = os.path.join(current_app.root_path, "uploads")
+    print(path)
+    return send_from_directory(path, filename)

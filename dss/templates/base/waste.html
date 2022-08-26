@@ -1,0 +1,36 @@
+{% extends "normal_layout.html" %}
+{% block content %}
+
+
+<div>
+    <legend class="border-bottom mb-4 bg-primary text-white"><b> Waste Information</legend>
+    
+        <h5>Name: {{waste.description}}</h5>
+        <h5>Supplier: {{supplier.username}}</h5>
+        <h5>Type: {{waste.type}}</h5>
+        <h5>Size: {{waste.size}}</h5>
+        <h5>Impurities: {{waste.impurities}}</h5>
+        <h5>Lab: {{waste.lab}}</h5>
+        <h5>Moisture Level: {{waste.moistureType}} ({{waste.moistureValue}} wt%)</h5>
+        <h5>Cellulose Content: {{waste.cellulosicValue}} wt%</h5>
+        <h5>Homogeneity: {{waste.HomogeneityType}}</h5>
+        <h5>pH: {{waste.pH}}</h5>
+        <h5>Carbon-to-nitrogen ratio: {{waste.CNratio}}</h5>
+        <h5>Last created/modified: {{waste.date}}</h5>
+</div> 
+
+<br>
+
+<div>
+    <a href="{{ url_for('profile', user_id = supplier.id)}}" target="_blank"> View Supplier Profile </a>
+
+</div>
+
+<div>
+    <a href="{{ url_for('download_file', filename = waste.lab_report_path) }}" target="_blank"> View Lab Report </a>
+
+</div>
+
+{% endblock content %}
+
+

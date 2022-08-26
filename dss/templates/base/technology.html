@@ -1,0 +1,30 @@
+{% extends "normal_layout.html" %}
+{% block content %}
+
+
+<div>
+    <legend class="border-bottom mb-4 bg-primary text-white"><b> Waste Treatment Technology Information</legend>
+    
+        <h5>Name: {{tech.description}}</h5>
+        <h5>Technology Provider: {{tech_provider.username}}</h5>
+        <h5>Product: {{tech.product_list}}</h5>
+        <h5>Feedstock size: {{tech.size}}</h5>
+        <h5>Feedstock moisture level: {{tech.moisture}}</h5>
+        <h5>Feedstock cellulose content: {{tech.cellulose_min}} - {{tech.cellulose_max}} wt%</h5>
+        <h5>Feedstock homogeneity: {{tech.homogeneity}}</h5>
+        <h5>Feedstock pH: {{tech.pH_min}} - {{tech.pH_max}}</h5>
+        <h5>Feedstock carbon-to-nitrogen ratio: {{tech.CN_min}} - {{tech.CN_max}}</h5>
+
+        <h5>Last created/modified: {{tech.date}}</h5>
+</div> 
+
+<br>
+
+<div>
+    <a href="{{ url_for('profile', user_id = tech_provider.id)}}" target="_blank"> View Treatment Provider Profile </a>
+
+</div>
+
+{% endblock content %}
+
+

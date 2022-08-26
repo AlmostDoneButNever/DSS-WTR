@@ -18,3 +18,4 @@ Pyomo==6.2
 docplex==2.22.213
 PyUtilib==6.0.0
 python-dotenv==0.20.0
+apscheduler==3.9.1

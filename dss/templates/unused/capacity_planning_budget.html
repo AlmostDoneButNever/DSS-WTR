@@ -1,0 +1,43 @@
+{% extends "normal_layout.html" %}
+{% block content %}
+
+<!-- ============================================================== -->
+<!-- Start Page Content -->
+<!-- ============================================================== -->
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="white-box">
+            
+            
+            <form class="form-horizontal form-material" method='POST' enctype="multipart/form-data">
+            
+                {{form.csrf_token}} 
+                <div class="text-center p-20 upgrade-btn">
+
+                    <div class="form-group mb-4">
+                        <label class="col-md-12 p-0">Budget</label>
+                        <div class="col-md-12 border-bottom p-0">
+                            
+                            $<input
+                            type="text"
+                            placeholder="1000000"
+                            class="form-control p-0 border-0"
+                            id="budget" name="budget"
+                            />
+                        </div>
+                        </div>
+                    
+                    <div class="col-sm-12">
+                        <button class="btn btn-success">Submit</button>
+                    </div>
+                </div>
+            
+        </div>
+    </div>
+</div>
+<!-- ============================================================== -->
+<!-- End PAge Content -->
+<!-- ============================================================== -->
+
+{% endblock content %}

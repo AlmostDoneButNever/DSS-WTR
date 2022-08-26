@@ -120,7 +120,8 @@ body {
   line-height: 1.5;
   color: #3e5569;
   text-align: left;
-  background-color: #eef5f9; }
+  background-color: #eef5f9; 
+}
 
 [tabindex="-1"]:focus:not(:focus-visible) {
   outline: 0 !important; }

@@ -1,0 +1,1 @@
+{"start_year": 2022, "start_month": 6, "start_day": 5, "end_year": 2022, "end_month": 8, "end_day": 24, "end_hour": 20, "end_min": 9}

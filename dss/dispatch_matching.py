@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests as r
 from onemapsg import OneMap
 import json
@@ -27,12 +27,15 @@ from .LCCTest import TechSpecifications
 from dss.matching_algorithm import matching_algorithm_seller
 
 from dss.distance import getDistanceMatrix
-  
+
+import time
+from apscheduler.schedulers.blocking import BlockingScheduler
+from flask_apscheduler import APScheduler
+
 
 @app.route("/dispatch_matching", methods=['GET','POST'])
 def dispatch_matching():
     form = dispatchMatchingForm()
-
 
     prevWasteEntries = [(waste.id, waste.description + ' - ' + waste.date[:10]) for waste in WasteDB.query.filter_by(userId=int(current_user.id)).all()]
     prevWasteEntries.insert(0,(None,None))
@@ -42,14 +45,29 @@ def dispatch_matching():
     prevTechEntries.insert(0,(None,None))
     form.techSelect.choices = prevTechEntries
 
+    f = open('dss/templates/dispatch_matching/market_clear_date.txt', 'r')
+    contents= f.read()
+    set_date = json.loads(contents)
+
+    start_date = datetime(set_date['start_year'], set_date['start_month'], set_date['start_day'])
+    end_date = datetime(set_date['end_year'], set_date['end_month'], set_date['end_day'])
+    now = datetime.now()
+
     if request.method == 'POST':
-        if request.form['select_role'] == 'waste_seller':
-            seller_wasteid = form.wasteSelect.data
-            return redirect(url_for('dispatch_matching_questions_waste', seller_wasteid = seller_wasteid))
+
+        if now > start_date and now < end_date:
+
+            if request.form['select_role'] == 'waste_seller':
+                seller_wasteid = form.wasteSelect.data
+                return redirect(url_for('dispatch_matching_questions_waste', seller_wasteid = seller_wasteid))
+            else:
+                buyer_techid = form.techSelect.data
+                return redirect(url_for('dispatch_matching_questions_resource', buyer_techid = buyer_techid))
         else:
-            buyer_techid = form.techSelect.data
-            return redirect(url_for('dispatch_matching_questions_resource', buyer_techid = buyer_techid))
-    return render_template('/dispatch_matching/main.html', title="Dispatch Matching", form=form)
+            flash(f'Please wait for the next opening', 'danger')
+
+    return render_template('/dispatch_matching/main.html', title="Dispatch Matching", form=form, start_date = start_date, end_date = end_date)
+
 
 
 @app.route("/dispatch_matching/questions_waste/<seller_wasteid>", methods=['GET','POST'])
@@ -139,9 +157,34 @@ def dispatch_matching_questions_resource(buyer_techid):
     return render_template('/dispatch_matching/questions_resource.html', title="Dispatch Matching Questions", form=form, recommendedReservePrice=recommendedReservePrice, materialId = materialId)
 
 @app.route("/dispatch_matching/export")
-def dispatch_matching_matchtest():
-    seller_df = pd.read_sql_table('Dispatchmatchingsupply', db.session.bind).set_index('id')
-    buyer_df = pd.read_sql_table('Dispatchmatchingdemand', db.session.bind).set_index('id')
+def dispatch_matching_export():
+    pyomo_data_export()
+
+    return redirect(url_for('dispatch_matching'))
+
+@app.route("/dispatch_matching/solve")
+def dispatch_matching_solve():
+    pyomo_solve()
+
+    return redirect(url_for('dispatch_matching'))      
+
+
+
+def pyomo_data_export():
+    print(datetime.now())
+
+    f = open('dss/templates/dispatch_matching/market_clear_date.txt', 'r')
+    contents= f.read()
+    set_date = json.loads(contents)
+
+    start_date = datetime(set_date['start_year'], set_date['start_month'], set_date['start_day'])
+    end_date = datetime(set_date['end_year'], set_date['end_month'], set_date['end_day'])
+
+    seller_df = pd.read_sql_query(sql = Dispatchmatchingsupply.query.filter(Dispatchmatchingsupply.date >= start_date, Dispatchmatchingsupply.date <= end_date).statement, con=db.session.bind).set_index('id')
+    buyer_df = pd.read_sql_query(sql = Dispatchmatchingdemand.query.filter(Dispatchmatchingdemand.date >= start_date, Dispatchmatchingdemand.date <= end_date).statement, con=db.session.bind).set_index('id')
+
+    #seller_df = pd.read_sql_table('Dispatchmatchingsupply', db.session.bind).set_index('id')
+    #buyer_df = pd.read_sql_table('Dispatchmatchingdemand', db.session.bind).set_index('id')
 
 
     distance_df = getDistanceMatrix(seller_df, buyer_df)
@@ -170,13 +213,9 @@ def dispatch_matching_matchtest():
         export_df('demand', buyer_df)
         export_df('distance', distance_df)
     
+    print("export done")
 
-    return redirect(url_for('dispatch_matching'))
-
-
-        
-@app.route("/dispatch_matching/solve")
-def dispatch_matching_solve():
+def pyomo_solve():
 
     solution=PyomoModel.runModel()
     solution = solution.reset_index()
@@ -188,8 +227,49 @@ def dispatch_matching_solve():
         db.session.add(result)
         db.session.commit()
 
+    print("problem solved")
 
-    return redirect(url_for('dispatch_matching'))
+def new_date(set_date, start_date, end_date):
+
+    new_start_date = start_date + timedelta(minutes=2)
+    new_end_date = end_date + timedelta(minutes=2)
+
+    set_date["start_year"] = new_start_date.year
+    set_date["start_month"] = new_start_date.month
+    set_date["start_day"] = new_start_date.day
+
+    set_date["end_year"] = new_end_date.year
+    set_date["end_month"] = new_end_date.month
+    set_date["end_day"] = new_end_date.day
+
+    #open file
+    file = open("dss/templates/dispatch_matching/market_clear_date.txt", "w")
+    
+    #convert variable to string
+    name = repr(set_date).replace("'","\"")
+    file.write(name)
+    
+    #close file
+    file.close()
+
+
+f = open('dss/templates/dispatch_matching/market_clear_date.txt', 'r')
+contents= f.read()
+set_date = json.loads(contents)
+
+start_date = datetime(set_date['start_year'], set_date['start_month'], set_date['start_day'])
+end_date = datetime(set_date['end_year'], set_date['end_month'], set_date['end_day'])
+
+scheduler = APScheduler()
+scheduler.add_job(id = 'export', func=pyomo_data_export, trigger='date', run_date=datetime(set_date['end_year'],set_date['end_month'],set_date['end_day'],set_date['end_hour'],set_date['end_min'],0) ,args=None)
+
+scheduler.add_job(id = 'solve', func=pyomo_solve, trigger='date', run_date=datetime(set_date['end_year'],set_date['end_month'],set_date['end_day'],set_date['end_hour'],set_date['end_min'] + 1,0) ,args=None)
+
+scheduler.add_job(id = 'new_timeframe', func=new_date, trigger='date', run_date=datetime(set_date['end_year'],set_date['end_month'],set_date['end_day'],set_date['end_hour'],set_date['end_min'] + 2 ,0) ,args=[set_date,start_date, end_date])
+
+scheduler.start()
+print("task scheduled") 
+        
 
 
 @app.route("/dispatch_matching/results", methods=['GET','POST'])
@@ -279,6 +359,6 @@ def dispatch_matching_results():
             buyers_list = buyers.values.tolist()
             print(buyers_list)
            
-        return render_template('dispatch_matching_results.html', title="Dispatch Matching Results", form=form, match = True, sellers = sellers_list, buyers = buyers_list)
+        return render_template('/dispatch_matching/dispatch_matching_results.html', title="Dispatch Matching Results", form=form, match = True, sellers = sellers_list, buyers = buyers_list)
 
-    return render_template('dispatch_matching_results.html', title="Dispatch Matching Results", form=form)
+    return render_template('/dispatch_matching/dispatch_matching_results.html', title="Dispatch Matching Results", form=form)

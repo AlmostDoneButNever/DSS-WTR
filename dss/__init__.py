@@ -1,9 +1,11 @@
+from datetime import datetime
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
+
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
@@ -25,7 +27,7 @@ app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
 app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASS')
 mail = Mail(app)
 
-app.config['UPLOAD'] = '/home/ubuntu/DSS/dss/uploads'
+app.config['UPLOAD'] = 'dss/uploads'
 
 
 from dss import routes 

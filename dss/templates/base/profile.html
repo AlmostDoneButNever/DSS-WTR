@@ -1,0 +1,122 @@
+{% extends "normal_layout.html" %}
+{% block content %}
+
+<style>
+
+/*#matching_results tr:nth-child(even){background-color: #f2f2f2;}*/
+
+#matching_results tr:hover {background-color: #ddd;}
+
+#matching_results th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: white;
+}
+
+#matching_results tr {
+  text-align: left;
+
+}
+
+span {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+</style>
+<div class="content-section" style="margin: 0 auto">
+    <legend class="border-bottom mb-4 bg-primary text-white"><b> User Information</legend>
+    
+        <h5>Name: {{user.username}}</h5>
+        <h5>Email Address: {{user.email}}</h5>
+
+</div> 
+<br>
+<br>
+
+<div class="content-section" style="margin: 0 auto">
+    <legend class="border-bottom mb-4 bg-primary text-white"><b> User's Waste Materials </b></legend>
+
+
+    <table id = "waste_table" class="table" style="width:100%" id="matching_results" >
+      <thead>
+        <tr>
+          <th scope="col" style="width:50%">Description</th>
+          <th scope="col">Last created/modified</th>
+          <th scope="col"> </th>
+
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for item in waste %}
+        <tr>
+          <td>{{item.description}}</td>
+          <td>{{item.date}}</td>
+          <td> <a href="#"> View/Edit </a></td>
+
+        </tr>
+        {% endfor %}
+
+        {% for item in waste %}
+        <tr>
+          <td>{{item.description}}</td>
+          <td>{{item.date}}</td>
+          <td> <a href="#"> View/Edit </a></td>
+
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+
+  </div>   
+
+  <br>
+  <br>
+
+  <div class="content-section" style="margin: 0 auto">
+    <legend class="border-bottom mb-4 bg-primary text-white"><b> User's Waste Treatment Technologies</legend>
+
+
+    <table id = "tech_table" class="table" style="width:100%" id="matching_results" >
+      <thead>
+        <tr>
+          <th scope="col" style="width:50%">Description</th>
+          <th scope="col">Last created/modified</th>
+          <th scope="col"> </th>
+
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for item in tech %}
+        <tr>
+          <td>{{item.description}}</td>
+          <td>{{item.date}}</td>
+          <td>View/Edit</td>
+
+        </tr>
+      {% endfor %}
+
+      </tbody>
+    </table>
+
+  </div> 
+
+<script>
+
+    /* Initialization of datatable */
+    $(document).ready(function() {
+        $('#waste_table').DataTable({ });
+    });
+
+    $(document).ready(function() {
+        $('#tech_table').DataTable({ });
+    });
+</script>
+
+{% endblock content %}
+
+

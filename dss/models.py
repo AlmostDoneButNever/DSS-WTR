@@ -196,6 +196,8 @@ class WasteDB(db.Model):
     CNratio = db.Column(db.Float(500))
 
     date = db.Column(db.String(100))
+    lab_report_path = db.Column(db.String(1000))
+
 
 class Processwaste(db.Model):
     id = db.Column(db.Integer, primary_key = True)

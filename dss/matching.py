@@ -87,7 +87,8 @@ def matching_questions_sellers(materialId):
         #save file
         if request.files["file"]:
             file = request.files["file"] 
-            file.save(os.path.join(app.config['UPLOAD'],file.filename))
+            filename = str(datetime.now()).replace(":","_") + "_" + file.filename
+            file.save( os.path.join(app.config['UPLOAD'], filename))
            
             #process file
             reportCode = 1
@@ -96,8 +97,7 @@ def matching_questions_sellers(materialId):
         
         #convert output to a code    
         try:
-            output = AddWasteToDB(materialId, request)
-            print(output)
+            output = AddWasteToDB(materialId, request, filename)
             #success message:
             #flash(f'ID: {questionCode}', 'success')
             flash('Your response has been recorded!','success')  
