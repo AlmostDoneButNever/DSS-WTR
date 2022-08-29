@@ -58,10 +58,19 @@ class Post(db.Model):
     def __repr__(self): 
         return f"Post('{self.title}', '{self.date_posted}')"
 
+class MaterialsDB(db.Model):
+    id = db.Column(db.Integer, primary_key = True) 
+    category = db.Column(db.String(100), nullable=False)
+    material = db.Column(db.String(100), nullable=False)
+    #technologydbs = db.relationship('TechnologyDB',  
+    #                                    primaryjoin="MaterialsDB.material == TechnologyDB.materialType", back_populates = 'waste')
+
 class TechnologyDB(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
     userId = db.Column(db.Integer, nullable=False)
     materialId = db.Column(db.Integer)
+    #materialType = db.Column(db.String(100), db.ForeignKey('MaterialsDB.material'))
+    materialType = db.Column(db.String(100))
     description = db.Column(db.String(100))
     technology = db.Column(db.String(100))
     product_list = db.Column(db.String(100))
@@ -130,10 +139,6 @@ class Materials(db.Model):
     material = db.Column(db.String(100), nullable=False)
     questionId = db.Column(db.String(100), nullable=False)
 
-class MaterialsDB(db.Model):
-    id = db.Column(db.Integer, primary_key = True) 
-    category = db.Column(db.String(100), nullable=False)
-    material = db.Column(db.String(100), nullable=False)
 class RSP(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
     maincat = db.Column(db.String(100), nullable=False)
@@ -180,6 +185,7 @@ class Giveoutwaste(db.Model):
 class WasteDB(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
     materialId = db.Column(db.Integer, nullable=False)
+    materialType = db.Column(db.String(100))
     wasteId = db.Column(db.String(1000), nullable=False)
     userId = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     type = db.Column(db.String(1000))
@@ -197,6 +203,7 @@ class WasteDB(db.Model):
 
     date = db.Column(db.String(100))
     lab_report_path = db.Column(db.String(1000))
+
 
 
 class Processwaste(db.Model):

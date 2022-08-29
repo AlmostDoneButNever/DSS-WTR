@@ -5,17 +5,43 @@
 <div>
     <legend class="border-bottom mb-4 bg-primary text-white"><b> Waste Treatment Technology Information</legend>
     
-        <h5>Name: {{tech.description}}</h5>
-        <h5>Technology Provider: {{tech_provider.username}}</h5>
-        <h5>Product: {{tech.product_list}}</h5>
-        <h5>Feedstock size: {{tech.size}}</h5>
-        <h5>Feedstock moisture level: {{tech.moisture}}</h5>
-        <h5>Feedstock cellulose content: {{tech.cellulose_min}} - {{tech.cellulose_max}} wt%</h5>
-        <h5>Feedstock homogeneity: {{tech.homogeneity}}</h5>
-        <h5>Feedstock pH: {{tech.pH_min}} - {{tech.pH_max}}</h5>
-        <h5>Feedstock carbon-to-nitrogen ratio: {{tech.CN_min}} - {{tech.CN_max}}</h5>
+        <h5><b>Name: {{tech.description}}</b></h5>
+        <h5><b>Technology Provider: {{tech_provider.username}}</b></h5>
+        <h5><b>Product: {{tech.product_list}}</b></h5>
+        <br>
+        <h5><b><u>Acceptable feedstock type & conditions </u></b></h5>
 
-        <h5>Last created/modified: {{tech.date}}</h5>
+        {% for entry in all_tech %}
+        <h5>Feedstock type: {{entry.materialType}}</h5>
+
+            {% if entry.size != None %}
+            <h5>Feedstock size: {{entry.size}}</h5>
+            {% endif %}
+
+            {% if entry.moisture != None %}
+            <h5>Feedstock moisture level: {{entry.moisture}}</h5>
+            {% endif %}
+
+            {% if entry.cellulose_min != None %}
+            <h5>Feedstock cellulose content: {{entry.cellulose_min}} - {{entry.cellulose_max}} </h5>
+            {% endif %}
+
+            {% if entry.homogeneity != None %}
+            <h5>Feedstock homogeneity: {{entry.homogeneity}}</h5>
+            {% endif %}
+
+            {% if entry.pH_min != None %}
+            <h5>Feedstock pH: {{entry.pH_min}} - {{entry.pH_max}}</h5>
+            {% endif %}
+
+            {% if entry.CN_min != None %}
+            <h5>Feedstock carbon-to-nitrogen ratio:  {{entry.CN_min}} - {{entry.CN_max}}</h5>
+            {% endif %}
+
+        <br>
+        {% endfor %}
+
+        <h5><b>Last created/modified: {{tech.date}}</b></h5>
 </div> 
 
 <br>

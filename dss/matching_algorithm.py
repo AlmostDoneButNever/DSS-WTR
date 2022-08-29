@@ -32,7 +32,7 @@ def matching_algorithm_seller(giveoutwasteId, techId = None):
     index = 1
     for row in query:
         supplier=(User.query.filter_by(id=row.userId).first().username)
-        result.append([index, row.description, supplier, row.userId, row.date[:10]])
+        result.append([index, row.description, supplier, row.id, row.userId, row.date[:10]])
         index +=1
 
     return result
@@ -78,7 +78,7 @@ def matching_algorithm_rsp(processwasteId):
             supplier=(User.query.filter_by(id=entry.userId).first().username)
             date=str(entry.date)[:10]
 
-            result.append([index, entry.description, supplier, entry.userId, date])
+            result.append([index, entry.description, supplier, entry.id, entry.userId, date])
 
             index += 1
     

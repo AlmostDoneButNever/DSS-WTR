@@ -9,7 +9,8 @@ from flask import redirect
 from flask import request, abort
 from dss import app, db, bcrypt, mail
 from dss.forms import (RegistrationForm,LoginForm, UpdateAccountForm, PostForm,RequestResetForm, ResetPasswordForm) 
-from dss.models import (User, Post)
+from dss.forms import (MaterialsForm) 
+from dss.models import (User, Post, Materials)
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
 
@@ -204,15 +205,27 @@ def reset_token(token):
     return render_template('/base/reset_token.html', title='Reset Password', form=form)
 
 
-@app.route("/profile/<user_id>")
+@app.route("/profile/<user_id>", methods=['GET', 'POST'])
 @login_required 
 def profile(user_id):
+
+    if request.method == 'POST':
+        print(request.form)
+
+        if 'delete_waste_id' in request.form.keys():
+            waste_id = request.form['delete_waste_id']
+            return redirect(url_for('waste_delete', waste_id = waste_id))
+
+        elif 'delete_tech_id' in request.form.keys():
+            tech_id = request.form['delete_tech_id']
+            return redirect(url_for('tech_delete', tech_id = tech_id))
+        
     user = User.query.filter_by(id=int(user_id)).first()
     waste = WasteDB.query.filter_by(userId=int(user_id)).all()
     tech = TechnologyDB.query.filter_by(userId=int(user_id)).all()
-
+    tech_grouped = TechnologyDB.query.filter_by(userId=int(user_id)).group_by(TechnologyDB.date)
     
-    return  render_template('/base/profile.html', title='My Profile', user = user, waste = waste, tech = tech)
+    return  render_template('/base/profile.html', title='My Profile', user = user, waste = waste, tech = tech, tech_grouped = tech_grouped)
 
 
 @app.route("/waste/<waste_id>")
@@ -221,7 +234,6 @@ def waste(waste_id):
     waste = WasteDB.query.filter_by(id=waste_id).first()
 
     supplier = User.query.filter_by(id=int(waste.userId)).first()
-
     
     return  render_template('/base/waste.html', title='Waste information', waste = waste, supplier = supplier)
 
@@ -229,15 +241,60 @@ def waste(waste_id):
 @login_required 
 def technology(tech_id):
     tech = TechnologyDB.query.filter_by(id=int(tech_id)).first()
+    all_tech = TechnologyDB.query.filter_by(description = tech.description, date = tech.date).all()
 
     tech_provider = User.query.filter_by(id=int(tech.userId)).first()
 
-    
-    return  render_template('/base/technology.html', title='Waste information', tech = tech, tech_provider = tech_provider)
+    return  render_template('/base/technology.html', title='Technology information', tech = tech, all_tech =all_tech, tech_provider = tech_provider)
+
+
+@app.route("/newentry/<entry_type>", methods=['GET', 'POST'])
+@login_required 
+def new_entry(entry_type):
+    form = MaterialsForm()
+    form.type.choices = [(material.type, material.type) for material in Materials.query.group_by(Materials.type)]
+    form.material.choices = [(material.id, material.material) for material in MaterialsDB.query.all()]
+
+    wastematerial = [(material.id, material.material) for material in MaterialsDB.query.all()]
+
+    if request.method == 'POST':
+                
+        if entry_type == "waste":
+            return redirect(url_for("matching_questions_sellers",materialId=form.material.data))
+
+        elif entry_type == "tech":
+            
+            materialId = []
+            for key, value in request.form.items():
+                if 'tech_waste_id' in key:
+                    materialId.extend(value)
+
+            return redirect(url_for("matching_questions_rsp",materialId=materialId))
+
+    return render_template("/base/new_entry.html", entry_type = entry_type, form = form, wastematerial = wastematerial)
+
+@app.route("/waste/<waste_id>/delete")
+@login_required 
+def waste_delete(waste_id):
+    waste = WasteDB.query.filter_by(id=waste_id).delete()
+    db.session.commit()
+    flash('Entry removed','success')
+   
+    return  redirect(url_for('profile', user_id = current_user.id))
+
+@app.route("/tech/<tech_id>/delete")
+@login_required 
+def tech_delete(tech_id):
+    tech = TechnologyDB.query.filter_by(id=tech_id).first()
+    all_tech = TechnologyDB.query.filter_by(description = tech.description, date = tech.date).delete()
+    db.session.commit()
+    flash('Entry removed','success')
+   
+    return  redirect(url_for('profile', user_id = current_user.id))
 
 
 @app.route('/uploads/<filename>')
 def download_file(filename):
-    path = os.path.join(current_app.root_path, "uploads")
+    path = os.path.join(app.root_path, "uploads")
     print(path)
-    return send_from_directory(path, filename)
+    return send_from_directory(path, filename) 

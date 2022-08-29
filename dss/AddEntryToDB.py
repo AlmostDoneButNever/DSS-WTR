@@ -16,7 +16,7 @@ def AddWasteToDB(materialId, request, filepath):
                 result = key
                 break
         return result
-
+    
     if materialId == '1':
         description = request.form['description']
         lab = request.form['lab_analysis']
@@ -63,7 +63,7 @@ def AddWasteToDB(materialId, request, filepath):
             moistureType = classify(foodref.moisture.items(), moisture)
 
             # insert into database
-            waste = WasteDB(materialId=int(materialId), wasteId = 'test', userId=int(current_user.id), description=request.form['description'], type = str(food_breakdown),
+            waste = WasteDB(materialId=int(materialId), materialType = 'Food Waste', wasteId = 'test', userId=int(current_user.id), description=request.form['description'], type = str(food_breakdown),
                             size = size, impurities = impurities, lab = lab, moistureType = 'dry', moistureValue = moisture, cellulosicValue = cellulose, 
                             homogeneityType = homogeneityType, homogeneityValue =homogeneityValue, pH = pH,  CNratio = CN_ratio, date=str(datetime.now())[0:19], lab_report_path = filepath)
 
@@ -107,11 +107,11 @@ def AddWasteToDB(materialId, request, filepath):
             
             # insert into database
             if moistureType == 'not sure':
-                waste = WasteDB(materialId=int(materialId), wasteId = 'test', userId=int(current_user.id), description=description, type = str(food_breakdown),
+                waste = WasteDB(materialId=int(materialId),  materialType = 'Food Waste', wasteId = 'test', userId=int(current_user.id), description=description, type = str(food_breakdown),
                                 size = size, impurities = impurities, lab = lab, moistureType = moistureType, moistureValue = moisture, cellulosicValue = cellulose, 
                                 homogeneityType = homogeneityType, pH = pH, CNratio = CN_ratio, date=str(datetime.now())[0:19], lab_report_path = filepath)
             else:    
-                waste = WasteDB(materialId=int(materialId), wasteId = 'test', userId=int(current_user.id), description=description, type = str(food_breakdown),
+                waste = WasteDB(materialId=int(materialId),  materialType = 'Food Waste', wasteId = 'test', userId=int(current_user.id), description=description, type = str(food_breakdown),
                                 size = size, impurities = impurities, lab = lab, moistureType = moistureType, cellulosicValue = cellulose, 
                                 homogeneityType = homogeneityType, pH = pH, CNratio = CN_ratio, date=str(datetime.now())[0:19], lab_report_path = filepath)
             
@@ -152,7 +152,7 @@ def AddWasteToDB(materialId, request, filepath):
 
 
             # insert into database
-            waste = WasteDB(materialId=int(materialId), wasteId = 'test', userId=int(current_user.id), description=request.form['description'], type = type,
+            waste = WasteDB(materialId=int(materialId),  materialType = 'Animal Manure', wasteId = 'test', userId=int(current_user.id), description=request.form['description'], type = type,
                              impurities = impurities, lab = lab, moistureType = moistureType, moistureValue = moisture, cellulosicValue = cellulose, 
                              homogeneityType = homogeneityType, homogeneityValue =homogeneityValue, pH = pH,  CNratio = CN_ratio, date=str(datetime.now())[0:19], lab_report_path = filepath)
 
@@ -179,11 +179,11 @@ def AddWasteToDB(materialId, request, filepath):
             
             # insert into database
             if moistureType == 'not sure':
-                waste = WasteDB(materialId=int(materialId), wasteId = 'test', userId=int(current_user.id), description=description, type = type,
+                waste = WasteDB(materialId=int(materialId),   materialType = 'Animal Manure',  wasteId = 'test', userId=int(current_user.id), description=description, type = type,
                                 impurities = impurities, lab = lab, moistureType = moistureType, moistureValue = moisture, cellulosicValue = cellulose, 
                                 homogeneityType =homogeneityType,  pH = pH, CNratio = CN_ratio, date=str(datetime.now())[0:19], lab_report_path = filepath)
             else:    
-                waste = WasteDB(materialId=int(materialId), wasteId = 'test', userId=int(current_user.id), description=description, type = type,
+                waste = WasteDB(materialId=int(materialId),  materialType = 'Animal Manure',  wasteId = 'test', userId=int(current_user.id), description=description, type = type,
                                 impurities = impurities, lab = lab, moistureType = moistureType,  cellulosicValue = cellulose, 
                                 homogeneityType =homogeneityType, pH = pH, CNratio = CN_ratio, date=str(datetime.now())[0:19], lab_report_path = filepath)
 
@@ -224,7 +224,7 @@ def AddWasteToDB(materialId, request, filepath):
 
 
             # insert into database
-            waste = WasteDB(materialId=int(materialId), wasteId = 'test', userId=int(current_user.id), description=request.form['description'], type = type, size = size,
+            waste = WasteDB(materialId=int(materialId), materialType = 'Wood Waste', wasteId = 'test', userId=int(current_user.id), description=request.form['description'], type = type, size = size,
                              impurities = impurities, lab = lab, moistureType = moistureType, moistureValue = moisture, cellulosicValue = cellulose, 
                              homogeneityType =homogeneityType, homogeneityValue =homogeneityValue,  CNratio = CN_ratio, date=str(datetime.now())[0:19], lab_report_path = filepath)
 
@@ -240,7 +240,7 @@ def AddWasteToDB(materialId, request, filepath):
             
             
             # insert into database
-            waste = WasteDB(materialId=int(materialId), wasteId = 'test', userId=int(current_user.id), description=description, type = type, size = size,
+            waste = WasteDB(materialId=int(materialId), materialType = 'Wood Waste', wasteId = 'test', userId=int(current_user.id), description=description, type = type, size = size,
                                 impurities = impurities, lab = lab, moistureType = moistureType, homogeneityType =homogeneityType, date=str(datetime.now())[0:19], lab_report_path = filepath)
 
 
@@ -300,7 +300,7 @@ def AddTechToDB(materialId, request):
 
 
         tech = TechnologyDB(
-                    materialId='1', userId=int(current_user.id), description=description, technology = technology, 
+                    materialId='1', materialType = 'Food Waste', userId=int(current_user.id), description=description, technology = technology, 
                     product_list = str(product_list), CN_min = data['CN_min'], CN_max = data['CN_max'], pH_min = data['pH_min'], pH_max = data['pH_max'], 
                     cellulose_min = data['cellulose_min'], cellulose_max = data['cellulose_max'], moisture = data['moisture_level'], 
                     homogeneity = data['homogeneity_level'], size = data['size_level'], impurities = data['impurities'],
@@ -356,7 +356,7 @@ def AddTechToDB(materialId, request):
 
 
         tech = TechnologyDB(
-                    materialId='2', userId=int(current_user.id), description=description, technology = technology, 
+                    materialId='2', materialType = 'Animal Manure', userId=int(current_user.id), description=description, technology = technology, 
                     product_list = str(product_list), CN_min = data['CN_min'], CN_max = data['CN_max'], pH_min = data['pH_min'], pH_max = data['pH_max'], 
                     cellulose_min = data['cellulose_min'], cellulose_max = data['cellulose_max'], moisture = data['moisture_level'], 
                     homogeneity = data['homogeneity_level'], size = data['size_level'], impurities = data['impurities'],
@@ -412,7 +412,7 @@ def AddTechToDB(materialId, request):
 
 
         tech = TechnologyDB(
-                    materialId='3', userId=int(current_user.id), description=description, technology = technology, 
+                    materialId='3', materialType = 'Wood Waste', userId=int(current_user.id), description=description, technology = technology, 
                     product_list = str(product_list), CN_min = data['CN_min'], CN_max = data['CN_max'], pH_min = data['pH_min'], pH_max = data['pH_max'], 
                     cellulose_min = data['cellulose_min'], cellulose_max = data['cellulose_max'], moisture = data['moisture_level'], 
                     homogeneity = data['homogeneity_level'], size = data['size_level'], impurities = data['impurities'],

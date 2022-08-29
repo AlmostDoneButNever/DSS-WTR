@@ -20,10 +20,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for index, desc, supplier, userId, date in result %} 
+                        {% for index, desc, supplier, wasteId, userId, date in result %} 
                             <tr>
                                 <td>{{index}}</td>
-                                <td>{{desc}}</td>
+                                <td><a href="{{ url_for('waste', waste_id = wasteId)}}" target="_blank">{{desc}}</a></td>
                                 <td><a href="{{ url_for('profile', user_id = userId)}}" target="_blank"> {{supplier}} </a></td>
                                 <td>{{date}}</td>
                             </tr>

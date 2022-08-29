@@ -110,30 +110,6 @@
         );
     }
 
-	function showForm(){
-		var hiddenInputs = document.getElementsByClassName('hidden');
-
-    for (var i = 0; i != hiddenInputs.length; i++) {
-      hiddenInputs[i].style.display = 'block';
-    } 
-	}
-
-  let maincat_select = document.getElementById('maincat');
-  let subcat_select = document.getElementById('subcat');
-
-  maincat_select.onchange = function(){
-    maincat = maincat_select.value;
-    fetch('/rsp/' + maincat).then(function(response){
-      response.json().then(function(data){
-        console.table(data);
-        let optionHTML = '';
-        for (let subcat of data.subcats){
-          optionHTML += '<option value="' + subcat.id + '">' + subcat.subcat + '</option>';
-        }
-        subcat_select.innerHTML = optionHTML;
-      });
-    });
-  }
 
 </script>
 

@@ -27,8 +27,9 @@
 </div>
 
 <div>
+    {% if waste.lab_report_path %}
     <a href="{{ url_for('download_file', filename = waste.lab_report_path) }}" target="_blank"> View Lab Report </a>
-
+    {% endif %}
 </div>
 
 {% endblock content %}

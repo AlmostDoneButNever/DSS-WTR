@@ -16,11 +16,30 @@ from dss.wasteIdGenerator import getWasteId
 from dss.matching_algorithm import matching_algorithm_seller, matching_algorithm_rsp
 
 from dss.standards import FoodStandard, ManureStandard, WoodStandard
+from dss.forms import dispatchMatchingForm
 
 @app.route("/matching", methods=['GET', 'POST'])
 @login_required
 def matching():
-    return render_template('matching/matching.html')
+    form = dispatchMatchingForm()
+
+    prevWasteEntries = [(waste.id, waste.description + ' - ' + waste.date[:10]) for waste in WasteDB.query.filter_by(userId=int(current_user.id)).all()]
+    prevWasteEntries.insert(0,(None,None))
+    form.wasteSelect.choices = prevWasteEntries
+
+    prevTechEntries = [(tech.id,  tech.description + ' - ' + tech.date[:10]) for tech in TechnologyDB.query.filter_by(userId=int(current_user.id)).group_by(TechnologyDB.description, TechnologyDB.date).all()]
+    prevTechEntries.insert(0,(None,None))
+    form.techSelect.choices = prevTechEntries
+
+    if request.method == 'POST':
+
+        if request.form['select_role'] == 'waste_seller':
+            return redirect(url_for("matching_filter_waste", giveoutwasteId=form.wasteSelect.data))
+        else:
+            return redirect(url_for("matching_filter_recycling", processwasteId=form.techSelect.data))
+
+    #return render_template('matching/matching.html')
+    return render_template('matching/main.html', title="Matching", form = form)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ waste sellers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
@@ -84,6 +103,7 @@ def matching_questions_sellers(materialId):
         print(request.form)
         #print(request.form.getlist('Q51_Chemical'))
 
+        filename = None
         #save file
         if request.files["file"]:
             file = request.files["file"] 
