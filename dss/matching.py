@@ -128,8 +128,8 @@ def matching_questions_sellers(materialId):
             return redirect(request.referrer)
             #return redirect(url_for("matching_questions_sellers", materialId=materialId))
 
-        
-        return redirect(url_for("selling_waste"))
+        return redirect(url_for("profile", user_id = current_user.id))
+        #return redirect(url_for("selling_waste"))
 
 
     return render_template('matching/questions_template_seller.html', title="Matching Questions", form=form, samplefood=samplefood, samplemanure = samplemanure, materialId=materialId, foodref = foodref, manureref = manureref, woodref = woodref)
@@ -187,8 +187,9 @@ def matching_questions_rsp(materialId):
             output = AddTechToDB(materialId, request)
             print('output', output)
             flash('Your response has been recorded!','success')
-            return redirect(url_for("recycling_service_provider"))
-        
+            #return redirect(url_for("recycling_service_provider"))
+            return redirect(url_for("profile", user_id = current_user.id))
+
        
 
         except Exception:

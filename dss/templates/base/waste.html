@@ -6,7 +6,7 @@
     <legend class="border-bottom mb-4 bg-primary text-white"><b> Waste Information</legend>
     
         <h5>Name: {{waste.description}}</h5>
-        <h5>Supplier: {{supplier.username}}</h5>
+        <h5>Supplier: <a href="{{ url_for('profile', user_id = supplier.id)}}" target="_blank"> {{supplier.username}}</a></h5>
         <h5>Type: {{waste.type}}</h5>
         <h5>Size: {{waste.size}}</h5>
         <h5>Impurities: {{waste.impurities}}</h5>
@@ -21,10 +21,6 @@
 
 <br>
 
-<div>
-    <a href="{{ url_for('profile', user_id = supplier.id)}}" target="_blank"> View Supplier Profile </a>
-
-</div>
 
 <div>
     {% if waste.lab_report_path %}

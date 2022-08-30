@@ -6,7 +6,7 @@
     <legend class="border-bottom mb-4 bg-primary text-white"><b> Waste Treatment Technology Information</legend>
     
         <h5><b>Name: {{tech.description}}</b></h5>
-        <h5><b>Technology Provider: {{tech_provider.username}}</b></h5>
+        <h5><b>Technology Provider: <a href="{{ url_for('profile', user_id = tech_provider.id)}}" target="_blank"> {{tech_provider.username}}</a></b></h5>
         <h5><b>Product: {{tech.product_list}}</b></h5>
         <br>
         <h5><b><u>Acceptable feedstock type & conditions </u></b></h5>
@@ -46,10 +46,6 @@
 
 <br>
 
-<div>
-    <a href="{{ url_for('profile', user_id = tech_provider.id)}}" target="_blank"> View Treatment Provider Profile </a>
-
-</div>
 
 {% endblock content %}
 

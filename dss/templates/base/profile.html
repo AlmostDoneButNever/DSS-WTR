@@ -56,7 +56,6 @@
           <td> <button type="button" style="float: none;" class="btn btn-sm btn-info text-white" onclick=" location.href = '{{url_for('waste', waste_id = item.id)}}' ">View</button></td>
           {% if current_user.id == user.id %}
           <td> <button type="submit" style="float: none;" class="btn btn-sm btn-danger text-white" name = "delete_waste_id" value = "{{item.id}}" onclick="return confirm('Delete entry?');">Delete</button></td>
-              <input type="hidden" name="delete_waste_id" value="None">
 
           {% endif %}
         </tr>
@@ -88,14 +87,13 @@
       </thead>
 
       <tbody>
-        {% for item in tech %}
+        {% for item in tech_grouped %}
         <tr>
           <td>{{item.description}}</td>
           <td>{{item.date}}</td>
           <td> <button type="button" style="float: none;" class="btn btn-sm btn-info text-white" onclick=" location.href = '{{url_for('technology', tech_id = item.id)}}' ">View</button></td>
           {% if current_user.id == user.id %}
           <td> <button type="submit" style="float: none;" class="btn btn-sm btn-danger text-white" name = "delete_tech_id" value = "{{item.id}}" onclick="return confirm('Delete entry?');">Delete</button></td>
-                <input type="hidden" name="delete_tech_id" value="None">
 
           {% endif %}
 
