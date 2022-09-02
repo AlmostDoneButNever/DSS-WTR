@@ -52,7 +52,7 @@
       <div class="collapse" id="seller">
 
         <h5>{{form.wasteSelect.label}}</h5>
-        {{ form.wasteSelect(class="form-control form-control-lg") }}
+        {{ form.wasteSelect(class="form-control") }}
         <small id="wasteName" class="form-text text-muted">
           If not in the list, please <a class="ml-2" style="margin: 0 auto" href="{{ url_for('matching') }}">register your waste</a> with us first
         </small>
@@ -64,7 +64,7 @@
       <div class="collapse" id="tech">
 
         <h5>{{form.techSelect.label}}</h5>
-        {{ form.techSelect(class="form-control form-control-lg") }}
+        {{ form.techSelect(class="form-control") }}
         <small id="wasteName" class="form-text text-muted">
           If not in the list, please <a class="ml-2" style="margin: 0 auto" href="{{ url_for('matching') }}">register your technology</a> with us first
         </small>

@@ -27,6 +27,7 @@ from .LCCTest import TechSpecifications
 from dss.matching_algorithm import matching_algorithm_seller
 
 from dss.distance import getDistanceMatrix
+import xlsxwriter as xw
 
 import time
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -189,7 +190,6 @@ def pyomo_data_export():
 
     distance_df = getDistanceMatrix(seller_df, buyer_df)
 
-    import xlsxwriter as xw
 
     def export_df(worksheet_name, df):
 
@@ -220,8 +220,6 @@ def pyomo_solve():
     solution=PyomoModel.runModel()
     solution = solution.reset_index()
    
-    print(solution)
-
     for i in solution.itertuples():
         result = Dispatchmatchingresults(supplyId=int(i.producer_id),demandId=int(i.consumer_id),materialId=i.material_id,price=i.price,quantity=i.quantity,date=str(datetime.now())[0:11])
         db.session.add(result)
@@ -291,28 +289,26 @@ def dispatch_matching_results():
 
     sellers = pd.read_sql_query(sql = Dispatchmatchingresults.query.filter(Dispatchmatchingresults.supplyId.in_(supplyIds.index), Dispatchmatchingresults.date == form.date.data).statement, con=db.session.bind)
     sellers['supplyName']  = ''
+    sellers['supplyWasteId']  = ''
     sellers['demandName']  = ''
     sellers['materialName']  = ''
     sellers['buyerName']  = ''
+    sellers['buyerUserId']  = ''
+
 
 
     demandIds = pd.read_sql_query(sql = Dispatchmatchingdemand.query.filter(Dispatchmatchingdemand.userId == current_user.id).statement, con=db.session.bind).set_index('id')
 
     buyers = pd.read_sql_query(sql = Dispatchmatchingresults.query.filter(Dispatchmatchingresults.demandId.in_(demandIds.index), Dispatchmatchingresults.date == form.date.data).statement, con=db.session.bind)
     buyers['supplyName']  = ''
+    buyers['supplyWasteId']  = ''
     buyers['demandName']  = ''
     buyers['materialName']  = ''
     buyers['sellerName']  = ''
+    buyers['sellerUserId']  = ''
 
     sellers_list = []
     buyers_list = []
-
-    print(supplyIds)
-    print(sellers)
-
-    print(demandIds)
-    print(buyers)
-
 
     if request.method == 'POST':
 
@@ -330,9 +326,12 @@ def dispatch_matching_results():
                 tech_userid = buyer_df.loc[demandId, 'userId']
 
                 sellers.loc[i,'supplyName'] = waste_df.loc[waste_id, 'description']
+                sellers.loc[i,'supplyWasteId'] = waste_id
                 sellers.loc[i,'demandName'] = tech_df.loc[tech_id, 'description']
                 sellers.loc[i,'materialName'] = material_df.loc[materialId, 'material']
                 sellers.loc[i,'buyerName'] = user_df.loc[tech_userid, 'username']
+                sellers.loc[i,'buyerUserId'] = tech_userid
+
 
             sellers = sellers.reset_index()
             sellers_list = sellers.values.tolist()
@@ -351,10 +350,12 @@ def dispatch_matching_results():
                 tech_id = buyer_df.loc[demandId, 'techId']
 
                 buyers.loc[i,'supplyName'] = waste_df.loc[waste_id, 'description']
+                buyers.loc[i,'supplyWasteId'] = waste_id
                 buyers.loc[i,'demandName'] = tech_df.loc[tech_id, 'description']
                 buyers.loc[i,'materialName'] = material_df.loc[materialId, 'material']
                 buyers.loc[i,'sellerName'] = user_df.loc[seller_userid, 'username']
-
+                buyers.loc[i,'sellerUserId'] = seller_userid
+                
             buyers = buyers.reset_index()
             buyers_list = buyers.values.tolist()
             print(buyers_list)

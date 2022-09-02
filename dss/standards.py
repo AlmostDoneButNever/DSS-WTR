@@ -4,16 +4,16 @@ class FoodStandard(object):
     def __init__(self):
 
         self.size = {  #  key          label     
-                        "chunky":"Chunky",
-                        "fine":"Fine particles",
-                        "mix":"Mix",
+                        "Chunky":"Chunky",
+                        "Fine particles":"Fine particles",
+                        "Mix":"Mix",
                     }
 
         self.moisture = {  #  key   label         lb ub   
-                            "dry":["Dry/powdered",0,10],
-                            "swet":["Slightly wet",10,30],
-                            "wet":["Wet",30,50],
-                            "liquid":["Liquid",50,100]
+                            "Dry/powdered":["Dry/powdered",0,10],
+                            "Slightly wet":["Slightly wet",10,30],
+                            "Wet":["Wet",30,50],
+                            "Liquid":["Liquid",50,100]
                         }
 
         self.homogeneity = {  #  key              label   lb ub   
@@ -31,7 +31,7 @@ class ManureStandard(object):
         self.moisture = {  #  key          label         lb ub   
                             "Very Low":["Very Low (<10%)",0,10],
                             "Low":["Low (10-30%)",10,30],
-                            "Mid":["Mid (30-50%)",30,50],
+                            "Moderate":["Moderate (30-50%)",30,50],
                             "High":["High (50-70%)",50,70],
                             "Very High":["Very High (>70%)",70,100]
                         }
@@ -49,7 +49,7 @@ class WoodStandard(object):
 
         self.moisture = {  #  key   label      lb ub   
                             "Low":["Low (<10%)",0,10],
-                            "Mid":["Mid (10-30%)",10,30],
+                            "Moderate":["Moderate (10-30%)",10,30],
                             "High":["High (>30%)",30,100]
                         }
 

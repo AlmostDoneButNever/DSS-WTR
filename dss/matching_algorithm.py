@@ -16,7 +16,9 @@ def matching_algorithm_seller(giveoutwasteId, techId = None):
 
     waste = WasteDB.query.filter_by(id=int(giveoutwasteId)).first()
 
- 
+    if techId:
+        techId = int(techId)
+  
     query = TechnologyDB.query.filter(  or_(TechnologyDB.id == techId, techId == None), 
                                         TechnologyDB.materialId == str(waste.materialId), TechnologyDB.userId != waste.userId,
                                         or_(and_(coalesce(TechnologyDB.CN_min, 0) <= coalesce(waste.CNratio, 0), coalesce(TechnologyDB.CN_max, 999) >= coalesce(waste.CNratio, 0)),TechnologyDB.CN_criteria != '1'),

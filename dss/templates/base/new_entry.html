@@ -21,12 +21,13 @@
 </style>
 
 <form method='POST'> 
+
 {% if entry_type == "waste" %}
 <div class="content-section" style="margin: 0 auto">
 
     <legend class="border-bottom mb-4 bg-primary text-white"><b> Waste Registration </b></legend>
 
-    {{form.csrf_token}} 
+    <!--{{form.csrf_token}}--> 
     <div class="form-group">
         <h5>Material Type?</h5>
         {{ form.material(class="form-control") }}
@@ -43,7 +44,7 @@
 <div class="content-section" style="margin: 0 auto">
 <legend class="border-bottom mb-4 bg-primary text-white"><b> Treatment Technology Registration </b></legend>
 
-    {{form.csrf_token}} 
+    <!--{{form.csrf_token}}--> 
     <br>
 
     <h6>Select the acceptable type of feedstock</h6>

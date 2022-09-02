@@ -56,7 +56,6 @@
           <td> <button type="button" style="float: none;" class="btn btn-sm btn-info text-white" onclick=" location.href = '{{url_for('waste', waste_id = item.id)}}' ">View</button></td>
           {% if current_user.id == user.id %}
           <td> <button type="submit" style="float: none;" class="btn btn-sm btn-danger text-white" name = "delete_waste_id" value = "{{item.id}}" onclick="return confirm('Delete entry?');">Delete</button></td>
-
           {% endif %}
         </tr>
         {% endfor %}
@@ -64,7 +63,9 @@
       </tbody>
     </table>
     <br>
+    {% if current_user.id == user.id %}
     <button type = "button" class="btn btn-success text-white" onclick=" location.href = '{{url_for('new_entry', entry_type = 'waste')}}'" data-toggle="collapse" data-target="#"> <i class="fas fa-plus-circle"></i> Create New Waste</button>
+    {% endif %}
 
   </div>   
   <br>
@@ -104,7 +105,9 @@
       </tbody>
     </table>
     <br>
+    {% if current_user.id == user.id %}
     <button type = "button" class="btn btn-success text-white" data-toggle="collapse" data-target="#" onclick=" location.href = '{{url_for('new_entry', entry_type = 'tech')}}'"> <i class="fas fa-plus-circle"></i> Create New Technology </button>
+    {% endif %}
 
   </div> 
 

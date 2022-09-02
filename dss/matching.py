@@ -98,26 +98,29 @@ def matching_questions_sellers(materialId):
     woodref = WoodStandard()
    
     if request.method == 'POST':
+        print(request.files)
+        print(request.files.getlist('image'))
         
-        print(request.data)
-        print(request.form)
-        #print(request.form.getlist('Q51_Chemical'))
-
         filename = None
         #save file
         if request.files["file"]:
             file = request.files["file"] 
             filename = str(datetime.now()).replace(":","_") + "_" + file.filename
-            file.save( os.path.join(app.config['UPLOAD'], filename))
-           
-            #process file
-            reportCode = 1
-        else: 
-            reportCode = 0
-        
+            file.save( os.path.join(app.config['LAB'], filename))
+
+
+        image_files = request.files.getlist('image')
+        image_name_list = ""
+
+        if image_files:
+            for image in image_files:
+                image_name = str(datetime.now()).replace(":","_") + "_" + image.filename
+                image.save(os.path.join(app.config['IMAGE'], image_name))   
+                image_name_list += str(image_name) + ";;;" 
+            
         #convert output to a code    
         try:
-            output = AddWasteToDB(materialId, request, filename)
+            output = AddWasteToDB(materialId, request, filename, image_name_list)
             #success message:
             #flash(f'ID: {questionCode}', 'success')
             flash('Your response has been recorded!','success')  

@@ -462,16 +462,21 @@ appearance: menulist!important;
 </div>
 
 {% endif %}
+<br>
+<div class="form-group">
+  <label for="file">Upload product images</label>
+  <input type="file" class="form-control-file" name="image" id="image" multiple>
+</div>
 
 <br>
 <div class="form-group">
-  <label for="file">Upload lab test results (Optional)</label>
+  <label for="file">Upload lab test results </label>
   <input type="file" class="form-control-file" name="file" id="file">
 </div>
 
 <br>
 <a class="btn btn-outline-secondary" href="{{ url_for('matching') }}" role="button" onclick="return confirm('Inputs will not be saved, are you sure you want to go back?');">Back</a>
-<button type="submit" style="float: right;" class="btn btn-success" onclick="return confirm('Please verify your response before submitting');">Submit</button>
+<button type="submit" id = submit style="float: right;" class="btn btn-success" onclick="return confirm('Please verify your response before submitting');">Submit</button>
 
 </form>
 

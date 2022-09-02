@@ -1,32 +1,145 @@
 {% extends "normal_layout.html" %}
 {% block content %}
+<style>
+    .img-resize {
+    width: 50%;
+    height: auto;
+    }
+</style>
 
 
 <div>
-    <legend class="border-bottom mb-4 bg-primary text-white"><b> Waste Information</legend>
+    <legend class="border-bottom mb-4 bg-primary text-white"><b> Waste Information </b></legend>
+    <center>
+
+        <table style = "width:100%" class="table">
+            <tr>
+                <th style = "width:40%" class="py-1">Name: </th>
+                <td class="py-1">{{waste.description}}</td>
+            </tr>
+            
+            <tr>
+                <th class="py-1">Supplier: </th>
+                <td class="py-1"><a href="{{ url_for('profile', user_id = supplier.id)}}" target="_blank"> {{supplier.username}}</a></td>
+            </tr>
+            
+            <tr>
+                <th class="py-1">Lab report: </th>
+                <td class="py-1">
+                    {% if waste.lab == 1 %}
+                        Available (
+                                    {% if waste.lab_report_path %}
+                                        <a href="{{ url_for('download_file', filename = waste.lab_report_path) }}" target="_blank"> view report </a>
+                                    {% endif %}
+                                   )
+
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </td>
+            </tr>            
+            
+            
+            <tr>
+                <th class="py-1">Content: </th>
+                {% if waste_type %}
+                
+                <td class="py-1">
+                    {% for key, value in waste_type.items() %}
+                        {{key}} ({{value}} wt%)
+                        <br>
+                    {% endfor %}
+                </td>
+
+                {% else %}
+                <td class="py-1">{{waste.type}}</td>
+                {% endif %}
+            </tr>
+            
+            {% if waste.moistureType %}
+            <tr>
+                <th class="py-1">Moisture level: </th>
+                <td class="py-1">
+                    {{waste.moistureType}} 
+
+                    {% if waste.moistureValue %}
+                        ({{waste.moistureValue}} wt%)
+                    {% endif %}
+                    
+                </td>
+            </tr>
+            {% endif %}
+
+            {% if waste.size %}
+            <tr>
+                <th class="py-1">Size:  </th>
+                <td class="py-1"> {{waste.size}}</td>
+            </tr>
+            {% endif %}
+
+            {% if waste.cellulosicValue %}
+            <tr>
+                <th class="py-1">Cellulose content: </th>
+                <td class="py-1">{{waste.cellulosicValue}} wt%</td>
+            </tr>
+            {% endif %}
+
+            {% if waste.pH %}
+            <tr>
+                <th class="py-1">pH: </th>
+                <td class="py-1">{{waste.pH}}</td>
+            </tr>
+            {% endif %}
+
+            {% if waste.CNratio %}
+            <tr>
+                <th class="py-1">Carbon-to-nitrogen ratio: </th>
+                <td class="py-1">{{waste.CNratio}}</td>
+            </tr>
+            {% endif %}
+
+            <tr>
+                <th class="py-1">Impurities: </th>
+                <td class="py-1">
+                    {% if waste.impurities == 0 %}
+                    None
+                    {% else %}
+                    Yes
+                    {% endif %}
+                    
+                </td>
+            </tr>
+
+            <tr>
+                <th class="py-1">Homogeneity: </th>
+                <td class="py-1">{{waste.homogeneityType}}</td>
+            </tr>
+
+            <tr>
+                <th class="py-1">Last created/modified: </th>
+                <td class="py-1">{{waste.date}}</td>
+            </tr>
+
+        </table>
     
-        <h5>Name: {{waste.description}}</h5>
-        <h5>Supplier: <a href="{{ url_for('profile', user_id = supplier.id)}}" target="_blank"> {{supplier.username}}</a></h5>
-        <h5>Type: {{waste.type}}</h5>
-        <h5>Size: {{waste.size}}</h5>
-        <h5>Impurities: {{waste.impurities}}</h5>
-        <h5>Lab: {{waste.lab}}</h5>
-        <h5>Moisture Level: {{waste.moistureType}} ({{waste.moistureValue}} wt%)</h5>
-        <h5>Cellulose Content: {{waste.cellulosicValue}} wt%</h5>
-        <h5>Homogeneity: {{waste.HomogeneityType}}</h5>
-        <h5>pH: {{waste.pH}}</h5>
-        <h5>Carbon-to-nitrogen ratio: {{waste.CNratio}}</h5>
-        <h5>Last created/modified: {{waste.date}}</h5>
+
+    <br>
+    
+
+    {% for img in image_path %}
+    <!--img src="{{url_for('static', filename= img)}}"-->
+    <img class = "img-resize" src="{{url_for('download_image', filename= img)}}">
+
+    <br>
+    <br>
+    <br>
+    {% endfor %}
+    </center>
+
 </div> 
 
 <br>
 
-
-<div>
-    {% if waste.lab_report_path %}
-    <a href="{{ url_for('download_file', filename = waste.lab_report_path) }}" target="_blank"> View Lab Report </a>
-    {% endif %}
-</div>
 
 {% endblock content %}
 

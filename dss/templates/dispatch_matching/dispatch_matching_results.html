@@ -88,9 +88,9 @@ span {
               {% for sell in sellers%}
                 <tr>
                   <td>{{sell[0] + 1}}</td>
-                  <td>{{sell[8]}}</td>
-                  <td>{{sell[10]}}</td>
-                  <td>{{sell[11]}}</td>              
+                  <td><a href="{{ url_for('waste', waste_id = sell[9])}}" target="_blank">{{sell[8]}}</a></td>
+                  <td>{{sell[11]}}</td>
+                  <td><a href="{{ url_for('profile', user_id = sell[13])}}" target="_blank"> {{sell[12]}} </a></td>              
                   <td>{{sell[5]}}</td>
                   <td>{{sell[6]}}</td>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Start Chat</button></td>
@@ -137,9 +137,9 @@ span {
               {% for buy in buyers%}
                 <tr>
                   <td>{{buy[0] + 1}}</td>
-                  <td>{{buy[8]}}</td>
-                  <td>{{buy[10]}}</td>
-                  <td>{{buy[11]}}</td>              
+                  <td><a href="{{ url_for('waste', waste_id = buy[9])}}"> {{buy[8]}} </a></td>
+                  <td>{{buy[11]}}</td>
+                  <td><a href="{{ url_for('profile', user_id = buy[13])}}" target="_blank"> {{buy[12]}} </a></td>              
                   <td>{{buy[5]}}</td>
                   <td>{{buy[6]}}</td>
                   <td><button type="button" class="btn btn-outline-primary btn-sm">Start Chat</button></td>

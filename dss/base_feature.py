@@ -233,9 +233,20 @@ def profile(user_id):
 def waste(waste_id):
     waste = WasteDB.query.filter_by(id=waste_id).first()
 
+    waste_type = None
+
+    if "{" in waste.type:
+        waste_type = json.loads(waste.type.replace("'","\""))
+        print(waste_type.keys())
+
+    image_path = []
+    if waste.image_path:
+    
+        image_name = waste.image_path[0:-3].split(";;;")
+          
     supplier = User.query.filter_by(id=int(waste.userId)).first()
     
-    return  render_template('/base/waste.html', title='Waste information', waste = waste, supplier = supplier)
+    return  render_template('/base/waste.html', title='Waste information', waste = waste, waste_type = waste_type, supplier = supplier, image_path = image_name)
 
 @app.route("/tech/<tech_id>")
 @login_required 
@@ -276,8 +287,25 @@ def new_entry(entry_type):
 @app.route("/waste/<waste_id>/delete")
 @login_required 
 def waste_delete(waste_id):
-    waste = WasteDB.query.filter_by(id=waste_id).delete()
+
+    waste = WasteDB.query.filter_by(id=waste_id).first()
+
+    if waste.lab_report_path:
+    
+        report_path = os.path.join(app.config["LAB"], waste.lab_report_path)
+        os.remove(report_path)
+
+    if waste.image_path:
+    
+        image_name = waste.image_path[0:-3].split(";;;")
+
+        for img in image_name:
+            image_path = os.path.join(app.config["IMAGE"], img)
+            os.remove(image_path)
+    
+    WasteDB.query.filter_by(id=waste_id).delete()        
     db.session.commit()
+
     flash('Entry removed','success')
    
     return  redirect(url_for('profile', user_id = current_user.id))
@@ -295,6 +323,34 @@ def tech_delete(tech_id):
 
 @app.route('/uploads/<filename>')
 def download_file(filename):
-    path = os.path.join(app.root_path, "uploads")
-    print(path)
-    return send_from_directory(path, filename) 
+    return send_from_directory(app.config["LAB"], filename)  
+
+@app.route('/image/<filename>')
+def download_image(filename):
+    return send_from_directory(app.config["IMAGE"], filename)
+
+@app.route('/save/<filename>')
+def save_file(filename):
+    os.save(app.config["LAB"], filename) 
+    return send_from_directory(app.config["LAB"], filename)      
+
+@app.route('/page',  methods=['GET', 'POST'])
+def upload_page():
+    return render_template("/base/upload.html") 
+
+@app.route('/upload', methods=['POST'])
+def handle_upload():
+    for key, f in request.files.items():
+        if key.startswith('file'):
+            f.save(os.path.join(app.config['LAB'], f.filename))
+    return '', 204
+
+
+@app.route('/form', methods=['POST'])
+def handle_form():
+    title = request.form.get('title')
+    description = request.form.get('description')
+    return 'file uploaded and form submit<br>title: %s<br> description: %s' % (title, description)
+
+
+    return  'file uploaded and form submitted' 

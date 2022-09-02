@@ -203,6 +203,7 @@ class WasteDB(db.Model):
 
     date = db.Column(db.String(100))
     lab_report_path = db.Column(db.String(1000))
+    image_path = db.Column(db.String(1000))
 
 
 
