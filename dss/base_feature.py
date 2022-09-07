@@ -275,10 +275,7 @@ def new_entry(entry_type):
 
         elif entry_type == "tech":
             
-            materialId = []
-            for key, value in request.form.items():
-                if 'tech_waste_id' in key:
-                    materialId.extend(value)
+            materialId = request.form.getlist('tech_waste_id')
 
             return redirect(url_for("matching_questions_rsp",materialId=materialId))
 

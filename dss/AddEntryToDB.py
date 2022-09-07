@@ -12,7 +12,7 @@ def AddWasteToDB(materialId, request, filepath, image_path):
 
     def classify(data, target):
         for key, (_, lb, ub) in data:
-            if int(target) <= ub and int(target) > lb:
+            if float(target) <= ub and float(target) > lb:
                 result = key
                 break
         return result
@@ -26,13 +26,8 @@ def AddWasteToDB(materialId, request, filepath, image_path):
         food_list_id = []
         food_list_wt = []
 
-        for key, value in request.form.items():
-            
-            if 'food_content_id_' in key:
-                food_list_id.append(value)
-
-            if 'food_content_wt_' in key:
-                food_list_wt.append(value)
+        food_list_id = request.form.getlist("food_content_id")
+        food_list_wt = request.form.getlist("food_content_wt")
 
         food_breakdown = dict(zip(food_list_id, food_list_wt))
 

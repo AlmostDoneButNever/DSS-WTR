@@ -42,14 +42,14 @@ appearance: menulist!important;
   
     <div class="row">
       <label class="col-form-label col-sm-1">1)</label>
-      <select class="form-control form-control-s col-sm-3" name="food_content_id_1">
+      <select class="form-control form-control-s col-sm-3" name="food_content_id">
         <option value="None">None</option>
         {% for item in samplefood %}
         <option value="{{item}}">{{item}}</option>
         {% endfor %}
       </select>
       <div class="col-sm-2">
-        <input type="number" class="form-control" name="food_content_wt_1" placeholder=0>
+        <input type="number" class="form-control" name="food_content_wt" placeholder=0>
       </div>
       <label class="col-sm-2 col-form-label">wt %</label>
     </div>  
@@ -186,7 +186,7 @@ appearance: menulist!important;
     <br>
     <label class="form-label"> Select the type of animal manure: </label>
     <br>
-    <select class="form-control form-control-s col-sm-3" name="type">
+    <select class="form-control form-control-s col-sm-3" id = "type_manure" name="type">
       <option value="None">None</option>
       {% for item in samplemanure %}
       <option value="{{item}}">{{item}}</option>
@@ -201,12 +201,12 @@ appearance: menulist!important;
     <label class="form-label">Does your waste contain indigestible/non-degradable materials such as sand and stones? </label>
     <br>
     <div class="form-check form-check-inline" >
-      <input type="radio" class="form-check-input" name=impurities value = 1>
+      <input type="radio" class="form-check-input" id= "impurities_manure" name=impurities value = 1>
       <label class="form-check-label" for="impurities">Yes </label>
     </div>
 
     <div class="form-check form-check-inline">
-      <input type="radio" class="form-check-input" name="impurities" value = 0>
+      <input type="radio" class="form-check-input" id= "impurities_manure" name="impurities" value = 0>
       <label class="form-check-label" for="impurities">No </label>
     </div>
   </div>
@@ -218,12 +218,12 @@ appearance: menulist!important;
     <br>
 
     <div class="form-check form-check-inline" >
-      <input type="checkbox" class="form-check-input"  name="lab_analysis" value="1" data-toggle='collapse' data-target='#labAnalysis-manure' aria-expanded="false">
+      <input type="checkbox" class="form-check-input"  id="lab_analysis_manure" name="lab_analysis" value="1" data-toggle='collapse' data-target='#labAnalysis-manure' aria-expanded="false">
       <label class="form-check-label" for="lab_analysis">Yes</label>
     </div>
 
     <div class="form-check form-check-inline">
-        <input type="checkbox" class="form-check-input" name="lab_analysis" value="0" data-toggle='collapse' data-target='#approximation-manure' aria-expanded="false">
+        <input type="checkbox" class="form-check-input" id="lab_analysis_manure" name="lab_analysis" value="0" data-toggle='collapse' data-target='#approximation-manure' aria-expanded="false">
         <label class="form-check-label" for="lab_analysis">No</label>
     </div>
   </div>
@@ -235,7 +235,7 @@ appearance: menulist!important;
     <div class="form-group row">
       <label class="col-sm-5 col-form-label">Please key in C:H:N ratio<br>(weight % in dry basis)</label>
       <div class="col-sm-4">
-        <input type="text" class="form-control " name="lab_chn" placeholder="C:H:N">
+        <input type="text" class="form-control " id="lab_chn_manure" name="lab_chn" placeholder="C:H:N">
       </div>
     </div>  
 
@@ -244,7 +244,7 @@ appearance: menulist!important;
       <br>
       <label for="lab_moisture" class="col-sm-5 col-form-label">Please key in the weight percentage of moisture (0-99 wt%)</label>
       <div class="col-sm-4">
-        <input type="text" class="form-control " name="lab_moisture" placeholder="wt%">
+        <input type="text" class="form-control " id="lab_moisture_manure" name="lab_moisture" placeholder="wt%">
       </div>
     </div>
 
@@ -254,7 +254,7 @@ appearance: menulist!important;
       <br>
       <label for="lab_homogeneity" class="col-sm-5 col-form-label">Please key in the purity of waste (0-99 wt%)</label>
       <div class="col-sm-4">
-        <input type="text" class="form-control " name="lab_homogeneity" placeholder="wt%">
+        <input type="text" class="form-control " id="lab_homogeneity_manure" name="lab_homogeneity" placeholder="wt%">
       </div>
     </div>
 
@@ -263,7 +263,7 @@ appearance: menulist!important;
       <br>
       <label for="lab_cellulose" class="col-sm-5 col-form-label">Please key in the weight percentage of cellulose (0-99 wt%)</label>
       <div class="col-sm-4">
-        <input type="text" class="form-control "  name="lab_cellulose" placeholder="wt%">
+        <input type="text" class="form-control "  id="lab_cellulose_manure" name="lab_cellulose" placeholder="wt%">
       </div>
     </div>
 
@@ -272,7 +272,7 @@ appearance: menulist!important;
       <br>
       <label class="col-sm-5 col-form-label">Please key in the pH of waste (1-14)</label>
       <div class="col-sm-4">
-        <input type="text" class="form-control " name="lab_pH" placeholder="">
+        <input type="text" class="form-control " id="lab_pH_manure" name="lab_pH" placeholder="">
       </div>
     </div>
 
@@ -290,7 +290,7 @@ appearance: menulist!important;
 
       {% for key,(label, lb, ub) in manureref.moisture.items() %}
         <div class="form-check form-check-inline" >
-          <input type="radio" class="form-check-input"name="approx_moisture" value="{{key}}" >
+          <input type="radio" class="form-check-input" id="approx_moisture_manure" name="approx_moisture" value="{{key}}" >
           <label class="form-check-label" for="approx_moisture">{{label}}</label>
         </div>
       {% endfor %}
@@ -306,7 +306,7 @@ appearance: menulist!important;
 
     {% for key,(label, lb, ub) in manureref.homogeneity.items() %}
     <div class="form-check form-check-inline" >
-      <input type="radio" class="form-check-input"name="approx_homogeneity" value="{{key}}" >
+      <input type="radio" class="form-check-input" id="approx_homogeneity_manure" name="approx_homogeneity" value="{{key}}" >
       <label class="form-check-label" for="approx_homogeneity">{{label}}</label>
     </div>
     {% endfor %}
@@ -331,7 +331,7 @@ appearance: menulist!important;
 
     {% for key, label in woodref.type.items() %}
     <div class="form-check form-check-inline" >
-      <input type="radio" class="form-check-input" name="type" value="{{key}}">
+      <input type="radio" class="form-check-input" id="type_wood" name="type" value="{{key}}">
       <label class="form-check-label" for="type">{{label}}</label>
     </div>
     {% endfor %}
@@ -346,7 +346,7 @@ appearance: menulist!important;
 
     {% for key, label in woodref.size.items() %}
     <div class="form-check form-check-inline" >
-      <input type="radio" class="form-check-input" name="approx_size" value="{{key}}" >
+      <input type="radio" class="form-check-input" id="approx_size_wood" name="approx_size" value="{{key}}" >
       <label class="form-check-label" for="approx_size">{{label}}</label>
     </div>
     {% endfor %}
@@ -359,12 +359,12 @@ appearance: menulist!important;
     <label class="form-label">Does your waste contain indigestible/non-degradable materials such as sand and stones? </label>
     <br>
     <div class="form-check form-check-inline" >
-      <input type="radio" class="form-check-input" name=impurities value = 1>
+      <input type="radio" class="form-check-input"  id="impurities_wood" name=impurities value = 1>
       <label class="form-check-label" for="impurities">Yes </label>
     </div>
 
     <div class="form-check form-check-inline">
-      <input type="radio" class="form-check-input" name="impurities" value = 0>
+      <input type="radio" class="form-check-input" id="impurities_wood" name=impurities value = 0>
       <label class="form-check-label" for="impurities">No </label>
     </div>
   </div>
@@ -375,12 +375,12 @@ appearance: menulist!important;
     <label class="form-label" for="Q5"> Has a lab analysis been carried out for the wood?</label>
     <br>
     <div class="form-check form-check-inline" >
-      <input type="checkbox" class="form-check-input"  name="lab_analysis" value="1"  data-toggle='collapse' data-target='#labAnalysis-wood' aria-expanded="false">
+      <input type="checkbox" class="form-check-input"  id="lab_analysis_wood" name="lab_analysis" value="1"  data-toggle='collapse' data-target='#labAnalysis-wood' aria-expanded="false">
       <label class="form-check-label" for="lab_analysis">Yes</label>
     </div>
 
     <div class="form-check form-check-inline">
-        <input type="checkbox" class="form-check-input" name="lab_analysis" value="0" data-toggle='collapse' data-target='#approximation-wood' aria-expanded="false">
+        <input type="checkbox" class="form-check-input" id="lab_analysis_wood" name="lab_analysis" value="0" data-toggle='collapse' data-target='#approximation-wood' aria-expanded="false">
         <label class="form-check-label" for="lab_analysis">No</label>
     </div>
   </div>
@@ -392,7 +392,7 @@ appearance: menulist!important;
     <div class="form-group row">
       <label for="Q5" class="col-sm-5 col-form-label">Please key in C:H:N ratio<br>(weight % in dry basis)</label>
       <div class="col-sm-4">
-        <input type="text" class="form-control" name="lab_chn" placeholder="C:H:N">
+        <input type="text" class="form-control" id="lab_chn_wood" name="lab_chn" placeholder="C:H:N">
       </div>
     </div>
 
@@ -402,7 +402,7 @@ appearance: menulist!important;
       <br>
       <label for="Q4Moisture" class="col-sm-5 col-form-label">Please key in the weight percentage of moisture (0-99 wt%)</label>
       <div class="col-sm-4">
-        <input type="text" class="form-control " name="lab_moisture" placeholder="wt%">
+        <input type="text" class="form-control " id="lab_moisture_wood" name="lab_moisture" placeholder="wt%">
       </div>
     </div>
 
@@ -412,7 +412,7 @@ appearance: menulist!important;
     <br>
     <label for="lab_homogeneity" class="col-sm-5 col-form-label">Please key in the purity of waste (0-99 wt%)</label>
     <div class="col-sm-4">
-      <input type="text" class="form-control "  name="lab_homogeneity" placeholder="wt%">
+      <input type="text" class="form-control "  id="lab_homogeneity_wood" name="lab_homogeneity" placeholder="wt%">
     </div>
   </div>
 
@@ -421,7 +421,7 @@ appearance: menulist!important;
     <br>
     <label for="lab_cellulose" class="col-sm-5 col-form-label">Please key in the weight percentage of cellulose (0-99 wt%)</label>
     <div class="col-sm-4">
-      <input type="text" class="form-control " name="lab_cellulose" placeholder="wt%">
+      <input type="text" class="form-control " id="lab_cellulose_wood"  name="lab_cellulose" placeholder="wt%">
     </div>
   </div>
 
@@ -438,7 +438,7 @@ appearance: menulist!important;
 
     {% for key, (label,_,_) in woodref.moisture.items() %}
     <div class="form-check form-check-inline" >
-      <input type="radio" class="form-check-input" name="approx_moisture" value="{{key}}">
+      <input type="radio" class="form-check-input" id="approx_moisture_wood" name="approx_moisture" value="{{key}}">
       <label class="form-check-label" for="approx_moisture">{{label}}</label>
     </div>
     {% endfor %}
@@ -453,7 +453,7 @@ appearance: menulist!important;
 
     {% for key, (label,_,_) in woodref.homogeneity.items() %}
     <div class="form-check form-check-inline" >
-      <input type="radio" class="form-check-input" name="approx_homogeneity" value="{{key}}">
+      <input type="radio" class="form-check-input" id="approx_homogeneity_wood" name="approx_homogeneity" value="{{key}}">
       <label class="form-check-label" for="approx_homogeneity">{{label}}</label>
     </div>
     {% endfor %}
@@ -507,14 +507,14 @@ appearance: menulist!important;
             `
             <div class="row">
               <label class="col-form-label col-sm-1">${index})</label>
-              <select class="form-control form-control-s col-sm-3" name="food_content_id_${index}">
+              <select class="form-control form-control-s col-sm-3" name="food_content_id">
                 <option value="None">None</option>
                 {% for item in samplefood %}
                 <option value="{{item}}">{{item}}</option>
                 {% endfor %}
               </select>
               <div class="col-sm-2">
-                <input type="number" class="form-control" name="food_content_wt_${index}" placeholder = 0>
+                <input type="number" class="form-control" name="food_content_wt" placeholder = 0>
               </div>
               <label class="col-sm-2 col-form-label">wt %</label>
             </div>

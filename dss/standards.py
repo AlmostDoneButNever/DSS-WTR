@@ -10,17 +10,17 @@ class FoodStandard(object):
                     }
 
         self.moisture = {  #  key   label         lb ub   
-                            "Dry/powdered":["Dry/powdered",0,10],
-                            "Slightly wet":["Slightly wet",10,30],
-                            "Wet":["Wet",30,50],
-                            "Liquid":["Liquid",50,100]
+                            "Dry/powdered":["Dry/powdered",0.0,10.0],
+                            "Slightly wet":["Slightly wet",10.0,30.0],
+                            "Wet":["Wet",30.0,50.0],
+                            "Liquid":["Liquid",50.0,100.0]
                         }
 
         self.homogeneity = {  #  key              label   lb ub   
-                        "Pure":          ["Pure",100,100],
-                        "Slightly Mixed":["Slightly Mixed (<10%)",90,100],
-                        "Medially Mixed":["Medially Mixed (10-30%)",70,90],
-                        "Largely Mixed": ["Largely Mixed (>30%)",0,70]
+                        "Pure":          ["Pure",100.0,100.0],
+                        "Slightly Mixed":["Slightly Mixed (<10%)",90.0,100.0],
+                        "Medially Mixed":["Medially Mixed (10-30%)",70.0,90.0],
+                        "Largely Mixed": ["Largely Mixed (>30%)",0.0,70.0]
                     }
 
 
@@ -29,18 +29,18 @@ class ManureStandard(object):
     def __init__(self):
 
         self.moisture = {  #  key          label         lb ub   
-                            "Very Low":["Very Low (<10%)",0,10],
-                            "Low":["Low (10-30%)",10,30],
-                            "Moderate":["Moderate (30-50%)",30,50],
-                            "High":["High (50-70%)",50,70],
-                            "Very High":["Very High (>70%)",70,100]
+                            "Very Low":["Very Low (<10%)",0.0,10.0],
+                            "Low":["Low (10-30%)",10.0,30.0],
+                            "Moderate":["Moderate (30-50%)",30.0,50.0],
+                            "High":["High (50-70%)",50.0,70.0],
+                            "Very High":["Very High (>70%)",70.0,100.0]
                         }
 
         self.homogeneity = {  #  key              label   lb ub   
-                                "Pure":          ["Pure",100,100],
-                                "Slightly Mixed":["Slightly Mixed (<10%)",90,100],
-                                "Medially Mixed":["Medially Mixed (10-30%)",70,90],
-                                "Largely Mixed": ["Largely Mixed (>30%)",0,70]
+                                "Pure":          ["Pure",100.0,100.0],
+                                "Slightly Mixed":["Slightly Mixed (<10%)",90.0,100.0],
+                                "Medially Mixed":["Medially Mixed (10-30%)",70.0,90.0],
+                                "Largely Mixed": ["Largely Mixed (>30%)",0.0,70.0]
                            }
 
 class WoodStandard(object):
@@ -48,16 +48,16 @@ class WoodStandard(object):
     def __init__(self):
 
         self.moisture = {  #  key   label      lb ub   
-                            "Low":["Low (<10%)",0,10],
-                            "Moderate":["Moderate (10-30%)",10,30],
-                            "High":["High (>30%)",30,100]
+                            "Low":["Low (<10%)",0.0,10.0],
+                            "Moderate":["Moderate (10-30%)",10.0,30.0],
+                            "High":["High (>30%)",30.0,100.0]
                         }
 
         self.homogeneity = {  #  key              label   lb ub   
-                                "Pure":          ["Pure",100,100],
-                                "Slightly Mixed":["Slightly Mixed (<10%)",90,100],
-                                "Medially Mixed":["Medially Mixed (10-30%)",70,90],
-                                "Largely Mixed": ["Largely Mixed (>30%)",0,70]
+                                "Pure":          ["Pure",100.0,100.0],
+                                "Slightly Mixed":["Slightly Mixed (<10%)",90.0,100.0],
+                                "Medially Mixed":["Medially Mixed (10-30%)",70.0,90.0],
+                                "Largely Mixed": ["Largely Mixed (>30%)",0.0,70.0]
                            }
 
         self.type = {  #  key              label
