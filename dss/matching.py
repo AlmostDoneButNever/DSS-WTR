@@ -7,8 +7,7 @@ import pandas as pd
 from flask import render_template, url_for, flash, redirect, request,jsonify
 from dss import app, db
 from dss.forms import (MaterialsForm, maxRowsForm, BuyingForm,RSPForm) 
-from dss.models import (User, RSP, Materials, Questions, Giveoutwaste, Processwaste, Technology, Takeinresource, Technologybreakdown, 
-     Sample, TechnologyDB, MaterialsDB, ManureDB, Product, WasteDB)
+from dss.models import (User, FoodWasteDB, Technology, MaterialDB, ManureDB, ProductDB, Waste)
 from flask_login import current_user, login_required
 from dss.AddEntryToDB import AddWasteToDB, AddTechToDB
 
@@ -23,11 +22,11 @@ from dss.forms import dispatchMatchingForm
 def matching():
     form = dispatchMatchingForm()
 
-    prevWasteEntries = [(waste.id, waste.description + ' - ' + waste.date[:10]) for waste in WasteDB.query.filter_by(userId=int(current_user.id)).all()]
+    prevWasteEntries = [(waste.id, waste.description + ' - ' + waste.date[:10]) for waste in Waste.query.filter_by(userId=int(current_user.id)).all()]
     prevWasteEntries.insert(0,(None,None))
     form.wasteSelect.choices = prevWasteEntries
 
-    prevTechEntries = [(tech.id,  tech.description + ' - ' + tech.date[:10]) for tech in TechnologyDB.query.filter_by(userId=int(current_user.id)).group_by(TechnologyDB.description, TechnologyDB.date).all()]
+    prevTechEntries = [(tech.id,  tech.description + ' - ' + tech.date[:10]) for tech in Technology.query.filter_by(userId=int(current_user.id)).group_by(Technology.description, Technology.date).all()]
     prevTechEntries.insert(0,(None,None))
     form.techSelect.choices = prevTechEntries
 
@@ -50,10 +49,10 @@ def selling_waste():
     form.type.choices = [(material.type, material.type) for material in Materials.query.group_by(Materials.type)]
     #form.material.choices = [(material.id, material.material) for material in Materials.query.filter_by(type=Materials.query.first().type).all()]
 
-    form.material.choices = [(material.id, material.material) for material in MaterialsDB.query.all()]
+    form.material.choices = [(material.id, material.material) for material in MaterialDB.query.all()]
     #form.material.choices = ['Food Waste', 'Animal Manure', 'Wood Waste', 'E-waste', 'Plastic waste']
     #get past waste ID
-    prevEntries = [(waste.id, waste.description + ' - ' + waste.date) for waste in WasteDB.query.filter_by(userId=int(current_user.id)).all()]
+    prevEntries = [(waste.id, waste.description + ' - ' + waste.date) for waste in Waste.query.filter_by(userId=int(current_user.id)).all()]
     prevEntries.insert(0,(None,None))
     form.wasteID.choices = prevEntries
     # flash(prevEntries, 'success')
@@ -75,7 +74,7 @@ def selling_waste():
 def matching_questions_sellers(materialId):
     form = []
     material = Materials.query.filter_by(id=materialId).first()
-    samples = Sample.query.all()
+    samples = FoodWasteDB.query.all()
     result = defaultdict(list)
     for obj in samples:
         instance = inspect(obj)
@@ -148,10 +147,10 @@ def recycling_service_provider():
     form.maincat.choices = [(rsp.maincat, rsp.maincat) for rsp in RSP.query.group_by(RSP.maincat)]
     form.subcat.choices = [(rsp.id, rsp.subcat) for rsp in RSP.query.filter_by(maincat=RSP.query.first().maincat).all()]
 
-    wastematerial = [(material.id, material.material) for material in MaterialsDB.query.all()]
+    wastematerial = [(material.id, material.material) for material in MaterialDB.query.all()]
 
     #get past technology ID
-    prevEntries = [(waste.id, waste.description + ': ' + waste.technology + ' - ' + waste.date) for waste in TechnologyDB.query.filter_by(userId=int(current_user.id)).group_by(TechnologyDB.description, TechnologyDB.date).all()]
+    prevEntries = [(waste.id, waste.description + ': ' + waste.technology + ' - ' + waste.date) for waste in Technology.query.filter_by(userId=int(current_user.id)).group_by(Technology.description, Technology.date).all()]
     prevEntries.insert(0,(None,None))
     form.technologyID.choices = prevEntries
     # flash(prevEntries, 'success')
@@ -179,7 +178,7 @@ def matching_questions_rsp(materialId):
     manureref = ManureStandard()
     woodref = WoodStandard()
 
-    sampleproduct = [(product.ProductName, product.unit) for product in Product.query.all()]
+    sampleproduct = [(product.ProductName, product.unit) for product in ProductDB.query.all()]
     
     if request.method == 'POST':
         

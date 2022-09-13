@@ -10,7 +10,6 @@ from flask import request, abort
 from dss import app, db, bcrypt, mail
 from dss.forms import (RegistrationForm,LoginForm, UpdateAccountForm, PostForm,RequestResetForm, ResetPasswordForm) 
 from dss.forms import (MaterialsForm) 
-from dss.models import (User, Post, Materials)
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
 
@@ -20,7 +19,7 @@ import json
 from datetime import datetime
 import pandas as pd
 
-from dss.models import (User, MaterialsDB, WasteDB,TechnologyDB)
+from dss.models import (User, MaterialDB, Waste,Technology)
 from flask import current_app
 
 
@@ -221,9 +220,9 @@ def profile(user_id):
             return redirect(url_for('tech_delete', tech_id = tech_id))
         
     user = User.query.filter_by(id=int(user_id)).first()
-    waste = WasteDB.query.filter_by(userId=int(user_id)).all()
-    tech = TechnologyDB.query.filter_by(userId=int(user_id)).all()
-    tech_grouped = TechnologyDB.query.filter_by(userId=int(user_id)).group_by(TechnologyDB.date)
+    waste = Waste.query.filter_by(userId=int(user_id)).all()
+    tech = Technology.query.filter_by(userId=int(user_id)).all()
+    tech_grouped = Technology.query.filter_by(userId=int(user_id)).group_by(Technology.date)
     
     return  render_template('/base/profile.html', title='My Profile', user = user, waste = waste, tech = tech, tech_grouped = tech_grouped)
 
@@ -231,7 +230,7 @@ def profile(user_id):
 @app.route("/waste/<waste_id>")
 @login_required 
 def waste(waste_id):
-    waste = WasteDB.query.filter_by(id=waste_id).first()
+    waste = Waste.query.filter_by(id=waste_id).first()
 
     waste_type = None
 
@@ -251,8 +250,8 @@ def waste(waste_id):
 @app.route("/tech/<tech_id>")
 @login_required 
 def technology(tech_id):
-    tech = TechnologyDB.query.filter_by(id=int(tech_id)).first()
-    all_tech = TechnologyDB.query.filter_by(description = tech.description, date = tech.date).all()
+    tech = Technology.query.filter_by(id=int(tech_id)).first()
+    all_tech = Technology.query.filter_by(description = tech.description, date = tech.date).all()
 
     tech_provider = User.query.filter_by(id=int(tech.userId)).first()
 
@@ -264,9 +263,9 @@ def technology(tech_id):
 def new_entry(entry_type):
     form = MaterialsForm()
     form.type.choices = [(material.type, material.type) for material in Materials.query.group_by(Materials.type)]
-    form.material.choices = [(material.id, material.material) for material in MaterialsDB.query.all()]
+    form.material.choices = [(material.id, material.material) for material in MaterialDB.query.all()]
 
-    wastematerial = [(material.id, material.material) for material in MaterialsDB.query.all()]
+    wastematerial = [(material.id, material.material) for material in MaterialDB.query.all()]
 
     if request.method == 'POST':
                 
@@ -285,7 +284,7 @@ def new_entry(entry_type):
 @login_required 
 def waste_delete(waste_id):
 
-    waste = WasteDB.query.filter_by(id=waste_id).first()
+    waste = Waste.query.filter_by(id=waste_id).first()
 
     if waste.lab_report_path:
     
@@ -300,7 +299,7 @@ def waste_delete(waste_id):
             image_path = os.path.join(app.config["IMAGE"], img)
             os.remove(image_path)
     
-    WasteDB.query.filter_by(id=waste_id).delete()        
+    Waste.query.filter_by(id=waste_id).delete()        
     db.session.commit()
 
     flash('Entry removed','success')
@@ -310,8 +309,8 @@ def waste_delete(waste_id):
 @app.route("/tech/<tech_id>/delete")
 @login_required 
 def tech_delete(tech_id):
-    tech = TechnologyDB.query.filter_by(id=tech_id).first()
-    all_tech = TechnologyDB.query.filter_by(description = tech.description, date = tech.date).delete()
+    tech = Technology.query.filter_by(id=tech_id).first()
+    all_tech = Technology.query.filter_by(description = tech.description, date = tech.date).delete()
     db.session.commit()
     flash('Entry removed','success')
    

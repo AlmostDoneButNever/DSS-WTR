@@ -1,4 +1,4 @@
-from dss.models import Sample
+from dss.models import FoodWasteDB
 import pandas as pd
 from collections import defaultdict
 from sqlalchemy.inspection import inspect
@@ -328,7 +328,7 @@ class Food(object):
             self.phValue = str(int(self.formData.form['Q5pH'])).zfill(2) 
 
         else:
-            samples = Sample.query.all()
+            samples = FoodWasteDB.query.all()
             result = defaultdict(list)
             for obj in samples:
                 instance = inspect(obj)

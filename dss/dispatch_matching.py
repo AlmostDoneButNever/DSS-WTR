@@ -15,7 +15,7 @@ from flask import jsonify
 from dss import app, db, bcrypt, mail
 from dss.forms import (dispatchMatchingForm, dispatchMatchingQuestionsForm, dispatchMatchingResultsForm,
     LCCForm, CPForm) 
-from dss.models import (User, Materials, Giveoutwaste,Dispatchmatchingresults, Dispatchmatchingsupply, Dispatchmatchingdemand, TechnologyDB, Dispatchmatchinginvestment, WasteDB)
+from dss.models import (User,Dispatchmatchingresults, Dispatchmatchingsupply, Dispatchmatchingdemand, Technology, Waste)
 from flask_login import current_user
 from dss.dispatchMatchingSavingsBreakdown import CostSavings
 
@@ -38,11 +38,11 @@ from flask_apscheduler import APScheduler
 def dispatch_matching():
     form = dispatchMatchingForm()
 
-    prevWasteEntries = [(waste.id, waste.description + ' - ' + waste.date[:10]) for waste in WasteDB.query.filter_by(userId=int(current_user.id)).all()]
+    prevWasteEntries = [(waste.id, waste.description + ' - ' + waste.date[:10]) for waste in Waste.query.filter_by(userId=int(current_user.id)).all()]
     prevWasteEntries.insert(0,(None,None))
     form.wasteSelect.choices = prevWasteEntries
 
-    prevTechEntries = [(tech.id,  tech.description + ' - ' + tech.date[:10]) for tech in TechnologyDB.query.filter_by(userId=int(current_user.id)).group_by(TechnologyDB.description, TechnologyDB.date).all()]
+    prevTechEntries = [(tech.id,  tech.description + ' - ' + tech.date[:10]) for tech in Technology.query.filter_by(userId=int(current_user.id)).group_by(Technology.description, Technology.date).all()]
     prevTechEntries.insert(0,(None,None))
     form.techSelect.choices = prevTechEntries
 
@@ -74,7 +74,7 @@ def dispatch_matching():
 @app.route("/dispatch_matching/questions_waste/<seller_wasteid>", methods=['GET','POST'])
 def dispatch_matching_questions_waste(seller_wasteid):
 
-    waste = WasteDB.query.filter_by(id=int(seller_wasteid)).first()
+    waste = Waste.query.filter_by(id=int(seller_wasteid)).first()
 
     form = dispatchMatchingQuestionsForm()
 
@@ -102,8 +102,8 @@ def dispatch_matching_questions_waste(seller_wasteid):
 @app.route("/dispatch_matching/questions_resource/<buyer_techid>", methods=['GET','POST'])
 def dispatch_matching_questions_resource(buyer_techid):
 
-    first_tech = TechnologyDB.query.filter_by(id=buyer_techid).first()
-    all_tech = TechnologyDB.query.filter_by(description = first_tech.description, date = first_tech.date).all()
+    first_tech = Technology.query.filter_by(id=buyer_techid).first()
+    all_tech = Technology.query.filter_by(description = first_tech.description, date = first_tech.date).all()
 
     materialId = []
     techologyId = []
@@ -275,8 +275,8 @@ def dispatch_matching_results():
     form = dispatchMatchingResultsForm()
     form.date.choices = [(Dispatchmatchingresult.date, Dispatchmatchingresult.date) for Dispatchmatchingresult in Dispatchmatchingresults.query.group_by(Dispatchmatchingresults.date)]
     
-    waste_df = pd.read_sql_table('WasteDB', db.session.bind).set_index('id')
-    tech_df = pd.read_sql_table('TechnologyDB', db.session.bind).set_index('id')
+    waste_df = pd.read_sql_table('Waste', db.session.bind).set_index('id')
+    tech_df = pd.read_sql_table('Technology', db.session.bind).set_index('id')
     material_df = pd.read_sql_table('MaterialsDB', db.session.bind).set_index('id')
     seller_df = pd.read_sql_table('Dispatchmatchingsupply', db.session.bind).set_index('id')
     buyer_df = pd.read_sql_table('Dispatchmatchingdemand', db.session.bind).set_index('id')
