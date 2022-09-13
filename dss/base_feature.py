@@ -42,13 +42,6 @@ def dashboard():
 def about():
     return render_template('/base/about.html', title='About') 
 
-@app.route("/posts_home")
-def posts_home():
-    page = request.args.get('page', 1, type=int) 
-    posts = Post.query.paginate(page=page, per_page=2) 
-    return render_template('/base/posts_home.html', title="Posts Home", posts=posts)
-
-
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -56,7 +49,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password,listings=0,transacted=0,totalposts=0,totalsuccess=0,totalwaste=0)
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
@@ -116,53 +109,8 @@ def account():
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file) 
     return render_template('account.html', title="Account", image_file=image_file, form=form)
 
-@app.route("/post/<int:post_id>")
-def post(post_id):
-    post = Post.query.get_or_404(post_id) 
-    return render_template('/base/Post.html', title=post.title, post=post)
-
-@app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
-@login_required
-def update_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    if post.author != current_user:
-        abort(403)
-    form = PostForm()
-
-    if form.validate_on_submit():
-        post.title = form.title.data
-        post.content = form.content.data
-        db.session.commit()
-        flash('Your post has been updated!', 'success')
-        return redirect(url_for('post', post_id=post.id))
-    elif request.method == 'GET':
-        form.title.data = post.title
-        form.content.data = post.content
-    return render_template('create_post.html', title='Update Post', 
-                            form=form, legend='Update Post')
-
-@app.route("/post/<int:post_id>/delete", methods=['POST'])
-@login_required
-def delete_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    if post.author != current_user:
-        abort(403)
-
-    db.session.delete(post)
-    db.session.commit()
-    flash('Your post has been deleted!', 'success')
-    return redirect(url_for('/base/home'))
 
 @app.route("/user/<string:username>") 
-def user_posts(username):
-    page = request.args.get('page', 1, type=int) 
-    user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user)\
-        .order_by(Post.date_posted.desc())\
-        .paginate(page=page, per_page=2) 
-
-    return render_template('/base/user_posts.html', posts=posts, user=user) 
-
 def send_reset_email(user):
     token = user.get_reset_token()
     msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])
@@ -255,14 +203,16 @@ def technology(tech_id):
 
     tech_provider = User.query.filter_by(id=int(tech.userId)).first()
 
-    return  render_template('/base/technology.html', title='Technology information', tech = tech, all_tech =all_tech, tech_provider = tech_provider)
+    if tech.product_list:
+        product_list = json.loads(tech.product_list.replace("'","\""))
+
+    return  render_template('/base/technology.html', title='Technology information', tech = tech, all_tech =all_tech, tech_provider = tech_provider, product_list = product_list)
 
 
 @app.route("/newentry/<entry_type>", methods=['GET', 'POST'])
 @login_required 
 def new_entry(entry_type):
     form = MaterialsForm()
-    form.type.choices = [(material.type, material.type) for material in Materials.query.group_by(Materials.type)]
     form.material.choices = [(material.id, material.material) for material in MaterialDB.query.all()]
 
     wastematerial = [(material.id, material.material) for material in MaterialDB.query.all()]
