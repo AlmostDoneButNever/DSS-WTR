@@ -15,6 +15,7 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     wastes = db.relationship("Waste", backref= "user", lazy="select")
+    techs = db.relationship("Technology", backref= "user", lazy="select")
 
 
     def get_reset_token(self, expires_sec=1800):
@@ -66,12 +67,10 @@ class ProductDB(db.Model):
 
 class Waste(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
-    userId = db.Column(db.Integer, db.ForeignKey("user.id"),nullable=False)
-    userName = db.Column(db.String(1000), db.ForeignKey("user.username"),nullable=False)
+    userId = db.Column(db.Integer, db.ForeignKey("user.id"))
     materialId = db.Column(db.Integer, nullable=False)
     materialType = db.Column(db.String(100))
     wasteId = db.Column(db.String(1000))
-    
     type = db.Column(db.String(1000))
     description = db.Column(db.String(1000))
     size = db.Column(db.String(1000))
@@ -91,7 +90,7 @@ class Waste(db.Model):
 
 class Technology(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
-    userId = db.Column(db.Integer, nullable=False)
+    userId = db.Column(db.Integer, db.ForeignKey("user.id"))
     materialId = db.Column(db.Integer)
     materialType = db.Column(db.String(100))
     description = db.Column(db.String(100))

@@ -1,5 +1,6 @@
 flask
 Flask-SQLAlchemy==2.5.1
+flask-migrate
 Flask-Bcrypt==0.7.1
 Flask-Login==0.5.0
 Flask-Mail==0.9.1
@@ -20,3 +21,4 @@ python-dotenv==0.20.0
 Flask-APScheduler==1.12.4
 flask-dropzone==1.6.0
 itsdangerous==1.1.0
+MarkupSafe==1.1.1
