@@ -73,7 +73,6 @@ def selling_waste():
 @login_required
 def matching_questions_sellers(materialId):
     form = []
-    material = Materials.query.filter_by(id=materialId).first()
     samples = FoodWasteDB.query.all()
     result = defaultdict(list)
     for obj in samples:

@@ -15,7 +15,7 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     wastes = db.relationship("Waste", backref= "user", lazy="select")
-    techs = db.relationship("Technology", backref= "user", lazy="select")
+    techs = db.relationship("Technology", backref= "user", lazy="select") 
 
 
     def get_reset_token(self, expires_sec=1800):
@@ -88,6 +88,8 @@ class Waste(db.Model):
     lab_report_path = db.Column(db.String(1000))
     image_path = db.Column(db.String(1000))
 
+    dispatch_supply = db.relationship("Dispatchmatchingsupply", backref= "waste", lazy="select")
+
 class Technology(db.Model):
     id = db.Column(db.Integer, primary_key = True) 
     userId = db.Column(db.Integer, db.ForeignKey("user.id"))
@@ -114,6 +116,9 @@ class Technology(db.Model):
     size_criteria = db.Column(db.String(100))
     impurities_criteria = db.Column(db.String(100))
     date = db.Column(db.String(100))
+
+    dispatch_demand = db.relationship("Dispatchmatchingdemand", backref= "technology", lazy="select")
+
     
 
 #~~~~~~~~~~~~~~~~~~~~~ DISPATCH MATCHING~~~~~~~~~~~~~~~~~~~~~~#
@@ -121,7 +126,7 @@ class Technology(db.Model):
 class Dispatchmatchingsupply(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     userId = db.Column(db.Integer, nullable=False)
-    wasteId = db.Column(db.Integer, nullable=False)
+    wasteId = db.Column(db.Integer, db.ForeignKey("waste.id"))
     materialId = db.Column(db.Integer)
     quantity = db.Column(db.Float(500), nullable=False)
     reservePrice = db.Column(db.Float(500), nullable=False)
@@ -134,6 +139,7 @@ class Dispatchmatchingdemand(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     userId = db.Column(db.Integer, nullable=False)
     techId = db.Column(db.Integer, nullable=False)
+    wasteId = db.Column(db.Integer, db.ForeignKey("technology.id"))
     materialId = db.Column(db.Integer)
     quantity = db.Column(db.Float(500), nullable=False)
     reservePrice = db.Column(db.Float(500), nullable=False)
@@ -142,7 +148,6 @@ class Dispatchmatchingdemand(db.Model):
     date = db.Column(db.String(500))
 
 class Dispatchmatchingresults(db.Model):
-    no = None
     id = db.Column(db.Integer, primary_key = True)
     supplyId = db.Column(db.Integer, nullable=False)
     demandId = db.Column(db.Integer, nullable=False)

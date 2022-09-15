@@ -1,5 +1,6 @@
 import secrets
 import os
+from webbrowser import get
 from PIL import Image 
 
 from flask import render_template, send_from_directory
@@ -21,6 +22,7 @@ import pandas as pd
 
 from dss.models import (User, MaterialDB, Waste,Technology)
 from flask import current_app
+from dss.dashboard import getHistoricalData
 
 
 @app.route("/") 
@@ -34,9 +36,18 @@ def index():
 
 @app.route("/dashboard")
 @login_required
-def dashboard():
-    #posts=db.execute("SELECT * FROM post order by id")
-    return render_template('/base/dashboard.html')
+def dashboard(): 
+
+    data_bytime, data_bylife = getHistoricalData()
+    #label_test = data_bylife['legend']
+    label_test = ["Food Waste", "Animal Manure"]
+    y_test = data_bylife['yvalue_count']
+    
+    print(label_test)
+    print(y_test)
+
+
+    return render_template('/base/dashboard.html', data_bytime = data_bytime, data_bylife = data_bylife, label_test = label_test, y_test = y_test)
 
 @app.route("/about")
 def about():

@@ -4,44 +4,104 @@
 
 <div>
     <legend class="border-bottom mb-4 bg-primary text-white"><b> Waste Treatment Technology Information</legend>
-    
-        <h5><b>Name: {{tech.description}}</b></h5>
-        <h5><b>Technology Provider: <a href="{{ url_for('profile', user_id = tech_provider.id)}}" target="_blank"> {{tech_provider.username}}</a></b></h5>
-        <h5><b>Product: {{tech.product_list}}</b></h5>
-        <br>
+
+        <center>
+
+            <table style = "width:100%" class="table">
+                <tr>
+                    <th style = "width:40%" class="py-1 table-light"">Name: </th>
+                    <td class="py-1 table-light">{{tech.description}}</td>
+                </tr>
+                
+                <tr>
+                    <th class="py-1">Technology Provider: </th>
+                    <td class="py-1"><a href="{{ url_for('profile', user_id = tech_provider.id)}}" target="_blank"> {{tech_provider.username}}</a></td>
+                </tr>
+
+                {% if product_list %}
+                <tr>
+                    <th class="py-1">Product: </th>
+                    <td class="py-1">
+                        {% for key, value in product_list.items() %}
+                            {% if key != "None" %}
+                            {{key}} ({{value}} wt%)
+                            <br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
+
+                <tr>
+                    <th class="py-1">Last created/modified: </th>
+                    <td class="py-1">{{tech.date}}</td>
+                </tr>
+
+                
+            </table>
+        </center>
+
         <h5><b><u>Acceptable feedstock type & conditions </u></b></h5>
 
-        {% for entry in all_tech %}
-        <h5>Feedstock type: {{entry.materialType}}</h5>
+        <center>
+            {% for entry in all_tech %}
 
-            {% if entry.size != None %}
-            <h5>Feedstock size: {{entry.size}}</h5>
-            {% endif %}
+            <table style = "width:100%" class="table">
+                <tr>
+                    <th style = "width:40%" class="py-1 table-light">Feedstock type:  </th>
+                    <td class="py-1 table-light""> {{entry.materialType}}</td>
+                </tr>
 
-            {% if entry.moisture != None %}
-            <h5>Feedstock moisture level: {{entry.moisture}}</h5>
-            {% endif %}
+                {% if entry.size != None %}
+                <tr>
+                    <th class="py-1">Feedstock size:  </th>
+                    <td class="py-1"> {{entry.size}}</td>
+                </tr>
+                {% endif %}
 
-            {% if entry.cellulose_min != None %}
-            <h5>Feedstock cellulose content: {{entry.cellulose_min}} - {{entry.cellulose_max}} </h5>
-            {% endif %}
+                {% if entry.moisture != None %}
+                <tr>
+                    <th class="py-1">Feedstock moisture level:  </th>
+                    <td class="py-1"> {{entry.moisture}}</td>
+                </tr>
+                {% endif %}
 
-            {% if entry.homogeneity != None %}
-            <h5>Feedstock homogeneity: {{entry.homogeneity}}</h5>
-            {% endif %}
+                {% if entry.cellulose_min != None %}
+                <tr>
+                    <th class="py-1">Feedstock cellulose content:  </th>
+                    <td class="py-1"> {{entry.cellulose_min}} - {{entry.cellulose_max}} </td>
+                </tr>
+                {% endif %}
 
-            {% if entry.pH_min != None %}
-            <h5>Feedstock pH: {{entry.pH_min}} - {{entry.pH_max}}</h5>
-            {% endif %}
+                {% if entry.homogeneity != None %}
+                <tr>
+                    <th class="py-1">Feedstock homogeneity:  </th>
+                    <td class="py-1"> {{entry.homogeneity}}</td>
+                </tr>
+                {% endif %}
 
-            {% if entry.CN_min != None %}
-            <h5>Feedstock carbon-to-nitrogen ratio:  {{entry.CN_min}} - {{entry.CN_max}}</h5>
-            {% endif %}
+                {% if entry.pH_min != None %}
+                <tr>
+                    <th class="py-1">Feedstock pH:  </th>
+                    <td class="py-1">{{entry.pH_min}} - {{entry.pH_max}}</td>
+                </tr>
+                {% endif %}
 
-        <br>
-        {% endfor %}
+                {% if entry.CN_min != None %}
+                <tr>
+                    <th class="py-1">Feedstock carbon-to-nitrogen ratio:  </th>
+                    <td class="py-1"> {{entry.CN_min}} - {{entry.CN_max}}</td>
+                </tr>
+                {% endif %}          
 
-        <h5><b>Last created/modified: {{tech.date}}</b></h5>
+            </table>
+
+            {% endfor %}
+
+        </center>
+
+
+       
 </div> 
 
 <br>

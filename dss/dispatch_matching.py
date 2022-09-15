@@ -277,7 +277,7 @@ def dispatch_matching_results():
     
     waste_df = pd.read_sql_table('Waste', db.session.bind).set_index('id')
     tech_df = pd.read_sql_table('Technology', db.session.bind).set_index('id')
-    material_df = pd.read_sql_table('MaterialsDB', db.session.bind).set_index('id')
+    material_df = pd.read_sql_table('MaterialDB', db.session.bind).set_index('id')
     seller_df = pd.read_sql_table('Dispatchmatchingsupply', db.session.bind).set_index('id')
     buyer_df = pd.read_sql_table('Dispatchmatchingdemand', db.session.bind).set_index('id')
     user_df = pd.read_sql_table('user', db.session.bind).set_index('id')

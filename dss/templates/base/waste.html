@@ -46,8 +46,10 @@
                 
                 <td class="py-1">
                     {% for key, value in waste_type.items() %}
+                        {% if key != "None" %}
                         {{key}} ({{value}} wt%)
                         <br>
+                        {% endif %}
                     {% endfor %}
                 </td>
 
