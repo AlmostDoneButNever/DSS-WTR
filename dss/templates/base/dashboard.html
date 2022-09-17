@@ -17,6 +17,12 @@
     width:400px;
     max-width:400px;
 }
+
+.form-control-s {
+display: block;
+width: 50%;
+}
+
 </style>
 
 <!-- ============================================================== -->
@@ -27,11 +33,11 @@
     <!-- Three charts -->
     <!-- ============================================================== -->
 
-    <!-- 
+    
     <div class="row justify-content-center">
         <div class="col-lg-4 col-md-12">
         <div class="white-box analytics-info">
-            <h3 class="box-title">Total Visit</h3>
+            <h3 class="box-title">Total Transactions Made</h3>
             <ul class="list-inline two-part d-flex align-items-center mb-0">
             <li>
                 <div id="sparklinedash">
@@ -48,14 +54,14 @@
                 </div>
             </li>
             <li class="ms-auto">
-                <span class="counter text-success">659</span>
+                <span id = 'transaction_all' class="counter text-success"> </span>
             </li>
             </ul>
         </div>
         </div>
         <div class="col-lg-4 col-md-12">
         <div class="white-box analytics-info">
-            <h3 class="box-title">Total Page Views</h3>
+            <h3 class="box-title">Total Sales</h3>
             <ul class="list-inline two-part d-flex align-items-center mb-0">
             <li>
                 <div id="sparklinedash2">
@@ -72,14 +78,14 @@
                 </div>
             </li>
             <li class="ms-auto">
-                <span class="counter text-purple">869</span>
+                <span id = 'transaction_sold' class="counter text-purple"> </span>
             </li>
             </ul>
         </div>
         </div>
         <div class="col-lg-4 col-md-12">
         <div class="white-box analytics-info">
-            <h3 class="box-title">Unique Visitor</h3>
+            <h3 class="box-title"> Total Purchases</h3>
             <ul class="list-inline two-part d-flex align-items-center mb-0">
             <li>
                 <div id="sparklinedash3">
@@ -96,21 +102,31 @@
                 </div>
             </li>
             <li class="ms-auto">
-                <span class="counter text-info">911</span>
+                <span id = 'transaction_purchased' class="counter text-info"> </span>
             </li>
             </ul>
         </div>
         </div>
     </div>
-    -->
 
+    <div>
+        <h4 class = 'box-title'>View data by:</h4>
+    </div>
+    <div id="data_type" class="btn-group">
+
+        <button id = "button"  type="button" value="volume" class="btn btn-outline-primary">Transaction volume</button>
+        <button id = "button"  type="button" value="count" class="btn btn-outline-primary">Transaction count</button>
+
+    </div>
+    <br>
+    <br>
     <!-- ============================================================== -->
     <!-- TOTAL SALES -->
     <!-- ============================================================== -->
     <div class="row">
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
         <div class="white-box">
-            <h3 class = 'box-title'>Total wastes/resources sold </h3>
+            <h3 class = 'box-title'>Total wastes/resources sold </h3>  
 
             <center>
                 <div id = "wrapper">
@@ -123,6 +139,14 @@
                         <div id = "second">
                             <br>
                             <h5> By Month: </h5>
+                            <div id="timeframe_sold" class="btn-group">
+
+                                <button id = "button_tf_sold" type="button" value='3' class="btn btn-outline-primary btn-sm float-right">3M</button>
+                                <button id = "button_tf_sold" type="button" value='6' class="btn btn-outline-primary btn-sm float-right">6M</button>
+                                <button id = "button_tf_sold" type="button" value='12' class="btn btn-outline-primary btn-sm float-right">1Y</button>
+
+                            </div>
+
                             <canvas id="item_sold_bytime" width = 300 height = 300></canvas>
                         </div>
                 </div>
@@ -152,6 +176,13 @@
                         <div id = "second">
                             <br>
                             <h5>By Month: </h5>
+                            <div id="timeframe_purchased" class="btn-group">
+
+                                <button id = "button_tf_purchased" type="button" value='3' class="btn btn-outline-primary btn-sm float-right">3M</button>
+                                <button id = "button_tf_purchased" type="button" value='6' class="btn btn-outline-primary btn-sm float-right">6M</button>
+                                <button id = "button_tf_purchased" type="button" value='12' class="btn btn-outline-primary btn-sm float-right">1Y</button>
+
+                            </div>
                             <canvas id="item_purchased_bytime" width = 300 height = 300></canvas>
                         </div>
                 </div>
@@ -168,11 +199,20 @@
     <div class="row">
         <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
         <div class="white-box">
-        <h3 class = 'box-title'>Trading Price </h3>
+            <h3 class = 'box-title'>Trading Price </h3>
+
 
             <center>
                 <div id = "wrapper">
                     <div id = "first">
+                        <div>
+                            <h5> View the trading price for: </h5>
+                            <select id = "dropdown" onchange="dropdownChanged()" class="form-select form-control-s" aria-label="Default select example">
+                                {% for waste in data['trading'].keys() %}
+                                <option value="{{waste}}">{{waste}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <br>
                         <canvas id="market_price" width = 300 height = 300></canvas>            
                     </div>
@@ -182,10 +222,7 @@
             
         </div>
         </div>
-    </div>
-
-
-    
+    </div> 
 
 
 
@@ -198,84 +235,261 @@
 
 <script>
 
-// Doughnut chart
+
+// Data import from flask
+const imported_data = {{data | tojson}} ;
+
+var default_y_type = 'volume';
+var default_timeframe = 3;  // months
+var default_waste_type = "Food Waste"
+
+
+// View Data by VOLUME/COUNT
+$(document).ready(function() {
+  
+  // Get click event, assign button to var, and get values from that var
+  $('#data_type button').on('click', function() {
+    var thisBtn = $(this);
+    
+    thisBtn.addClass('active').siblings().removeClass('active');
+    var btnValue = thisBtn.val();    
+
+    var set_timeframe = default_timeframe
+    $('#timeframe_sold button[value="3"]').click();
+    $('#timeframe_purchased button[value="3"]').click();
+
+    if (btnValue == 'volume') {
+        var set_y_type = 'volume'
+        default_y_type = 'volume'
+
+        var set_data_type = "sold"
+        var data_doughnut = dataLoader_doughnut(imported_data, set_data_type, set_y_type)
+        doughnutChart.data = data_doughnut;
+        doughnutChart.update();
+
+        var set_data_type = "purchased"
+        var data_doughnut = dataLoader_doughnut(imported_data, set_data_type, set_y_type)
+        doughnutChart2.data = data_doughnut;
+        doughnutChart2.update();
+
+
+
+        var set_data_type = "sold"
+        var data_bar = dataLoader_stackedBar(imported_data, set_data_type, set_y_type, set_timeframe)
+        barChart.data = data_bar;
+        barChart.update();
+
+        var set_data_type = "purchased"
+        var data_bar = dataLoader_stackedBar(imported_data, set_data_type, set_y_type, set_timeframe)
+        barChart2.data = data_bar;
+        barChart2.update();
+
+    } else {
+        var set_y_type = 'count'
+        default_y_type = 'count'
+
+        var set_data_type = "sold"
+        var data_doughnut= dataLoader_doughnut(imported_data, set_data_type, set_y_type)
+        doughnutChart.data = data_doughnut;
+        doughnutChart.update();
+
+        var set_data_type = "purchased"
+        var data_doughnut = dataLoader_doughnut(imported_data, set_data_type, set_y_type)
+        doughnutChart2.data = data_doughnut;
+        doughnutChart2.update();
+
+        var set_data_type = "sold"
+        var data_bar = dataLoader_stackedBar(imported_data, set_data_type, set_y_type, set_timeframe)
+        barChart.data = data_bar;
+        barChart.update();
+
+        var set_data_type = "purchased"
+        var data_bar = dataLoader_stackedBar(imported_data, set_data_type, set_y_type, set_timeframe)
+        barChart2.data = data_bar;
+        barChart2.update();
+    }
+
+  });
+  
+  $('#timeframe_sold button').on('click', function() {
+   
+    var thisBtn = $(this);
+
+    thisBtn.addClass('active text-white').siblings().removeClass('active text-white');
+    
+    var btnValue = thisBtn.val(); 
+
+    var set_y_type = default_y_type
+
+    var set_timeframe = Number(thisBtn.val())
+        var set_data_type = "sold"
+        var data_bar = dataLoader_stackedBar(imported_data, set_data_type, set_y_type, set_timeframe)
+        barChart.data = data_bar;
+        barChart.update();
+
+  });
+
+  $('#timeframe_purchased button').on('click', function() {
+    var thisBtn = $(this);
+
+    thisBtn.addClass('active text-white').siblings().removeClass('active text-white');
+    
+    var btnValue = thisBtn.val(); 
+    var set_y_type = default_y_type
+
+    var set_timeframe = Number(thisBtn.val())
+        var set_data_type = "purchased"
+        var data_bar = dataLoader_stackedBar(imported_data, set_data_type, set_y_type, set_timeframe)
+        barChart2.data = data_bar;
+        barChart2.update();
+
+  });
+
+  // You can use this to set default value
+  // It will fire above click event which will do the updates for you
+  $('#data_type button[value="volume"]').click();
+  $('#timeframe_sold button[value="3"]').click();
+  $('#timeframe_purchased button[value="3"]').click();
+  
+
+  document.getElementById('transaction_all').innerHTML  = imported_data['total_count']
+  document.getElementById('transaction_sold').innerHTML  = imported_data['sold_count']
+  document.getElementById('transaction_purchased').innerHTML  = imported_data['purchased_count']
+
+});
+
+function dropdownChanged() {
+  var waste_type = document.getElementById("dropdown").value;
+  var data_scatter = dataLoader_market(waste_type, imported_data['trading'])
+  marketChart.data = data_scatter
+  marketChart.update()
+  document.getElementById("demo").innerHTML = "You selected: " + x;
+}
+    
+// Materials sold and purchase - doughnut
 var doughnut_sold= document.getElementById("item_sold_bytype").getContext("2d");
 var doughnut_purchased= document.getElementById("item_purchased_bytype").getContext("2d");
 
-/*
-var labels = [
-    'Food Waste',
-    'Animal Manure',
-    'Wood Waste',
-    'Plastic Waste'
-    ];
 
-var data = {
-    labels: labels,
-    datasets: [{
-    label: 'My First Dataset',
-    data: [300, 50, 100, 50],
-    backgroundColor: [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 205, 86)',
-        'rgb(70, 100, 86)',
+// General doughnut chart settings
+const doughnut_colors = ['rgb(255, 99, 132)','rgb(54, 162, 235)','rgb(100, 100, 50)','rgb(20, 160, 80)']
 
-    ],
-    hoverOffset: 4
-    }]
-    };
+var options_doughnut = {
+    responsive: false,
+    maintainAspectRatio:false,
+}
 
-    var opts = {
-        responsive: false,
-        maintainAspectRatio:false,
+function dataLoader_doughnut(imported_data, set_data_type, set_y_type) {
+    
+    // Chart - materials sold
+    if (set_data_type == "sold") {
+        var data_type = imported_data['bylife_sold']
+    } else {
+        var data_type = imported_data['bylife_purchased']
     }
-*/
 
-var labels ={{label_test | tojson}} 
-var data = {
-    labels: labels,
-    datasets: [{
-    label: 'My First Dataset',
-    data: {{y_test | tojson}},
-    backgroundColor: [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-
-    ],
-    hoverOffset: 4
-    }]
-    };
-
-    var opts = {
-        responsive: false,
-        maintainAspectRatio:false,
+    if (set_y_type == "volume") {
+        y_type = 'yvalue_sum'
+    } else {
+        y_type = 'yvalue_count'
     }
+
+    var labels = data_type['legend'];
+    var set_length = labels.length;
+    var data = {
+        labels: labels,
+        datasets: [{
+        data: data_type[y_type],
+        backgroundColor: doughnut_colors.slice(0,set_length),
+        hoverOffset: 4
+        }]
+        };
+
+    return data;
+}
+
+var set_data_type = "sold"
+var set_y_type = default_y_type
+
+var data_doughnut= dataLoader_doughnut(imported_data, set_data_type, set_y_type)
 
 var doughnutChart = new Chart(doughnut_sold,{
     type: 'doughnut',
-    data: data,
-    options: opts
+    data: data_doughnut,
+    options: options_doughnut
 
 });
+    
+
+ 
+
+
+
+
+
+// Chart - materials purchased
+
+var set_data_type = "purchased"
+var set_y_type = default_y_type
+var data_doughnut= dataLoader_doughnut(imported_data, set_data_type, set_y_type)
 
 var doughnutChart2 = new Chart(doughnut_purchased,{
     type: 'doughnut',
-    data: data,
-    options: opts
+    data: data_doughnut,
+    options: options_doughnut
 
 });
-            
+        
 
-// BAR chart
+
+
+// Materials sold and purchase - 
 var bar_sold= document.getElementById("item_sold_bytime").getContext("2d");
 var bar_purchased= document.getElementById("item_purchased_bytime").getContext("2d");
 
-const colours = ['rgba(255, 99, 132, 0.5)', 'rgba(255, 206, 86, 0.5)','rgba(150, 150, 86, 0.5)','rgba(180, 180, 20, 0.5)']
-const bordercolour = 'rgba(0, 0, 0, 0.5)'
-const borderwidth = 1
+// General settings
+const colours = ['rgba(255, 99, 132, 0.5)', 'rgba(255, 206, 86, 0.5)','rgba(150, 150, 86, 0.5)','rgba(180, 180, 20, 0.5)'];
+const bordercolour = 'rgba(0, 0, 0, 0.5)';
+const borderwidth = 1;
 
-function setData(legends, y_values) {
+var options = {
+    responsive: false,
+    maintainAspectRatio:false,
+    legend: {
+            display: false,
+            position: 'top'
+    },
+    scales: {
+            x: {
+                    stacked: true
+            },
+            y: {
+                beginAtZero: true,
+                stacked: true
+            }
+        }
+}
+
+function dataLoader_stackedBar(imported_data, set_data_type, set_y_type, set_timeframe) {
+
+    if (set_data_type == "sold") {
+        var data_type = imported_data['bytime_sold']
+    } else {
+        var data_type = imported_data['bytime_purchased']
+    }
+
+    if (set_y_type == "volume") {
+        y_type = 'yvalue_sum'
+    } else {
+        y_type = 'yvalue_count'
+    }
+
+    t = set_timeframe
+
+    var x_values = data_type[t]['xvalue'];
+    var legends = data_type[t]['legend'];
+    var y_values = data_type[t][y_type];
+
     var dataset = []
 
     for (let i = 0; i < legends.length; i++) {
@@ -290,62 +504,40 @@ function setData(legends, y_values) {
         dataset.push(dict)
     }    
 
-  return dataset;   
-}
+    var data = {
+                    labels: x_values,
+                    datasets: dataset
+                };
 
-const test_x = ['MAR','APR','MAY','JUNE','JULY','AUG']
-const test_legends = ['Food Waste', 'Animal Manure','Wood Waste','Plastic Waste']
-const test_y = [
-                    [12, 19, 3, 5, 2, 3],
-                    [1, 2, 3, 4, 5, 6],
-                    [23, 21, 34, 28, 35, 46],
-                    [31, 72, 23, 44, 35, 26],
-                ]
-
-
-const datatest = setData(test_legends, test_y)
-
-console.log(datatest)
-
-var data = {
-    labels: test_x,
-    datasets: datatest
-    
-
+    return data;   
 };
 
-var opts = {
-    responsive: false,
-    maintainAspectRatio:false,
-    legend: {
-            display: false,
-            position: 'top'
-    },
 
-    scales: {
-            x: {
-                    stacked: true
-                },
+// Chart - materials sold by selected timeframe
+var set_data_type = 'sold'
+var set_y_type = default_y_type
+var set_timeframe = default_timeframe
 
-            y: {
-                beginAtZero: true,
-                stacked: true
-            }
-            
-        }
-}
+var data_bar = dataLoader_stackedBar(imported_data, set_data_type, set_y_type, set_timeframe)
 
 var barChart = new Chart(bar_sold,{
     type: 'bar',
-    data: data,
-    options: opts
+    data: data_bar,
+    options: options
 
 });
 
+// Chart - materials purchased by selected timeframe
+var set_data_type = 'purchased'
+var set_y_type = default_y_type
+var set_timeframe = default_timeframe
+
+var data_bar = dataLoader_stackedBar(imported_data, set_data_type, set_y_type, set_timeframe)
+
 var barChart2 = new Chart(bar_purchased,{
     type: 'bar',
-    data: data,
-    options: opts
+    data: data_bar,
+    options: options
 
 });
 
@@ -353,6 +545,7 @@ var barChart2 = new Chart(bar_purchased,{
 // First line chart
 var market_price = document.getElementById("market_price").getContext("2d");
 
+/*
 function setData_line(legends, y_values) {
     var dataset = []
 
@@ -370,6 +563,8 @@ function setData_line(legends, y_values) {
 
   return dataset;   
 }
+
+
 
 const datatest2 = setData_line(test_legends, test_y)
 
@@ -395,6 +590,65 @@ var lineChart = new Chart(market_price,{
     options: opts
 
 });
+*/
 
+function dataLoader_scatter(trading_sets) {
+    var data = []
+
+    for (let i = 0; i < trading_sets.length; i++) {
+        var dict = {}
+    
+        dict['x'] = trading_sets[i][0]  
+        dict['y'] = trading_sets[i][1]  
+        console.log(dict)
+        data.push(dict)
+    }    
+
+  return data;  
+}
+
+function dataLoader_market(waste_type, trading_data) {
+    var dataset = []
+
+    for (let i = 0; i < Object.keys(trading_data[waste_type]).length; i++) {
+        var dict = {}
+        
+        key = Object.keys(trading_data[waste_type])[i]
+        dict['label'] = key
+        dict['data'] = dataLoader_scatter(trading_data[waste_type][key]) 
+        dict['borderColor'] = colours[i]  
+        dict['backgroundColor'] = colours[i]    
+        console.log(dict)
+        dataset.push(dict)
+    }    
+
+    var data = {
+    datasets: dataset,
+    };
+
+  return data;  
+}
+
+
+var waste_type = default_waste_type
+
+console.log(Object.keys(imported_data['trading'][waste_type]))
+
+data_scatter = dataLoader_market(waste_type, imported_data['trading'])
+
+const config = {
+    type: 'scatter',
+    data: data_scatter,
+    options: {
+        scales: {
+        x: {
+            type: 'category',
+            position: 'bottom'
+        }
+        }
+    }
+    };
+
+var marketChart = new Chart(market_price, config);
 </script>
 {% endblock addon %}

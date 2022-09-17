@@ -38,16 +38,11 @@ def index():
 @login_required
 def dashboard(): 
 
-    data_bytime, data_bylife = getHistoricalData()
-    #label_test = data_bylife['legend']
-    label_test = ["Food Waste", "Animal Manure"]
-    y_test = data_bylife['yvalue_count']
-    
-    print(label_test)
-    print(y_test)
+    data = getHistoricalData()
 
+    print(data['trading'])
 
-    return render_template('/base/dashboard.html', data_bytime = data_bytime, data_bylife = data_bylife, label_test = label_test, y_test = y_test)
+    return render_template('/base/dashboard.html', data = data)
 
 @app.route("/about")
 def about():
